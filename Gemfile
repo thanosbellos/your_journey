@@ -58,3 +58,4 @@ group :test do
 
 end
 
+gem 'simple_form', '~> 3.1.0'
