@@ -1,10 +1,12 @@
 <% provide(:title , "Home") %>
 <div class= "center jumbotron">
-  <h1>Your journey</h1>
-  <h2>
-      A simple app to help you find stunning trip routes near you
-  </h2>
-
-  <%= link_to "Sign up now!" , signup_path, class: "btn btn-lg btn-primary" %>
+  <div class = "row">
+    <div class="col-md-7">
+     <h1> Welcome to your journey app </h1>
+     <p> A simple app to help you find stunning routes near you </p>
+    </div>
+    <div class="col-md-5">
+      <h2>New here ?Sign up</h2>
+    </div>
   </div>
-<%= link_to image_tag("rails.png", alt: "Rails logo"), 'http://rubyonrails.org/' %>
+</div>
