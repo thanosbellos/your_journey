@@ -12,7 +12,8 @@ feature 'Home page' do
     click_link 'Sign up'
 
     fill_in 'Email' , with: 'thanos@me.com'
-    fill_in 'password' , with:'asdf'
+    fill_in 'password' , with:'asdfasdf'
+    fill_in 'password confirmation' , with: 'asdfasdf'
     click_button 'Sign up'
 
     expect(page).to have_content('You have successfully signed up')
