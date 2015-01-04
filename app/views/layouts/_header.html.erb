@@ -4,6 +4,12 @@
     <nav>
       <ul class="nav navbar-nav navbar-right">
         <li><%= link_to "Home", static_pages_home_path   %></li>
+        <% if user_signed_in? %>
+          <li> <%= link_to("Profile", "#") %> </li>
+          <li> <%= link_to("Sign out", destroy_user_session_path , method: "delete") %></li>
+        <%else%>
+          <li> <%= link_to("Sign in" , new_user_session_path) %></li>
+        <% end%>
       </ul>
     </nav>
   </div>
