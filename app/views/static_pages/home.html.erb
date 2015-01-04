@@ -6,13 +6,7 @@
      <p> A simple app to help you find stunning routes near you </p>
     </div>
     <div class="col-md-5">
-      <h2>New here ?Sign up</h2>
-      <%= simple_form_for(:user, html: { class: 'form-horizontal' }) do |f| %>
-          <%= f.input :username %>
-
-          <%= f.input :password %>
-          <%= f.button :submit %>
-        <% end %>
+      <%= render template: 'devise/registrations/new.html.erb' %>
     </div>
   </div>
 </div>
