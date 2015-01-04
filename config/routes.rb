@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  #get 'users/new'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -8,7 +7,6 @@ Rails.application.routes.draw do
    get 'static_pages/home'
    root 'static_pages#home'
    #get 'signup' => 'users#new'
-   #resources :users
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
