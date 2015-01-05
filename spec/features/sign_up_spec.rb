@@ -2,20 +2,40 @@ require 'rails_helper'
 
 feature 'Home page' do
 
-  scenario do
+  scenario 'a user can sign up' do
+    visit root_path
+
+    find('#sign_up_form').fill_in 'Email', with:'thanos@me.com'
+    find('#sign_up_form').fill_in 'Password', with:'foobar123'
+    find('#sign_up_form').fill_in 'Password confirmation', with:'foobar123'
+
+    expect { click_link_or_button 'Sign up' }.to change(User, :count)
+    expect(page).to have_content('Welcome! You have signed up successfully.')
+
 
   end
 
-  scenario 'user can sign up from home page' do
+  scenario 'a registered user can login from home page' do
 
     visit root_path
-    click_link 'Sign up'
+    user = create(:user)
+    find('#sign_in_form').fill_in 'Email' , with: user.email
 
-    fill_in 'Email' , with: 'thanos@me.com'
-    fill_in 'password' , with:'asdfasdf'
-    fill_in 'password confirmation' , with: 'asdfasdf'
-    click_button 'Sign up'
+    find('#sign_in_form').fill_in 'Password' , with: user.password
+    click_button 'Log in'
+    expect(page).to have_content('Signed in successfully.')
+  end
 
-    expect(page).to have_content('You have successfully signed up')
+  scenario 'a user cannot login with invalid password' do
+    #a blank password is considered as an invalid password
+    #
+    visit root_path
+
+    user = create(:user)
+    find('#sign_in_form').fill_in 'Email', with: user.email
+    find('#sign_in_form').fill_in 'Password' , with:'foobarinvalid'
+    click_button 'Log in'
+    expect(page).to have_content('Invalid email or password.')
+
   end
 end
