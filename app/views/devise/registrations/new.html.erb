@@ -1,5 +1,5 @@
 <% provide(:title , "Sign Up") %>
-<div id="sign_up_form">
+<div class="form_box" id="sign_up_form">
 <h1>New here ? Sign up now!! </h1>
 
 <%= simple_form_for(resource,
@@ -10,13 +10,18 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :email, required: true, autofocus: true %>
-    <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
-    <%= f.input :password_confirmation, required: true %>
+    <%= f.input :email, required: true, autofocus: true, label:false ,placeholder:'* Email' %>
+    <%= f.input :password ,
+                required: true ,
+                label:false ,
+                placeholder:'* Password',
+                hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
+
+              <%= f.input :password_confirmation, required: true , label:false , placeholder:'* Password confirmation' %>
   </div>
 
   <div class="form-actions">
-    <%= f.button :submit, "Sign up", class: "btn btn-primary btn-block" %>
+    <%= f.button :submit, "Sign up", class: "btn btn-info btn-block" %>
   </div>
 <% end %>
 </div>
