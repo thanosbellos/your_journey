@@ -15,6 +15,33 @@ feature 'Home page' do
 
   end
 
+  scenario 'a user cannot sign up if email is already taken' do
+
+  visit root_path
+
+  user = create(:user)
+  find('#sign_up_form').fill_in 'Email',with:user.email
+  find('#sign_up_form').fill_in 'Password' , with:'anythingvalid'
+  find('#sign_up_form').fill_in 'Password confirmation' , with:'anythingvalid'
+
+  expect{click_link_or_button 'Sign up' } .not_to change(User, :count)
+  expect(page).to have_content("* Emailhas already been taken")
+
+  end
+
+  scenario 'a user can log out' do
+    visit root_path
+
+    user = create(:user)
+    find('#sign_in_form').fill_in 'Email',with: user.email
+    find('#sign_in_form').fill_in 'Password' , with: user.password
+
+    click_button 'Log in'
+    click_link 'Sign out'
+    expect(page).to have_content('Signed out successfully.')
+
+  end
+
   scenario 'a registered user can login from home page' do
 
     visit root_path
@@ -38,4 +65,5 @@ feature 'Home page' do
     expect(page).to have_content('Invalid email or password.')
 
   end
+
 end
