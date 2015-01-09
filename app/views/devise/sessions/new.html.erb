@@ -5,7 +5,7 @@
   <%= f.error_notification %>
   <div class="form-inputs">
     <%= f.input :email, label:false , wrapper: :vertical_input_group do %>
-      <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"> </i></span>
+      <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"> </i></span>
       <%= f.input_field :email,placeholder:'Email',autofocus:true, class: "form-control" %>
     <%end%>
     <table class="table">
@@ -13,7 +13,7 @@
         <tbody>
           <td id="form_table_input">
             <%= f.input :password, label: false , wrapper: :vertical_input_group do %>
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+              <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
               <%= f.input_field :password ,  placeholder: 'Password' , autofocus: true, class: "form-control"%>
             <%end%>
           </td>
