@@ -10,14 +10,27 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :email, required: true, autofocus: true, label:false ,placeholder:'* Email' %>
+    <%= f.input :email, required: true, autofocus: true, label:false , wrapper: :vertical_input_group do %>
+      <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+      <%= f.input_field :email, placeholder: '* Email', autofocus:true, class: "form-control" %>
+    <%end%>
     <%= f.input :password ,
                 required: true ,
                 label:false ,
-                placeholder:'* Password',
-                hint: ("#{@minimum_password_length} characters minimum" if @validatable) %>
+                wrapper: :vertical_input_group do %>
 
-              <%= f.input :password_confirmation, required: true , label:false , placeholder:'* Password confirmation' %>
+                  <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                  <%= f.input_field :password ,placeholder:'* Password' , class: "form-control" %>
+              <% end %>
+
+    <%= f.input :password_confirmation ,
+                required: true ,
+                label:false ,
+                wrapper: :vertical_input_group do%>
+
+                  <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                  <%= f.input_field :password ,placeholder:'* Password confirmation' , class: "form-control" %>
+              <%end%>
   </div>
 
   <div class="form-actions">
