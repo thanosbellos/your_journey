@@ -5,9 +5,9 @@ feature 'Home page' do
   scenario 'a user can sign up' do
     visit root_path
 
-    find('#sign_up_form').fill_in 'Email', with:'thanos@me.com'
-    find('#sign_up_form').fill_in 'Password', with:'foobar123'
-    find('#sign_up_form').fill_in 'Password confirmation', with:'foobar123'
+    find('#sign_up_form').fill_in '* Email', with:'thanos@me.com'
+    find('#sign_up_form').fill_in '* Password', with:'foobar123'
+    find('#sign_up_form').fill_in '* Password confirmation', with:'foobar123'
 
     expect { click_link_or_button 'Sign up' }.to change(User, :count)
     expect(page).to have_content('Welcome! You have signed up successfully.')
@@ -20,12 +20,12 @@ feature 'Home page' do
   visit root_path
 
   user = create(:user)
-  find('#sign_up_form').fill_in 'Email',with:user.email
-  find('#sign_up_form').fill_in 'Password' , with:'anythingvalid'
-  find('#sign_up_form').fill_in 'Password confirmation' , with:'anythingvalid'
+  find('#sign_up_form').fill_in '* Email',with:user.email
+  find('#sign_up_form').fill_in '* Password' , with:'anythingvalid'
+  find('#sign_up_form').fill_in '* Password confirmation' , with:'anythingvalid'
 
   expect{click_link_or_button 'Sign up' } .not_to change(User, :count)
-  expect(page).to have_content("* Emailhas already been taken")
+  expect(page).to have_content("has already been taken")
 
   end
 
