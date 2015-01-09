@@ -60,3 +60,4 @@ end
 
 gem 'simple_form', '~> 3.1.0'
 gem 'devise','~> 3.4.1'
+gem 'font-awesome-rails', '~> 4.2.0.0'
