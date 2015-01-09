@@ -3,7 +3,10 @@
     <%= link_to "sample app", static_pages_home_path , id: "logo" %>
     <nav>
       <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to "Home", static_pages_home_path   %></li>
+        <li><%= link_to static_pages_home_path  do %>
+        <i class="fa fa-home"></i>Home
+        <% end %>
+        </li>
         <% if user_signed_in? %>
           <li> <%= link_to("Profile", "#") %> </li>
           <li> <%= link_to("Sign out", destroy_user_session_path , method: "delete") %></li>
