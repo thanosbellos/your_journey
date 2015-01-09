@@ -23,6 +23,9 @@
         </tbody>
       </tr>
     </table>
+    <% if devise_mapping.rememberable? %>
+      <%= f.input :remember_me , as: :boolean , checked_value: true, unchecked_value:false %>
+    <% end %>
   </div>
 
 <% end %>
