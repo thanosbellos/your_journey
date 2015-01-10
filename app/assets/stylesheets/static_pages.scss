@@ -13,3 +13,48 @@ h1{
   text-align: center;
   color: #FCFCFC;
 }
+.form_box {
+  background-clip:border-box;
+  background-color:#fff;
+  border-radius:4px;
+  margin-bottom:15px;
+  font-size:12px;
+  padding:12px 12px 6px 12px;
+}
+.form_box h1{
+  color: black; font-size: 15px;
+
+}
+
+
+
+.table-no-border>thead>tr>th,
+.table-no-border>tbody>tr>th,
+.table-no-border>tfoot>tr>th,
+.table-no-border>thead>tr>td,
+.table-no-border>tbody>tr>td,
+.table-no-border>tfoot>tr>td {
+  border-top: none;
+
+}
+
+td .form-group{
+  margin-bottom:0px;
+
+}
+
+#form_table_input .form-group{
+  margin-right:15px;
+}
+
+.form-group {
+  margin-bottom:12px;
+}
+.remember-forgot{
+  line-height:18px;
+  margin-top:4px;
+  margin-bottom:0px;
+  vertical-align:middle;
+  display: inline-block;
+}
+

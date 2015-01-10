@@ -18,8 +18,7 @@ textarea {
 
 p {
   font-size: 1.1em;
-  line-height: 1.7em;
-  font-size: 30px;
+  line-height: 1.7em; font-size: 30px;
   color: #D8D8D8;
   line-height: 41px;
 }
@@ -58,7 +57,6 @@ footer a:hover {
 footer small {
   float: left;
 }
-
 footer ul {
   float: right;
   list-style: none;
@@ -71,29 +69,4 @@ footer ul li {
 abbr {
   border-bottom: 0px  !important;
 }
-
-.form_box {
-    background-color:#FFFFFF;
-    border-radius: 1em;
-    padding:0px 15px 15px 15px;
-    margin:15px 0px 15px;
-}
-.form_box h1{
-  color: black;
-  font-size: 30px;
-  margin:0px;
-  padding:15px 0px 15px 0px;
-}
-#form_table_input{
-  padding-left:0px;
-  padding-bottom:0px;
-
-
-}
-
-#form_table_button{
-  padding-right:0px;
-  padding-bottom:0px;
-}
-
 
