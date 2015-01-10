@@ -1,20 +1,20 @@
 <div class="form_box" id="sign_in_form">
 
-<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), wrapper: :vertical_form) do |f| %>
-  <%= f.error_notification %>
+  <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), wrapper: :vertical_form) do |f| %>
+    <%= f.error_notification %>
   <div class="form-inputs">
     <%= f.input :email, label:false , wrapper: :vertical_input_group do %>
       <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"> </i></span>
-      <%= f.input_field :email,placeholder:'Email',autofocus:true, class: "form-control" %>
-    <%end%>
+    <%= f.input_field :email,placeholder:'Email',autofocus:true, class: "form-control" %>
+  <%end%>
     <table class="table-no-border">
       <tr>
         <tbody>
           <td id="form_table_input">
             <%= f.input :password, label: false , wrapper: :vertical_input_group do %>
               <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-              <%= f.input_field :password ,  placeholder: 'Password' , autofocus: true, class: "form-control"%>
-            <%end%>
+            <%= f.input_field :password ,  placeholder: 'Password' , autofocus: true, class: "form-control"%>
+          <%end%>
           </td>
           <td id="form_table_button">
             <div class="form-group">
@@ -28,8 +28,8 @@
       <%= f.input_field :remember_me, :as => :boolean  %>
       <span> Remember me </span>
       <span > &#183 <%= link_to "Forgot Password?" , new_user_password_path %> </span>
+    </div>
   </div>
-</div>
 <% end %>
 </div>
 

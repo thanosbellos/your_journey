@@ -7,6 +7,7 @@ html {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 h1{
@@ -20,10 +21,29 @@ h1{
   margin-bottom:15px;
   font-size:12px;
   padding:12px 12px 6px 12px;
+  width:300px;
 }
-.form_box h1{
-  color: black; font-size: 15px;
 
+.form_box h2
+{
+  border-bottom-color :E1E8ED;
+  border-bottom-style :solid;
+  border-bottom-width: 1px;
+  display:block;
+  font-size:16px;
+  font-weight:300;
+  line-height:22px;
+  margin: 0px 0px 12px 0px;
+  padding: 10px 12px 12px 10px;
+  color: #66757F;
+}
+
+.form_box h2 strong{
+  color: #292F33;
+  font-size: 15px;
+  font-size:16px;
+  font-weight:500;
+  line-height:22px;
 }
 
 
@@ -58,3 +78,5 @@ td .form-group{
   display: inline-block;
 }
 
+.create_button{
+}
