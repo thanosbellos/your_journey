@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 html {
-  background: image-url("Road-Journey.jpg") no-repeat center center fixed;
+  background: image-url("sample/hike-route.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -21,7 +21,7 @@ h1{
   margin-bottom:15px;
   font-size:12px;
   padding:12px 12px 6px 12px;
-  width:300px;
+  width:250px;
 }
 
 .form_box h2
@@ -78,5 +78,3 @@ td .form-group{
   display: inline-block;
 }
 
-.create_button{
-}
