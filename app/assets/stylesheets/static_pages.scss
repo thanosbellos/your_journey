@@ -2,14 +2,79 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 html {
-  background: image-url("Road-Journey.jpg") no-repeat center center fixed;
+  background: image-url("sample/hike-route.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 h1{
   text-align: center;
   color: #FCFCFC;
 }
+.form_box {
+  background-clip:border-box;
+  background-color:#fff;
+  border-radius:4px;
+  margin-bottom:15px;
+  font-size:12px;
+  padding:12px 12px 6px 12px;
+  width:250px;
+}
+
+.form_box h2
+{
+  border-bottom-color :E1E8ED;
+  border-bottom-style :solid;
+  border-bottom-width: 1px;
+  display:block;
+  font-size:16px;
+  font-weight:300;
+  line-height:22px;
+  margin: 0px 0px 12px 0px;
+  padding: 10px 12px 12px 10px;
+  color: #66757F;
+}
+
+.form_box h2 strong{
+  color: #292F33;
+  font-size: 15px;
+  font-size:16px;
+  font-weight:500;
+  line-height:22px;
+}
+
+
+
+.table-no-border>thead>tr>th,
+.table-no-border>tbody>tr>th,
+.table-no-border>tfoot>tr>th,
+.table-no-border>thead>tr>td,
+.table-no-border>tbody>tr>td,
+.table-no-border>tfoot>tr>td {
+  border-top: none;
+
+}
+
+td .form-group{
+  margin-bottom:0px;
+
+}
+
+#form_table_input .form-group{
+  margin-right:15px;
+}
+
+.form-group {
+  margin-bottom:12px;
+}
+.remember-forgot{
+  line-height:18px;
+  margin-top:4px;
+  margin-bottom:0px;
+  vertical-align:middle;
+  display: inline-block;
+}
+

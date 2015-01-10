@@ -1,20 +1,20 @@
 <% provide(:title , "Sign Up") %>
 <div class="form_box" id="sign_up_form">
-<h1>New here ? Sign up now!! </h1>
+  <h2><strong>New here</strong> ? Sign up now!! </h2>
 
-<%= simple_form_for(resource,
+  <%= simple_form_for(resource,
                     as: resource_name,
                     url: registration_path(resource_name)) do |f| %>
 
 
-  <%= f.error_notification %>
+    <%= f.error_notification %>
 
-  <div class="form-inputs">
-    <%= f.input :email, required: true, autofocus: true, label:false , wrapper: :vertical_input_group do %>
-      <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-      <%= f.input_field :email, placeholder: '* Email', autofocus:true, class: "form-control" %>
-    <%end%>
-    <%= f.input :password ,
+    <div class="form-inputs">
+      <%= f.input :email, required: true, autofocus: true, label:false , wrapper: :vertical_input_group do %>
+        <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+        <%= f.input_field :email, placeholder: '* Email', autofocus:true, class: "form-control" %>
+      <%end%>
+      <%= f.input :password ,
                 required: true ,
                 label:false ,
                 wrapper: :vertical_input_group do %>
@@ -23,18 +23,18 @@
                   <%= f.input_field :password ,placeholder:'* Password' , class: "form-control" %>
               <% end %>
 
-    <%= f.input :password_confirmation ,
+      <%= f.input :password_confirmation ,
                 required: true ,
                 label:false ,
                 wrapper: :vertical_input_group do%>
-
-                  <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-                  <%= f.input_field :password ,placeholder:'* Password confirmation' , class: "form-control" %>
-              <%end%>
+                    <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                    <%= f.input_field :password ,placeholder:'* Password confirmation' , class: "form-control" %>
+                <%end%>
+    <div class="create_button">
+      <%= f.button :submit , 'Sign up' , class: 'btn btn-warning pull-right ' %>
+      <div class= 'clearfix'> </div>
+    </div>
   </div>
 
-  <div class="form-actions">
-    <%= f.button :submit, "Sign up", class: "btn btn-info btn-block" %>
-  </div>
 <% end %>
 </div>
