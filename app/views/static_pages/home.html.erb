@@ -1,17 +1,23 @@
 <% provide(:title , "Home") %>
-<div class="row">
+  <div class="row">
     <div class="col-md-6 col-md-offset-1">
      <h1> Welcome to your journey app </h1>
      <p> A simple app to help you find stunning routes near you </p>
-    </div>
+   </div>
+   <% unless user_signed_in? %>
     <div class="center  col-md-3  col-md-offset-1">
+      <%= link_to "Sign in with facebook" ,user_omniauth_authorize_path(:facebook) %>
       <%= render template: "devise/sessions/new" %>
     </div>
   </div>
+
   <div class="row">
     <div class="center col-md-3 col-md-offset-8 ">
+      <%= link_to "Register with facebook" ,user_omniauth_authorize_path(:facebook) %>
       <%= render template: 'devise/registrations/new.html.erb' %>
     </div>
   </div>
+  <%end%>
+
 
 
