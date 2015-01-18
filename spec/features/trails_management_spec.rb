@@ -5,7 +5,7 @@ feature 'trails management', focus:true do
   scenario 'a user can add new trail from his profile' do
     user = create(:user)
     sign_in user
-    visit profile_page
+    visit user_path(user)
 
     click_link 'Trails'
     expect(page).not_to have_content "Trip to Metsovo"

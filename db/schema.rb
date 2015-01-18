@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150111110657) do
+ActiveRecord::Schema.define(version: 20150118102829) do
+
+  create_table "trails", force: :cascade do |t|
+    t.string   "start"
+    t.string   "destination"
+    t.string   "travel_by"
+    t.integer  "rating"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
