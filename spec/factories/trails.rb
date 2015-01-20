@@ -1,9 +1,10 @@
 FactoryGirl.define do
   factory :trail do
-    start "MyString"
-destination "MyString"
-travel_by ""
-rating 1
+    start "Patra"
+  destination "Ioannina"
+  travel_by "Car"
+  rating 4
+  name "Ioannina to Patra"
   end
 
 end

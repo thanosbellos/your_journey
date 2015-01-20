@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150118102829) do
+ActiveRecord::Schema.define(version: 20150120111239) do
 
   create_table "trails", force: :cascade do |t|
     t.string   "start"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20150118102829) do
     t.integer  "rating"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.string   "name"
   end
 
   create_table "users", force: :cascade do |t|
