@@ -1,15 +1,14 @@
 require 'rails_helper'
 
-feature 'trails management', focus:truegst do
+feature 'trails management', focus:true do
 
   scenario 'a user can add new trail from his profile' do
     user = create(:user)
     sign_in user
     visit user_path(user)
 
-    click_link 'Trails'
+    click_link 'Add Trail'
     expect(page).not_to have_content "Trip to Metsovo"
-    click_link 'Search for a trail nearby'
     fill_in "Driving distance" , with:"30"
     fill_in "Length" , with:"2"
     fill_in "Start point" , with:"Ioannina"
