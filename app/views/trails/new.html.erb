@@ -8,8 +8,15 @@
     <%= f.input :end_point %>
     <%= f.input :length %>
     <%= f.input :duration %>
-    <%= f.input :travel_by %>
-    <%= f.input :rating %>
+    <%= f.input :travel_by , collection:['Car' , 'Bike' , 'On Feet'],:selected =>'Car' %>
+    <%= f.input :rating , collection: 1..5 , as: :radio_buttons , :item_wrapper_class=>'inline', prompt: "Rate your trail" %>
+    <%= f.input :difficulty,
+                :collection => [[1 , 'Easy'] , [2, 'Moderate'], [3,'Extreme']],
+                :label_method=>:last ,
+                :value_method=>:first ,
+                :as=> :radio_buttons,
+                :item_wrapper_class=>'inline' ,
+                :checked => 1 %>
     <%= f.button :submit , 'Create route'%>
 
   <% end %>
