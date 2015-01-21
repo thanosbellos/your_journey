@@ -1,10 +1,12 @@
 FactoryGirl.define do
   factory :trail do
-    start "Patra"
-  destination "Ioannina"
-  travel_by "Car"
-  rating 4
-  name "Ioannina to Patra"
+    name "Ioannina to Patra"
+    start_point "Ioannina"
+    end_point "Patra"
+    length 1.5
+    duration 1.5
+    rating 1
+    travel_by "Car"
   end
 
 end

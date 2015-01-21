@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
 
 
-  resources :trails
-
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
   resources :users , only: [:show]
   # The priority is based upon order of creation: first created -> highest priority.
