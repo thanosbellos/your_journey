@@ -9,11 +9,11 @@ feature 'trails management', focus:true do
 
     click_link 'Add Trail'
     expect(page).not_to have_content "Trip to Metsovo"
-    fill_in "Driving distance" , with:"30"
-    fill_in "Length" , with:"2"
+    fill_in "Length" , with:"30"
+    fill_in "Duration" , with:"2.5"
     fill_in "Start point" , with:"Ioannina"
-    fill_in "End poing " , with:"Metsovo"
-    fill_in "Travel on" , with:"Car"
+    fill_in "End point" , with:"Metsovo"
+    fill_in "Travel by" , with:"Car"
     click_button "Create route"
 
     expect(current_path).to eq user_trails_path

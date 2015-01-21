@@ -1,0 +1,16 @@
+<%= provide(:title , "Add Trail")%>
+<div>
+  <h2>Add a new trail </h2>
+  <h3> Trail Info </h3>
+  <%= simple_form_for @trail do |f| %>
+    <%= f.input :name %>
+    <%= f.input :start_point %>
+    <%= f.input :end_point %>
+    <%= f.input :length %>
+    <%= f.input :duration %>
+    <%= f.input :travel_by %>
+    <%= f.input :rating %>
+    <%= f.button :submit , 'Create route'%>
+
+  <% end %>
+</div>
