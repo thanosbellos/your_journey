@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'trails management', focus:true do
+feature 'trails management', focus:truegst do
 
   scenario 'a user can add new trail from his profile' do
     user = create(:user)
