@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150121172142) do
+ActiveRecord::Schema.define(version: 20150122101439) do
 
   create_table "trails", force: :cascade do |t|
     t.string   "name"
@@ -25,6 +25,14 @@ ActiveRecord::Schema.define(version: 20150121172142) do
     t.datetime "updated_at",  null: false
     t.integer  "difficulty"
   end
+
+  create_table "trails_users", id: false, force: :cascade do |t|
+    t.integer "trail_id", null: false
+    t.integer "user_id",  null: false
+  end
+
+  add_index "trails_users", ["trail_id", "user_id"], name: "index_trails_users_on_trail_id_and_user_id"
+  add_index "trails_users", ["user_id", "trail_id"], name: "index_trails_users_on_user_id_and_trail_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
