@@ -3,21 +3,27 @@ class TrailsController < ApplicationController
 
   end
 
+  def show
+    p params
+    @trail = Trail.find(params[:id])
+  end
+
   def new
-    @trail = Trail.new
+    @user = current_user
+    @trail = @user.trails.new
   end
 
   def create
-    @trail = Trail.new(trail_params)
-    p @trail
+    @trail = current_user.trails.build(trail_params)
+    @user = current_user
     if @trail.save
-      render 'show'
+      @trail.users << @user
+      redirect_to [@user , @trail]
+      flash[:notice] = "Successfully created a new route."
     else
-      p @trail.errors.full_messages
       render 'new'
     end
   end
-
 
   private
     def trail_params

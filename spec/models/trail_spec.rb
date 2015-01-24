@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Trail, :type => :model, focus: false do
+RSpec.describe Trail, :type => :model, focus: true do
 
   it "is invalid without a name" do
     trail = build(:trail , name:nil)

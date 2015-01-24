@@ -9,14 +9,16 @@ feature 'trails management', focus:true do
 
     click_link 'Add Trail'
     expect(page).not_to have_content "Trip to Metsovo"
+    fill_in "Name" , with: "Trip to Metsovo"
     fill_in "Length" , with:"30"
     fill_in "Duration" , with:"2.5"
     fill_in "Start point" , with:"Ioannina"
     fill_in "End point" , with:"Metsovo"
-    fill_in "Travel by" , with:"Car"
+    select 'Car' , from: "trail_travel_by"
+    choose 'trail_rating_1'
     click_button "Create route"
 
-    expect(current_path).to eq user_trails_path
+
     expect(page).to have_content "Successfully created a new route."
     expect(page).to have_content "Trip to Metsovo"
 
