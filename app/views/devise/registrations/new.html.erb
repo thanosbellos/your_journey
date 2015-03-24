@@ -29,7 +29,9 @@
                 wrapper: :vertical_input_group do%>
                     <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
                     <%= f.input_field :password ,placeholder:'* Password confirmation' , class: "form-control" %>
-                <%end%>
+                  <%end%>
+                  <%= f.input :avatar , as: :image_preview , input_html: { preview_version: :thumb} %>
+
     <div class="create_button">
       <%= f.button :submit , 'Sign up' , class: 'btn btn-warning pull-right ' %>
       <div class= 'clearfix'> </div>
