@@ -1,7 +1,7 @@
 <%= provide(:title, current_user.name) %>
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 img-circle">
-    <%= image_tag current_user.avatar.url , :class=> "img-circle" %>
+    <%= image_tag current_user.avatar.rounded.url , :class=> "img-circle" %>
   </div>
   <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
    <h2><%= current_user.name %> </h2>
