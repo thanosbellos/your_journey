@@ -8,7 +8,8 @@
     <%= f.input :avatar, as: :image_preview, input_html: {:class => "img-circle"} %>
 
     <%= f.input :email, required: true, autofocus: true %>
-
+    <%= f.input :name , hint: "leave it blank if you don't want to change it" , required: false %>
+    <%= f.association :activities,  as: :check_boxes %>
     <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
       <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
     <% end %>

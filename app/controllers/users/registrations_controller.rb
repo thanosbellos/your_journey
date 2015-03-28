@@ -61,11 +61,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
 #
    def update_resource(resource , params)
     unless current_user.provider.blank?
-      puts "testing point"
       params.delete("current_password")
       resource.update_without_password(params)
     else
-      puts "second testing point"
       resource.update_with_password(params)
     end
    end
