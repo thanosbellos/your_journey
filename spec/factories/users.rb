@@ -8,6 +8,9 @@ FactoryGirl.define do
       password nil
     end
 
+    factory :social_media_user do
+      provider "facebook"
+    end
    end
 
 end
