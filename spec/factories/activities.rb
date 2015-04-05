@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :activity do
-    name "MyString"
+    name "Hiking"
   end
 
 end

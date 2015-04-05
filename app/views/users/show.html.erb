@@ -4,7 +4,14 @@
     <%= image_tag current_user.avatar.rounded.url , :class=> "img-circle" %>
   </div>
   <div class="col-xs-12 col-sm-12 col-md- col-lg-6">
-   <h2><%= current_user.name %> </h2>
+    <h2><%= current_user.name %> </h2>
+    <h4> Preffered activities </h4>
+    <p>
+    <% current_user.activities.each do |activity| %>
+      <%= activity.name %>
+    <% end %>
+    </p>
+
   </div>
 
   <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
