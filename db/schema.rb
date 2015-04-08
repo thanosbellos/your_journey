@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150328153959) do
+ActiveRecord::Schema.define(version: 20150408104438) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "name"
@@ -68,6 +68,19 @@ ActiveRecord::Schema.define(version: 20150328153959) do
   end
 
   add_index "rating_caches", ["cacheable_id", "cacheable_type"], name: "index_rating_caches_on_cacheable_id_and_cacheable_type"
+
+  create_table "tracks", force: :cascade do |t|
+    t.integer  "trail_id"
+    t.string   "name"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.string   "gpx_file_name"
+    t.string   "gpx_content_type"
+    t.integer  "gpx_file_size"
+    t.datetime "gpx_updated_at"
+  end
+
+  add_index "tracks", ["trail_id"], name: "index_tracks_on_trail_id"
 
   create_table "trails", force: :cascade do |t|
     t.string   "name"
