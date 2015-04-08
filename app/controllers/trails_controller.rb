@@ -17,10 +17,12 @@ class TrailsController < ApplicationController
     @trail = current_user.trails.new(trail_params)
     @user = current_user
     if @trail.save
+
       @trail.users << @user
       redirect_to [@user , @trail]
       flash[:notice] = "Successfully created a new route."
     else
+      p @trail.errors
       render 'new'
     end
   end
