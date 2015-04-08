@@ -4,17 +4,17 @@ class TrailsController < ApplicationController
   end
 
   def show
-    p params
     @trail = Trail.find(params[:id])
   end
 
   def new
     @user = current_user
     @trail = @user.trails.new
+    @trail.track = Track.new
   end
 
   def create
-    @trail = current_user.trails.build(trail_params)
+    @trail = current_user.trails.new(trail_params)
     @user = current_user
     if @trail.save
       @trail.users << @user
@@ -27,6 +27,6 @@ class TrailsController < ApplicationController
 
   private
     def trail_params
-      params.require(:trail).permit(:name , :start_point , :end_point , :length , :duration , :travel_by , :difficulty , :rating )
+      params.require(:trail).permit(:name , :start_point , :end_point , :length , :duration , :travel_by , :difficulty , :rating , track_attributes: [:gpx])
     end
 end

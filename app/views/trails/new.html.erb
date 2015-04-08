@@ -2,7 +2,7 @@
 <div>
   <h2>Add a new trail </h2>
   <h3> Trail Info </h3>
-  <%= simple_form_for [@user , @trail] do |f| %>
+  <%= simple_form_for [@user , @trail] , :html => {:multipart => true} do |f| %>
     <%= f.input :name %>
     <%= f.input :start_point %>
     <%= f.input :end_point %>
@@ -17,6 +17,10 @@
                 :as=> :radio_buttons,
                 :item_wrapper_class=>'inline' ,
                 :checked => 1 %>
+
+    <%=f.simple_fields_for :track do |t| %>
+      <%= t.input :gpx %>
+    <% end %>
     <%= f.button :submit , 'Create route'%>
 
   <% end %>
