@@ -1,7 +1,7 @@
 class Track < ActiveRecord::Base
   belongs_to :trail
   has_attached_file :gpx
-  validates_attachment_content_type :gpx, :content_type => [/application\/gpx\+xml/]
+  validates_attachment_content_type :gpx, :content_type => [/application\/gpx\+xml/,  /application\/xml/]
 
 before_post_process on: :create do
   puts gpx_content_type
