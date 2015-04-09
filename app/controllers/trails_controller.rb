@@ -5,6 +5,7 @@ class TrailsController < ApplicationController
 
   def show
     @trail = Trail.find(params[:id])
+    @track = @trail.track
   end
 
   def new
@@ -22,7 +23,6 @@ class TrailsController < ApplicationController
       redirect_to [@user , @trail]
       flash[:notice] = "Successfully created a new route."
     else
-      p @trail.errors
       render 'new'
     end
   end
