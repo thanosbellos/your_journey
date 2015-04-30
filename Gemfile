@@ -70,3 +70,6 @@ gem 'carrierwave' , '~> 0.10.0'
 gem 'mini_magick' , '~> 4.2.0'
 gem 'simple_form_fancy_uploads', '~> 0.2.0'
 gem 'paperclip', '~> 4.2.1'
+
+gem 'activerecord-postgis-adapter', '~> 3.0.0.beta4'
+gem 'rgeo-geojson'

@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409160601) do
+ActiveRecord::Schema.define(version: 20150429184806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "activities", force: :cascade do |t|
     t.string   "name"
@@ -30,40 +31,12 @@ ActiveRecord::Schema.define(version: 20150409160601) do
   add_index "activities_users", ["activity_id", "user_id"], name: "index_activities_users_on_activity_id_and_user_id", using: :btree
   add_index "activities_users", ["user_id", "activity_id"], name: "index_activities_users_on_user_id_and_activity_id", using: :btree
 
-  create_table "points", force: :cascade do |t|
-    t.integer  "tracksegment_id"
-    t.string   "name"
-    t.float    "latitude"
-    t.float    "longitude"
-    t.float    "elevation"
-    t.string   "description"
-    t.datetime "point_created_at"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-  end
-
-  add_index "points", ["tracksegment_id"], name: "index_points_on_tracksegment_id", using: :btree
-
   create_table "tracks", force: :cascade do |t|
-    t.integer  "trail_id"
-    t.string   "name"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.string   "gpx_file_name"
-    t.string   "gpx_content_type"
-    t.integer  "gpx_file_size"
-    t.datetime "gpx_updated_at"
+    t.string    "name"
+    t.geometry  "path",                limit: {:srid=>4326, :type=>"multi_line_string"}
+    t.geography "start_point_lon_lat", limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.geography "end_point_lon_lat",   limit: {:srid=>4326, :type=>"point", :geographic=>true}
   end
-
-  add_index "tracks", ["trail_id"], name: "index_tracks_on_trail_id", using: :btree
-
-  create_table "tracksegments", force: :cascade do |t|
-    t.integer  "track_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "tracksegments", ["track_id"], name: "index_tracksegments_on_track_id", using: :btree
 
   create_table "trails", force: :cascade do |t|
     t.string   "name"
@@ -108,6 +81,4 @@ ActiveRecord::Schema.define(version: 20150409160601) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
-  add_foreign_key "points", "tracksegments"
-  add_foreign_key "tracksegments", "tracks"
 end

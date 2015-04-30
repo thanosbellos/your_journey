@@ -12,6 +12,8 @@ class Track < ActiveRecord::Base
         self.gpx_content_type = mime_type.first.to_s if mime_type.first
      end
   end
+  self.rgeo_factory_generator = RGeo::Geos.factory_generator
+  set_rgeo_factory_for_column(:lonlat, RGeo::Geographic.spherical_factory(:srid => 4326))
 
   def parse_file
     tempfile = gpx.queued_for_write[:original]
