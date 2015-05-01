@@ -9,3 +9,4 @@ class AddAttachmentGpxToTracks < ActiveRecord::Migration
     remove_attachment :tracks, :gpx
   end
 end
+

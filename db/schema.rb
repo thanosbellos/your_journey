@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150429184806) do
+ActiveRecord::Schema.define(version: 20150501010309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,10 @@ ActiveRecord::Schema.define(version: 20150429184806) do
     t.geometry  "path",                limit: {:srid=>4326, :type=>"multi_line_string"}
     t.geography "start_point_lon_lat", limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.geography "end_point_lon_lat",   limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.string    "gpx_file_name"
+    t.string    "gpx_content_type"
+    t.integer   "gpx_file_size"
+    t.datetime  "gpx_updated_at"
   end
 
   create_table "trails", force: :cascade do |t|
