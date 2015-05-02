@@ -15,16 +15,13 @@
       </tr>
     </thead>
     <tbody>
+      <% if @track%>
       <% @track.points.each do |point| %>
         <tr>
-          <td><%= point.id %></td>
           <td><%= point.name %></td>
-          <td><%= point.latitude %></td>
-          <td><%= point.longitude %></td>
-          <td><%= point.elevation %></td>
-          <td><%= point.description %></td>
-          <td><%= point.point_created_at %></td>
+          <td><%= point.lonlatheight %></td>
         </tr>
       <% end %>
+    <%end%>
     </tbody>
   </table>

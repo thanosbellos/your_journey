@@ -4,7 +4,8 @@ class Track < ActiveRecord::Base
   validates_attachment_content_type :gpx, :content_type => [/application\/gpx\+xml/,  /application\/xml/]
   has_many :tracksegments , :dependent => :destroy
   has_many :points , :through => :tracksegments
-  before_save :parse_file
+  before_create :parse_file
+  after_create :create_path_from_segments
 
   before_post_process on: :create do
      if gpx_content_type == 'application/octet-stream'
@@ -13,7 +14,7 @@ class Track < ActiveRecord::Base
      end
   end
   self.rgeo_factory_generator = RGeo::Geos.factory_generator
-  set_rgeo_factory_for_column(:lonlat, RGeo::Geographic.spherical_factory(:srid => 4326))
+  set_rgeo_factory_for_column(:path, RGeo::Geographic.spherical_factory(:srid => 4326))
 
   def parse_file
     tempfile = gpx.queued_for_write[:original]
@@ -36,30 +37,51 @@ class Track < ActiveRecord::Base
   end
 
   def parse_track_segments(node)
+
     if node.node_name.eql? 'trkseg'
+
       tmp_segment = Tracksegment.new
       node.elements.each do |node|
         parse_points(node,tmp_segment)
       end
+     # tmp_segment.tracksegment_path = segment_factory.line_string(tmp_segment.points.pluck(:lonlatheight))
+    #  line_string = segment_factory.line_string(points)
       self.tracksegments << tmp_segment
+  #    p tmp_segment.points
+
     end
   end
 
   def parse_points(node,tmp_segment)
 
     if node.node_name.eql? 'trkpt'
+      lonlatheight_factory = Point.rgeo_factory_for_column(:lonlatheight)
       tmp_point = Point.new
-      tmp_point.latitude = node.attr("lat")
-      tmp_point.longitude = node.attr("lon")
+
+      latitude = node.attr("lat").to_f
+      longitude = node.attr("lon").to_f
+
+      elevation = 0
       node.elements.each do |node|
         tmp_point.name = node.text.to_s if node.name.eql? 'name'
-        tmp_point.elevation = node.text.to_s if node.name.eql? 'ele'
-        tmp_point.description = node.text.to_s if node.name.eql? 'desc'
-        tmp_point.point_created_at = node.text.to_s if node.name.eql? 'time'
+        elevation = node.text.to_s.to_f if node.name.eql? 'ele'
+       # tmp_point.description = node.text.to_s if node.name.eql? 'desc'
+       # tmp_point.point_created_at = node.text.to_s if node.name.eql? 'time'
       end
+
+      tmp_point.lonlatheight = lonlatheight_factory.point(longitude , latitude , elevation)
       tmp_segment.points << tmp_point
     end
-
   end
+
+  def create_path_from_segments
+    self.tracksegments.each do |tracksegment|
+      tracksegment.create_path_from_points
+    end
+    track_factory = Track.rgeo_factory_for_column(:path)
+    self.path = track_factory.multi_line_string(self.tracksegments.pluck(:tracksegment_path))
+    self.save
+  end
+
 
 end
