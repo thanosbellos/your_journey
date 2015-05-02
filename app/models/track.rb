@@ -4,7 +4,8 @@ class Track < ActiveRecord::Base
   validates_attachment_content_type :gpx, :content_type => [/application\/gpx\+xml/,  /application\/xml/]
   has_many :tracksegments , :dependent => :destroy
   has_many :points , :through => :tracksegments
-  before_save :parse_file
+  before_create :parse_file
+  after_create :create_path_from_segments
 
   before_post_process on: :create do
      if gpx_content_type == 'application/octet-stream'
@@ -28,17 +29,14 @@ class Track < ActiveRecord::Base
   end
 
   def parse_tracks(node)
-    track_factory = Track.rgeo_factory_for_column(:path)
     if node.node_name.eql? 'trk'
       node.elements.each do |node|
         parse_track_segments(node)
       end
     end
-    self.path = track_factory.multi_line_string(self.tracksegments.pluck(:tracksegment_path))
   end
 
   def parse_track_segments(node)
-    segment_factory = Tracksegment.rgeo_factory_for_column(:tracksegment_path)
 
     if node.node_name.eql? 'trkseg'
 
@@ -46,8 +44,10 @@ class Track < ActiveRecord::Base
       node.elements.each do |node|
         parse_points(node,tmp_segment)
       end
-      tmp_segment.tracksegment_path = segment_factory.line_string(tmp_segment.points.pluck(:lonlatheight))
+     # tmp_segment.tracksegment_path = segment_factory.line_string(tmp_segment.points.pluck(:lonlatheight))
+    #  line_string = segment_factory.line_string(points)
       self.tracksegments << tmp_segment
+  #    p tmp_segment.points
 
     end
   end
@@ -69,13 +69,19 @@ class Track < ActiveRecord::Base
        # tmp_point.point_created_at = node.text.to_s if node.name.eql? 'time'
       end
 
-      p [latitude , longitude, elevation]
       tmp_point.lonlatheight = lonlatheight_factory.point(longitude , latitude , elevation)
       tmp_segment.points << tmp_point
     end
-
   end
 
+  def create_path_from_segments
+    self.tracksegments.each do |tracksegment|
+      tracksegment.create_path_from_points
+    end
+    track_factory = Track.rgeo_factory_for_column(:path)
+    self.path = track_factory.multi_line_string(self.tracksegments.pluck(:tracksegment_path))
+    self.save
+  end
 
 
 end

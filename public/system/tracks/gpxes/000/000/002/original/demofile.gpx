@@ -57,13 +57,12 @@
 <time>2009-04-06T20:21:51.96</time>
 <name>6</name>
 </trkpt>
-<trkpt lat="59.797443" lon="5.257075">
-<ele>109.5</ele>
-<speed>9.3</speed>
-<course>116.4</course>
-<desc>Speed 9.3 km/h Distance 16.60 km</desc>
-<time>2009-04-06T21:07:12.17</time>
-<name>2611</name>
+<trkpt lat="59.797465" lon="5.256687">
+<ele>112.0</ele>
+<speed>1.4</speed>
+<course>167.4</course>
+<desc>Speed 1.4 km/h Distance 16.56 km</desc>
+<time>2009-04-06T21:06:33.17</time>
 </trkpt>
 </trkseg>
 </trk>
