@@ -1,18 +1,11 @@
 class Track < ActiveRecord::Base
   belongs_to :trail
-  has_attached_file :gpx
-  validates_attachment_content_type :gpx, :content_type => [/application\/gpx\+xml/,  /application\/xml/]
   has_many :tracksegments , :dependent => :destroy
   has_many :points , :through => :tracksegments
+  mount_uploader :trackgeometry , TrackGeometryUploader
   before_create :parse_file
   after_create :create_path_from_segments
 
-  before_post_process on: :create do
-     if gpx_content_type == 'application/octet-stream'
-        mime_type = MIME::Types.type_for(gpx_file_name)
-        self.gpx_content_type = mime_type.first.to_s if mime_type.first
-     end
-  end
   self.rgeo_factory_generator = RGeo::Geos.factory_generator
   set_rgeo_factory_for_column(:path, RGeo::Geographic.spherical_factory(:srid => 4326))
 
