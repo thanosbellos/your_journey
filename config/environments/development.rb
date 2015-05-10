@@ -38,7 +38,7 @@ Rails.application.configure do
 
 
   config.after_initialize do
-    ActiveRecord::Base.logger.level = 1
+    ActiveRecord::Base.logger.level = 0
   end
   config.action_mailer.default_url_options = { host: 'localhost' , port:'3000'}
   # Raises error for missing translations

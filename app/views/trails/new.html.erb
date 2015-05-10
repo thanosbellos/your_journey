@@ -19,7 +19,7 @@
                 :checked => 1 %>
 
     <%=f.simple_fields_for :track do |t| %>
-      <%= t.input :gpx %>
+      <%= t.input :trackgeometry %>
     <% end %>
     <%= f.button :submit , 'Create route'%>
 

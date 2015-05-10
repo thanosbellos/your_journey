@@ -3,68 +3,23 @@ class Track < ActiveRecord::Base
   has_many :tracksegments , :dependent => :destroy
   has_many :points , :through => :tracksegments
   mount_uploader :trackgeometry , TrackGeometryUploader
-  before_create :parse_file
-  after_create :create_path_from_segments
 
   self.rgeo_factory_generator = RGeo::Geos.factory_generator
   set_rgeo_factory_for_column(:path, RGeo::Geographic.spherical_factory(:srid => 4326))
+  #before_save  :process_geometry_files
 
-  def parse_file
-    tempfile = gpx.queued_for_write[:original]
-    doc = Nokogiri::XML(tempfile)
-    parse_xml(doc)
-  end
-
-  def parse_xml(doc)
-    doc.root.elements.each do |node|
-      parse_tracks(node)
+  private
+  def process_geometry_files
+    if trackgeometry.present? && trackgeometry_changed?
+      parse_points_shp_file
+      parse_tracks_shp_file
     end
   end
 
-  def parse_tracks(node)
-    if node.node_name.eql? 'trk'
-      node.elements.each do |node|
-        parse_track_segments(node)
-      end
-    end
-  end
+  def parse_points_shp_file
 
-  def parse_track_segments(node)
+    
 
-    if node.node_name.eql? 'trkseg'
-
-      tmp_segment = Tracksegment.new
-      node.elements.each do |node|
-        parse_points(node,tmp_segment)
-      end
-     # tmp_segment.tracksegment_path = segment_factory.line_string(tmp_segment.points.pluck(:lonlatheight))
-    #  line_string = segment_factory.line_string(points)
-      self.tracksegments << tmp_segment
-  #    p tmp_segment.points
-
-    end
-  end
-
-  def parse_points(node,tmp_segment)
-
-    if node.node_name.eql? 'trkpt'
-      lonlatheight_factory = Point.rgeo_factory_for_column(:lonlatheight)
-      tmp_point = Point.new
-
-      latitude = node.attr("lat").to_f
-      longitude = node.attr("lon").to_f
-
-      elevation = 0
-      node.elements.each do |node|
-        tmp_point.name = node.text.to_s if node.name.eql? 'name'
-        elevation = node.text.to_s.to_f if node.name.eql? 'ele'
-       # tmp_point.description = node.text.to_s if node.name.eql? 'desc'
-       # tmp_point.point_created_at = node.text.to_s if node.name.eql? 'time'
-      end
-
-      tmp_point.lonlatheight = lonlatheight_factory.point(longitude , latitude , elevation)
-      tmp_segment.points << tmp_point
-    end
   end
 
   def create_path_from_segments

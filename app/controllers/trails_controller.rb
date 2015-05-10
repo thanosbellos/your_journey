@@ -15,6 +15,8 @@ class TrailsController < ApplicationController
   end
 
   def create
+    p trail_params
+    p current_user
     @trail = current_user.trails.new(trail_params)
     @user = current_user
     if @trail.save
@@ -29,6 +31,6 @@ class TrailsController < ApplicationController
 
   private
     def trail_params
-      params.require(:trail).permit(:name , :start_point , :end_point , :length , :duration , :travel_by , :difficulty , :rating , track_attributes: [:gpx])
+      params.require(:trail).permit(:name , :start_point , :end_point , :length , :duration , :travel_by , :difficulty , :rating , track_attributes: [:trackgeometry])
     end
 end
