@@ -25,10 +25,18 @@ class TrackGeometryUploader < CarrierWave::Uploader::Base
 
 
   version :shp_tracks do
+    def full_filename(for_file = model.source.file)
+      super.chomp(File.extname(super)) + '.shp'
+    end
   end
 
   version :shp_track_points do
+    def full_filename(for_file = model.source.file)
+      super.chomp(File.extname(super)) + '.shp'
+    end
+
   end
+
 
 
 
@@ -39,39 +47,61 @@ class TrackGeometryUploader < CarrierWave::Uploader::Base
   # end
 
   def convert_to_shp(uploaded_file)
-      puts "Breakpoint 1****"
-      puts self.file.file.match("shp_track")
 
-      if self.version_name # && self.file.file.match(/*.gpx$/)
-        puts "Brekpoint 2 ****"
-       src = self.file.file
+    current_format = File.extname(self.file.file)
+    if self.version_name
 
-       target_layer = self.version_name.to_s.partition("_").last
 
-       directory = File.dirname(self.file.file)
-       current_format = File.extname(src)
-       basename = File.basename(src , current_format)
+      #source_format find content type and set source_format to gpx or json
+      target_layer = self.version_name.to_s.partition("_").last
+      src = self.file.file
+      directory = File.dirname(self.file.file)
 
+      tmpfile = File.join(directory, 'tmpfile.gpx')
+      sf = self.file.copy_to(tmpfile)
+      puts sf.file
+      puts "Breakpoint"
+      p tmpfile
+
+
+      basename = File.basename(src , current_format)
       #unless basename.match(target_layer)
-      dst = "#{directory}/#{basename}.shp"
-       parameters = []
-       parameters << "--config"
-       parameters << "GPX_SHORT_NAMES YES"
-       parameters << "-fieldTypeToString Datetime"
-       parameters << "-overwrite"
-       parameters << "-f"
-       parameters << '"ESRI Shapefile"'
-       parameters << "#{dst}"
-       parameters << "#{src}"
-       parameters << "#{target_layer}"
-       parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
-      `ogr2ogr #{parameters}`
+      tmpdir = Dir.mktmpdir("out")
 
+      dst = "#{tmpdir}/#{basename}.shp"
+      puts dst
+      parameters = []
+      parameters << "--config"
+      parameters << "GPX_SHORT_NAMES YES"
+      parameters << "-fieldTypeToString Datetime"
+      parameters << "-overwrite"
+      parameters << "-f"
+      parameters << '"ESRI Shapefile"'
+      parameters << "#{dst}"
+      parameters << "#{tmpfile}"
+      parameters << "#{target_layer}"
+      parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
+      puts      `ogr2ogr #{parameters}`
 
+      Dir.glob("#{tmpdir}/shp*") do |filename|
+        puts "BREAkopoint"
+        puts filename
+        if filename.match("^*.shp$")
 
+          real_shp_file = File.open(filename)
+          File.write(src , File.read(real_shp_file))
+          real_shp_file.close
+          File.unlink(real_shp_file)
+        else
+            puts "Breakpoint asdlfalsf"
+          FileUtils.cp(filename , directory)
+        end
       end
+      File.unlink(tmpfile)
+      FileUtils.rmdir("#{directory}/out")
 
 
+    end
   end
 
 end
