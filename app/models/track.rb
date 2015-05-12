@@ -11,13 +11,13 @@ class Track < ActiveRecord::Base
     config.register(RGeo::Geographic.spherical_factory(srid: 4326) , geo_type: "line_string")
     config.register(RGeo::Geographic.spherical_factory(srid: 4326) , geot_type: "multiline_string")
   end
-  #before_save  :process_geometry_files
+  after_save  :process_geometry_files
 
   private
   def process_geometry_files
     if trackgeometry.present? && trackgeometry_changed?
       parse_points_shp_file
-      parse_tracks_shp_file
+      #parse_tracks_shp_file
     end
 
   end
@@ -27,15 +27,16 @@ class Track < ActiveRecord::Base
     #for_layer is the file path to points or tracks etc
     extension = File.extname(layer_file)
     basename =  File.basename(layer_file , extension)
-    prj_file = basename + ".prj"
+    prj_file ="#{File.dirname(layer_file)}/#{basename}.prj"
     srid = "4326"
     srid_text =  "to_be_filled"
-
+    puts prj_file
     if File.exist?(prj_file)
       File.open(prj_file) do |file|
         srid_text = file.read
       end
-      file.rewind
+    else
+      puts "file not found"
     end
 
     query_url = "http://prj2epsg.org/search.json?terms="+srid_text
@@ -44,20 +45,27 @@ class Track < ActiveRecord::Base
     data = JSON.load(r)
 
     srid = data["codes"][0]["code"] if r.status[1] == "OK"
+    p srid
+  end
 
-
-
+  def parse_track_segments
   end
 
   def parse_points_shp_file
 
 
-    f = trackgeometry.shp_track_points.path
-
+  f = trackgeometry.shp_track_points.path
+  trksgid = nil
+  trksegment = nil
    srid = find_srid_from_prj(f)
    factory = RGeo::Geographic.spherical_factory(:srid =>4326)
-   RGeo::Shapefile::Reader(f,factory) do |file|
+   RGeo::Shapefile::Reader.open(f,:factory => factory) do |file|
       file.each do |record|
+      tmp_point =  Point.new
+
+      if record.attributes["trksegid"] != trksgid
+
+
 
       end
 
