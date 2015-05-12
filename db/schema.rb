@@ -44,7 +44,6 @@ ActiveRecord::Schema.define(version: 20150509141406) do
   create_table "tracks", force: :cascade do |t|
     t.string    "name"
     t.geometry  "path",                     limit: {:srid=>4326, :type=>"multi_line_string"}
-    t.geometry  "merged_path",              limit: {:srid=>4326, :type=>"line_string"}
     t.geography "start_point_lon_lat_elev", limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.geography "end_point_lon_lat_elev",   limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.integer   "trail_id"

@@ -40,7 +40,7 @@ group :development, :test do
 
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
-
+  gem 'pry-rails', '~> 0.3.4'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
@@ -71,5 +71,6 @@ gem 'mini_magick' , '~> 4.2.0'
 gem 'simple_form_fancy_uploads', '~> 0.2.0'
 gem 'paperclip', '~> 4.2.1'
 
-gem 'activerecord-postgis-adapter', '~> 3.0.0.beta4'
+gem 'activerecord-postgis-adapter', '~> 3.0.0.beta5'
 gem 'rgeo-geojson'
+gem 'rgeo-shapefile'
