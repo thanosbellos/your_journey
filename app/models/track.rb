@@ -11,7 +11,7 @@ class Track < ActiveRecord::Base
     config.register(RGeo::Geographic.spherical_factory(srid: 4326) , geo_type: "line_string")
     config.register(RGeo::Geographic.spherical_factory(srid: 4326) , geot_type: "multiline_string")
   end
-  after_create :store_trackgeometry! ,:process_geometry_files
+  after_create :store_trackgeometry! ,:process_geometry_files , :create_path_from_segments
   #before_save :check_trackgeometry
 
 
@@ -79,8 +79,8 @@ class Track < ActiveRecord::Base
     self.tracksegments.each do |tracksegment|
       tracksegment.create_path_from_points
     end
-    track_factory = Track.rgeo_factory_for_column(:path)
-    self.path = track_factory.multi_line_string(self.tracksegments.pluck(:tracksegment_path))
+    track_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: "multiline_string")
+    self.path = track_factory.multi_line_string(self.tracksegments.order(:id , :asc).pluck(:tracksegment_path))
     self.save
   end
 
