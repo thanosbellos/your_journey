@@ -1,27 +1,10 @@
 <%= provide(:title ,  @trail.name) %>
 <h2><%= @trail.name%></h2>
-
-
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Point No.</th>
-        <th>Latitude</th>
-        <th>Longitude</th>
-        <th>Elevation</th>
-        <th>Description</th>
-        <th>Time</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if @track%>
-      <% @track.points.each do |point| %>
-        <tr>
-          <td><%= point.name %></td>
-          <td><%= point.lonlatheight %></td>
-        </tr>
-      <% end %>
-    <%end%>
-    </tbody>
-  </table>
+<%= javascript_tag do %>
+  window.track_id = '<%= @trail.track.id %>';
+<% end %>
+<div class="row">
+  <div class= "col-md-8">
+    <div id='map'></div>
+  </div>
+</div>
