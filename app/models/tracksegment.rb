@@ -11,7 +11,7 @@ class Tracksegment < ActiveRecord::Base
   def create_path_from_points
 
     segment_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: "line_string")
-    line_string= segment_factory.line_string(self.points.order(:id , 'asc').pluck(:lonlatheight))
+    line_string= segment_factory.line_string(self.points.order(id: :asc).pluck(:lonlatheight))
     self.update(tracksegment_path: line_string)
   end
 end

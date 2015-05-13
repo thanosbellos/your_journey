@@ -6,6 +6,25 @@ class TrailsController < ApplicationController
   def show
     @trail = Trail.find(params[:id])
     @track = @trail.track
+    @geojson = Array.new
+    @geojson << {
+      type: "FeatureCollection",
+      features: [
+        {
+            type: "Feature",
+            geometry: RGeo::GeoJSON.encode(@track.merged_path),
+            properties:{
+            stroke: "#fc4353",
+            :"stroke-width" => "5"
+            }
+      }
+      ]
+    }
+
+    respond_to do |format|
+      #format.html
+      format.json { render json: @geojson}
+    end
   end
 
   def new
