@@ -11,13 +11,17 @@ class Track < ActiveRecord::Base
     config.register(RGeo::Geographic.spherical_factory(srid: 4326) , geo_type: "line_string")
     config.register(RGeo::Geographic.spherical_factory(srid: 4326) , geot_type: "multiline_string")
   end
-  after_save  :process_geometry_files
+  after_create :store_trackgeometry! ,:process_geometry_files
+  #before_save :check_trackgeometry
+
 
   private
+
+
   def process_geometry_files
+
     if trackgeometry.present? && trackgeometry_changed?
       parse_points_shp_file
-      #parse_tracks_shp_file
     end
 
   end
@@ -40,37 +44,35 @@ class Track < ActiveRecord::Base
     end
 
     query_url = "http://prj2epsg.org/search.json?terms="+srid_text
-    puts query_url
     r = open(query_url)
     data = JSON.load(r)
 
     srid = data["codes"][0]["code"] if r.status[1] == "OK"
-    p srid
-  end
-
-  def parse_track_segments
   end
 
   def parse_points_shp_file
 
-
-  f = trackgeometry.shp_track_points.path
-  trksgid = nil
-  trksegment = nil
-   srid = find_srid_from_prj(f)
-   factory = RGeo::Geographic.spherical_factory(:srid =>4326)
-   RGeo::Shapefile::Reader.open(f,:factory => factory) do |file|
+    f = trackgeometry.shp_track_points.path
+    old_seg_id = nil
+    tmp_segment = nil
+    srid = find_srid_from_prj(f)
+    factory = RGeo::Geographic.spherical_factory(:srid =>4326)
+    puts self.inspect
+    RGeo::Shapefile::Reader.open(f,:factory => factory) do |file|
+      num_records = file.num_records
       file.each do |record|
-      tmp_point =  Point.new
-
-      if record.attributes["trksegid"] != trksgid
-
-
-
+          tmp_point = Point.new
+          tmp_point.lonlatheight = record.geometry.as_text.insert(-2 ," #{record.attributes[:ele.to_s]}")
+          new_seg_id = record.attributes["trksegid"]
+          if(new_seg_id != old_seg_id)
+            self.tracksegments << tmp_segment if old_seg_id
+            tmp_segment = Tracksegment.new
+          end
+          tmp_segment.points << tmp_point
+          old_seg_id = new_seg_id
       end
-
     end
-
+    self.tracksegments << tmp_segment
   end
 
   def create_path_from_segments

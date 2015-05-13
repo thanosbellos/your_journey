@@ -59,9 +59,6 @@ class TrackGeometryUploader < CarrierWave::Uploader::Base
 
       tmpfile = File.join(directory, 'tmpfile.gpx')
       sf = self.file.copy_to(tmpfile)
-      puts sf.file
-      puts "Breakpoint"
-      p tmpfile
 
 
       basename = File.basename(src , current_format)
@@ -69,7 +66,6 @@ class TrackGeometryUploader < CarrierWave::Uploader::Base
       tmpdir = Dir.mktmpdir("out")
 
       dst = "#{tmpdir}/#{basename}.shp"
-      puts dst
       parameters = []
       parameters << "--config"
       parameters << "GPX_SHORT_NAMES YES"
@@ -84,8 +80,6 @@ class TrackGeometryUploader < CarrierWave::Uploader::Base
       puts      `ogr2ogr #{parameters}`
 
       Dir.glob("#{tmpdir}/shp*") do |filename|
-        puts "BREAkopoint"
-        puts filename
         if filename.match("^*.shp$")
 
           real_shp_file = File.open(filename)
@@ -93,7 +87,6 @@ class TrackGeometryUploader < CarrierWave::Uploader::Base
           real_shp_file.close
           File.unlink(real_shp_file)
         else
-            puts "Breakpoint asdlfalsf"
           FileUtils.cp(filename , directory)
         end
       end
