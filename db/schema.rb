@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150501173905) do
+ActiveRecord::Schema.define(version: 20150513164313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,16 +43,14 @@ ActiveRecord::Schema.define(version: 20150501173905) do
 
   create_table "tracks", force: :cascade do |t|
     t.string    "name"
-    t.geometry  "path",                     limit: {:srid=>4326, :type=>"multi_line_string"}
+    t.geography "path",                     limit: {:srid=>4326, :type=>"multi_line_string", :geographic=>true}
     t.geography "start_point_lon_lat_elev", limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.geography "end_point_lon_lat_elev",   limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.integer   "trail_id"
-    t.datetime  "created_at",                                                                        null: false
-    t.datetime  "updated_at",                                                                        null: false
-    t.string    "gpx_file_name"
-    t.string    "gpx_content_type"
-    t.integer   "gpx_file_size"
-    t.datetime  "gpx_updated_at"
+    t.datetime  "created_at",                                                                                    null: false
+    t.datetime  "updated_at",                                                                                    null: false
+    t.string    "trackgeometry"
+    t.geography "merged_path",              limit: {:srid=>4326, :type=>"line_string", :geographic=>true}
   end
 
   add_index "tracks", ["trail_id"], name: "index_tracks_on_trail_id", using: :btree

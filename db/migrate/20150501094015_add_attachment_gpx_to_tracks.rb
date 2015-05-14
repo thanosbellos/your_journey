@@ -1,8 +1,6 @@
 class AddAttachmentGpxToTracks < ActiveRecord::Migration
   def self.up
-    change_table :tracks do |t|
-      t.attachment :gpx
-    end
+    add_attachment :tracks , :gpx
   end
 
   def self.down
