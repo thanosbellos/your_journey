@@ -7,7 +7,7 @@ class Track < ActiveRecord::Base
   mount_uploader :trackgeometry , TrackGeometryUploader
 
   RGeo::ActiveRecord::SpatialFactoryStore.instance.tap do |config|
-    config.default = RGeo::Geos.factory_generator
+    #config.default = RGeo::Geos.factory_generator
     config.register(RGeo::Geographic.spherical_factory(srid: 4326) , geo_type: "line_string")
     config.register(RGeo::Geographic.spherical_factory(srid: 4326) , geo_type: "multiline_string")
   end
@@ -80,6 +80,7 @@ class Track < ActiveRecord::Base
       tracksegment.create_path_from_points
     end
     track_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: "multiline_string")
+    puts track_factory
     self.path = track_factory.multi_line_string(self.tracksegments.order(id: :asc).pluck(:tracksegment_path))
 
     ast_sql_statement = Arel.spatial(self.path.as_text).st_function(:ST_LineMerge).st_function(:ST_AsText).st_function(:SELECT).to_sql
