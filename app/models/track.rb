@@ -84,7 +84,10 @@ class Track < ActiveRecord::Base
     self.path = track_factory.multi_line_string(self.tracksegments.order(id: :asc).pluck(:tracksegment_path))
 
     ast_sql_statement = Arel.spatial(self.path.as_text).st_function(:ST_LineMerge).st_function(:ST_AsText).st_function(:SELECT).to_sql
-    self.merged_path = ActiveRecord::Base.connection.execute(ast_sql_statement).values.flatten.first
+    #self.merged_path = ActiveRecord::Base.connection.execute(ast_sql_statement).values.flatten.first
+
+    #self.start = merged_path.start_point
+    #self.finish = merged_path.end_point
 
     self.save
   end
