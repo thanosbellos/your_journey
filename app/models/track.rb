@@ -82,12 +82,14 @@ class Track < ActiveRecord::Base
     track_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: "multiline_string")
     puts track_factory
     self.path = track_factory.multi_line_string(self.tracksegments.order(id: :asc).pluck(:tracksegment_path))
-
+    line_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: "line_string")
     ast_sql_statement = Arel.spatial(self.path.as_text).st_function(:ST_LineMerge).st_function(:ST_AsText).st_function(:SELECT).to_sql
-    #self.merged_path = ActiveRecord::Base.connection.execute(ast_sql_statement).values.flatten.first
-
-    #self.start = merged_path.start_point
-    #self.finish = merged_path.end_point
+    new_path = ActiveRecord::Base.connection.execute(ast_sql_statement).values.flatten.first
+    self.merged_path =  new_path.match('MULTILINESTRING') ? line_factory.line_string(self.points.order(id: :asc).pluck(:lonlatheight)) : new_path
+    puts new_path
+    puts new_path.match('MULTILINESTRING')
+    self.start = merged_path.start_point
+    self.finish = merged_path.end_point
 
     self.save
   end
