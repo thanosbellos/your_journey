@@ -17,7 +17,33 @@ class TrailsController < ApplicationController
             stroke: "#fc4353",
             :"stroke-width" => "5"
             }
-      }
+      },
+
+        {
+            type: "Feature",
+            geometry: RGeo::GeoJSON.encode(@track.start),
+            properties: {      "title": "Mapbox",
+                               "description": "Must be a geocoded pos",
+                               "marker-color": "#fc4353",
+                               "marker-size": "medium",
+                               "marker-symbol": "monument"
+                        }
+
+        },
+
+        {
+          type: "Feature",
+          geometry: RGeo::GeoJSON.encode(@track.finish),
+          properties: {      "title": "Finish",
+                               "description": "Must be an address geocoded by lonlat",
+                               "marker-color": "#fc4353",
+                               "marker-size": "medium",
+                               "marker-symbol": "monument"
+                        }
+
+        }
+
+
       ]
     }
 
