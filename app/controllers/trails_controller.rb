@@ -36,10 +36,7 @@ class TrailsController < ApplicationController
           geometry: RGeo::GeoJSON.encode(@track.finish),
           properties: {      "title": "Finish",
                                "description": "Must be an address geocoded by lonlat",
-                               "marker-color": "#fc4353",
-                               "marker-size": "medium",
-                               "marker-symbol": "monument"
-                        }
+                      }
 
         }
 
