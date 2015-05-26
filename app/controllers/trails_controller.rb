@@ -14,7 +14,7 @@ class TrailsController < ApplicationController
             type: "Feature",
             geometry: RGeo::GeoJSON.encode(@track.merged_path),
             properties:{
-            stroke: "#fc4353",
+            stroke: "#CC0000",
             :"stroke-width" => "5"
             }
       },

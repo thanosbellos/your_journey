@@ -35,9 +35,9 @@ function load() {
                                 bounceOnAddOptions: {duration:2000, height:100},
                                 title: geojson[0].features[1].properties.title,
                                 icon: L.mapbox.marker.icon({
-                                'marker-size': 'small',
+                                'marker-size': 'medium',
                                 'marker-symbol': 's',
-                                'marker-color': '#fa0'
+                                'marker-color': '00E263'
                                })});
 
         finish_marker = L.marker(last_point, {
@@ -45,9 +45,9 @@ function load() {
                                 bounceOnAddOptions: {duration:2000, height:100},
                                 title: geojson[0].features[2].properties.title,
                                 icon: L.mapbox.marker.icon({
-                                'marker-size': 'small',
+                                'marker-size': 'medium',
                                 'marker-symbol': 'f',
-                                'marker-color': '#fa0'
+                                'marker-color': '#D63333'
 
                                })});
                                window.setTimeout(myBounceMarkers , 1000);
