@@ -22,11 +22,8 @@ class TrailsController < ApplicationController
         {
             type: "Feature",
             geometry: RGeo::GeoJSON.encode(@track.start),
-            properties: {      "title": "Mapbox",
+            properties: {      "title": "Start Point",
                                "description": "Must be a geocoded pos",
-                               "marker-color": "#fc4353",
-                               "marker-size": "medium",
-                               "marker-symbol": "monument"
                         }
 
         },
@@ -34,7 +31,7 @@ class TrailsController < ApplicationController
         {
           type: "Feature",
           geometry: RGeo::GeoJSON.encode(@track.finish),
-          properties: {      "title": "Finish",
+          properties: {      "title": "Finish Point",
                                "description": "Must be an address geocoded by lonlat",
                       }
 

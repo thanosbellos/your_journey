@@ -33,25 +33,26 @@ function load() {
         start_marker = L.marker(first_point, {
                                 bounceOnAdd: true,
                                 bounceOnAddOptions: {duration:2000, height:100},
+                                title: geojson[0].features[1].properties.title,
                                 icon: L.mapbox.marker.icon({
                                 'marker-size': 'small',
-                                'marker-symbol': 'bus',
+                                'marker-symbol': 's',
                                 'marker-color': '#fa0'
                                })});
 
         finish_marker = L.marker(last_point, {
                                 bounceOnAdd: true,
                                 bounceOnAddOptions: {duration:2000, height:100},
+                                title: geojson[0].features[2].properties.title,
                                 icon: L.mapbox.marker.icon({
                                 'marker-size': 'small',
-                                'marker-symbol': 'bus',
+                                'marker-symbol': 'f',
                                 'marker-color': '#fa0'
-                               })});
-                               window.setTimeout(myBounceMarkers , 500);
-                                //start_marker.bounce(2);
-                                //finish_marker.bounce(2);
 
-                                window.setTimeout(add ,2000);
+                               })});
+                               window.setTimeout(myBounceMarkers , 1000);
+
+                               window.setTimeout(add ,2000);
             }
   });
 }
