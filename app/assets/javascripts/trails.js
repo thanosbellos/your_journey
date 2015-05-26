@@ -5,6 +5,10 @@ var map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
 
 var url = track_id.toString();
 
+var polyline_options = {
+    color: '#D63333'
+};
+
 load();
 function load() {
   // As with any other AJAX request, this technique is subject to the Same Origin Policy:
@@ -15,7 +19,6 @@ function load() {
     success: function(geojson) {
         path_as_geoJson = geojson
         coordinates_length =Math.floor(path_as_geoJson[0].features[0].geometry.coordinates.length);
-        console.log(coordinates_length)
         middle_point_index =  Math.floor((coordinates_length-1)/2);
         middle_point =  [path_as_geoJson[0].features[0].geometry.coordinates[middle_point_index][1] , path_as_geoJson[0].features[0].geometry.coordinates[middle_point_index][0]];
         first_point = [path_as_geoJson[0].features[1].geometry.coordinates[1] , path_as_geoJson[0].features[1].geometry.coordinates[0]];
@@ -23,7 +26,7 @@ function load() {
         map.fitBounds([first_point , middle_point,last_point]);
         pointsAdded = 0;
         j = 0;
-        polyline = L.polyline([]).addTo(map);
+        polyline = L.polyline([], polyline_options).addTo(map);
 
         time_step = Math.floor(10000 / coordinates_length);
         timer = Math.max(1 , time_step);
@@ -54,7 +57,7 @@ function load() {
                                });
                                window.setTimeout(myBounceMarkers , 1000);
 
-                               window.setTimeout(add ,2000);
+                               window.setTimeout(add ,3000);
             }
   });
 }
@@ -65,9 +68,6 @@ function myBounceMarkers(){
   window.setTimeout(function(){
   finish_marker.addTo(map).bounce(1);
   }, 1000);
-  //start_marker.bounce(2);
-  //
-  //finish_marker.bounce(2);
 }
 
 function add(){
