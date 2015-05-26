@@ -25,20 +25,20 @@ function load() {
         j = 0;
         polyline = L.polyline([]).addTo(map);
 
-        // On success add fetched data to the map.
-        //L.mapbox.featureLayer(geojson).addTo(map);
-        //
-
+        time_step = Math.floor(10000 / coordinates_length);
+        timer = Math.max(1 , time_step);
 
         start_marker = L.marker(first_point, {
                                 bounceOnAdd: true,
-                                bounceOnAddOptions: {duration:2000, height:100},
+                                bounceOnAddOptions: {duration:2000, height:50},
                                 title: geojson[0].features[1].properties.title,
                                 icon: L.mapbox.marker.icon({
                                 'marker-size': 'medium',
                                 'marker-symbol': 's',
                                 'marker-color': '00E263'
-                               })});
+                               })}).setBouncingOptions({
+                                 bounceHeight : 35
+                               });
 
         finish_marker = L.marker(last_point, {
                                 bounceOnAdd: true,
@@ -49,7 +49,9 @@ function load() {
                                 'marker-symbol': 'f',
                                 'marker-color': '#D63333'
 
-                               })});
+                               })}).setBouncingOptions({
+                                 bounceHeight : 35
+                               });
                                window.setTimeout(myBounceMarkers , 1000);
 
                                window.setTimeout(add ,2000);
@@ -59,10 +61,10 @@ function load() {
 
 function myBounceMarkers(){
 
-  start_marker.addTo(map);
+  start_marker.addTo(map).bounce(1);
   window.setTimeout(function(){
-  finish_marker.addTo(map);
-  }, 500);
+  finish_marker.addTo(map).bounce(1);
+  }, 1000);
   //start_marker.bounce(2);
   //
   //finish_marker.bounce(2);
@@ -78,7 +80,7 @@ function add(){
     ++j;
       if (j<coordinates_length){
 
-        window.setTimeout(add , 100);
+        window.setTimeout(add , timer);
       }
 
 }

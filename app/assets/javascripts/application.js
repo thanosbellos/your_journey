@@ -13,6 +13,6 @@
 //= require jquery
 //= require bootstrap-sprockets
 //= require jquery_ujs
-//= require bouncemarker
+//= require leaflet.smoothmarkerbouncing
 //= require turbolinks
 //= require_tree .
