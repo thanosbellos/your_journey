@@ -8,33 +8,67 @@ var url = track_id.toString();
 var polyline_options = {
     color: '#D63333'
 };
-
-load();
-function load() {
   // As with any other AJAX request, this technique is subject to the Same Origin Policy:
   // http://en.wikipedia.org/wiki/Same_origin_policy the server delivering the request should support CORS.
-  $.ajax({
+ $.ajax({
     dataType: 'json',
-    url: url,
-    success: function(geojson) {
-        path_as_geoJson = geojson
-        coordinates_length =Math.floor(path_as_geoJson[0].features[0].geometry.coordinates.length);
-        middle_point_index =  Math.floor((coordinates_length-1)/2);
-        middle_point =  [path_as_geoJson[0].features[0].geometry.coordinates[middle_point_index][1] , path_as_geoJson[0].features[0].geometry.coordinates[middle_point_index][0]];
-        first_point = [path_as_geoJson[0].features[1].geometry.coordinates[1] , path_as_geoJson[0].features[1].geometry.coordinates[0]];
-        last_point = [path_as_geoJson[0].features[2].geometry.coordinates[1] , path_as_geoJson[0].features[2].geometry.coordinates[0]];
-        map.fitBounds([first_point , middle_point,last_point]);
-        pointsAdded = 0;
-        j = 0;
-        polyline = L.polyline([], polyline_options).addTo(map);
+    url: url
+ }).done(processGeoJsonData)
 
-        time_step = Math.floor(10000 / coordinates_length);
-        timer = Math.max(1 , time_step);
 
-        start_marker = L.marker(first_point, {
+function processGeoJsonData(data){
+  geoJson = data;
+  points = initiateMyMap();
+  pointsAdded = 0;
+  j = 0;
+  polyline = L.polyline([], polyline_options).addTo(map);
+
+
+  markers = createMarkers(points);
+
+  window.setTimeout(myBounceMarkers , 1000);
+
+ // if animateDraw == true {
+  //
+ // window.setTimeout(drawOnMap ,3000);
+
+//}
+  //else {
+  window.setTimeout(animateUserMovement , 3000);
+  //}
+}
+
+
+
+
+
+
+
+function initiateMyMap() {
+
+ var coordinates_length = geoJson[0].features[0].geometry.coordinates.length;
+ var middle_point_index =  Math.floor((coordinates_length-1)/2);
+ var  middle_point =  [geoJson[0].features[0].geometry.coordinates[middle_point_index][1] , geoJson[0].features[0].geometry.coordinates[middle_point_index][0]];
+  first_point = [geoJson[0].features[1].geometry.coordinates[1] , geoJson[0].features[1].geometry.coordinates[0]];
+  last_point = [geoJson[0].features[2].geometry.coordinates[1] , geoJson[0].features[2].geometry.coordinates[0]];
+  map.fitBounds([first_point , middle_point,last_point]);
+  time_step = Math.floor(12000 / coordinates_length);
+  timer = Math.max(1 , time_step);
+
+  return { first_point: first_point , last_point: last_point};
+
+
+}
+
+
+
+function createMarkers(points){
+
+
+       var start_marker = L.marker( points.first_point, {
                                 bounceOnAdd: true,
                                 bounceOnAddOptions: {duration:2000, height:50},
-                                title: geojson[0].features[1].properties.title,
+                                title: geoJson[0].features[1].properties.title,
                                 icon: L.mapbox.marker.icon({
                                 'marker-size': 'medium',
                                 'marker-symbol': 's',
@@ -43,10 +77,10 @@ function load() {
                                  bounceHeight : 35
                                });
 
-        finish_marker = L.marker(last_point, {
+        var finish_marker = L.marker(points.last_point, {
                                 bounceOnAdd: true,
                                 bounceOnAddOptions: {duration:2000, height:100},
-                                title: geojson[0].features[2].properties.title,
+                                title: geoJson[0].features[2].properties.title,
                                 icon: L.mapbox.marker.icon({
                                 'marker-size': 'medium',
                                 'marker-symbol': 'f',
@@ -55,38 +89,72 @@ function load() {
                                })}).setBouncingOptions({
                                  bounceHeight : 35
                                });
-                               window.setTimeout(myBounceMarkers , 1000);
-
-                               window.setTimeout(add ,3000);
-            }
-  });
+      return {start_marker: start_marker , finish_marker: finish_marker};
 }
 
 function myBounceMarkers(){
 
-  start_marker.addTo(map).bounce(1);
+  markers.start_marker.addTo(map).bounce(1);
   window.setTimeout(function(){
-  finish_marker.addTo(map).bounce(1);
+  markers.finish_marker.addTo(map).bounce(1);
   }, 1000);
 }
 
-function add(){
+
+function drawOnMap(){
 
 
   polyline.addLatLng(L.latLng(
 
-    path_as_geoJson[0].features[0].geometry.coordinates[j][1],
-    path_as_geoJson[0].features[0].geometry.coordinates[j][0]));
+    geoJson[0].features[0].geometry.coordinates[j][1],
+    geoJson[0].features[0].geometry.coordinates[j][0]));
     ++j;
-      if (j<coordinates_length){
+      if (j< geoJson[0].features[0].geometry.coordinates.length){
 
-        window.setTimeout(add , timer);
+        window.setTimeout(drawOnMap , timer);
       }
 
 }
 
 
 
+function animateUserMovement(){
+
+ //L.mapbox.featureLayer(geoJson[0].features[0]).addTo(map);
+ marker = L.marker(points.first_point, {
+  icon: L.mapbox.marker.icon({
+    'marker-size' :'medium',
+    'marker-symbol': 'pitch',
+    'marker-color': '#66A3FF'
+  })
+}).addTo(map);
+tick();
+}
 
 
+function tick() {
+
+  polyline.addLatLng(L.latLng(
+
+    geoJson[0].features[0].geometry.coordinates[j][1],
+    geoJson[0].features[0].geometry.coordinates[j][0]));
+
+
+  marker.setLatLng(L.latLng(
+        geoJson[0].features[0].geometry.coordinates[j][1],
+
+    geoJson[0].features[0].geometry.coordinates[j][0]));
+
+
+    // Move to the next point of the line
+    // until `j` reaches the length of the array.
+    if (++j <  geoJson[0].features[0].geometry.coordinates.length) setTimeout(tick, timer);
+    else {
+      marker.bounce(2);
+      window.setTimeout(function() {
+      map.removeLayer(marker)},2100);
+    }
+
+}
 });
+
