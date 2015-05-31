@@ -3,7 +3,7 @@ class CreatePoints < ActiveRecord::Migration
     create_table :points do |t|
       t.references :tracksegment, index: true, foreign_key: true
       t.string :name
-      t.st_point :lonlatheight, :geographic => true, has_z:true
+      t.st_point :loc, srid: 3785
 
       t.timestamps null: false
     end
