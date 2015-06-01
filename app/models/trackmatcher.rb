@@ -2,42 +2,49 @@ class TrackMatcher
 
   include ActiveModel::Model
 
-  def initialize(start_coordinate, finish_coordinate)
-    @start_point  = geo_factory.point(*start_coordinate)
-    @finish_point = geo_factory.point(*finish_coordinate)
+  def initialize(start_coordinate , radius)
+    p_lonlat = point_factory.point(*start_coordinate)
+    @mercator_radius = (radius * (1 / Math.cos(p_lonlat.y / 180.0 * Math::PI))).ceil
+    @start_point = p_lonlat.projection
   end
 
-  def find
-    Track.where(start_matches.and finish_matches)
+  def find_near
+    Track.where(start_matches)
   end
 
   protected
 
   def start_matches
-    covers(Track.arel_table[:start])
+    ast=    covers(Track.arel_table[:merged_path])
+    puts ast.to_sql
+    ast
   end
 
-  def finish_matches
-    covers(Track.arel_table[:finish])
-  end
-
-  def line_string
-    @line_string ||= geography_from_text(geo_factory.line_string [@start_point, @finish_point])
-  end
 
   def buffer
-    line_string.st_function(:ST_Buffer , 20000) # distance in metres
+    puts @mercator_radius
+  ast =  point.st_function(:ST_Buffer , @mercator_radius,16) # distance in metres
+  puts ast.to_sql
+  ast
+  end
+
+  def point
+    geometry_from_text(@start_point)
   end
 
   def covers(column)
-    buffer.st_function(:ST_Covers, column)
+    ast =   buffer.st_function(:ST_Covers, column)
+    puts ast.to_sql
+    ast
   end
 
-  def geo_factory
-    @geo_factory ||= RGeo::Geographic.spherical_factory(srid: 4326)
+  def point_factory
+    @geo_factory ||= RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => 'point')
   end
 
-  def geography_from_text(spatial_object)
-    Arel.spatial(spatial_object.as_text).st_function(:ST_AsEWKT).st_function(:ST_GeographyFromText)
+  def geometry_from_text(spatial_object)
+    ast = Arel.spatial(spatial_object.as_text)
+    puts ast
+    ast
   end
 end

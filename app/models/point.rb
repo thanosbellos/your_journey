@@ -14,7 +14,7 @@ class Point < ActiveRecord::Base
   end
 
   def loc_projected
-    self.loc
+    self.class.loc_factory._generate_wkt(self[:loc])
   end
 
   def loc_projected=(value)
