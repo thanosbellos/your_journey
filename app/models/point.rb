@@ -22,7 +22,7 @@ class Point < ActiveRecord::Base
   end
 
   def loc_geographic
-    self.class.loc.unproject(self.loc)
+    self.class.loc_factory.unproject(self.loc)
   end
 
   def loc_geographic=(value)

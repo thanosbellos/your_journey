@@ -12,7 +12,7 @@ class TrailsController < ApplicationController
       features: [
         {
             type: "Feature",
-            geometry: RGeo::GeoJSON.encode(@track.merged_path),
+            geometry: RGeo::GeoJSON.encode(@track.merged_path_geographic),
             properties:{
             stroke: "#CC0000",
             :"stroke-width" => "5"
@@ -21,7 +21,7 @@ class TrailsController < ApplicationController
 
         {
             type: "Feature",
-            geometry: RGeo::GeoJSON.encode(@track.start),
+            geometry: RGeo::GeoJSON.encode(@track.start_geographic),
             properties: {      "title": "Start Point",
                                "description": "Must be a geocoded pos",
                         }
@@ -30,7 +30,7 @@ class TrailsController < ApplicationController
 
         {
           type: "Feature",
-          geometry: RGeo::GeoJSON.encode(@track.finish),
+          geometry: RGeo::GeoJSON.encode(@track.finish_geographic),
           properties: {      "title": "Finish Point",
                                "description": "Must be an address geocoded by lonlat",
                       }

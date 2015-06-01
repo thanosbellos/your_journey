@@ -14,11 +14,71 @@ class Track < ActiveRecord::Base
     attr_accessor :merged_path_factory
     attr_accessor :path_projection_factory
     attr_accessor :merged_path_projection_factory
+    attr_accessor :point_factory
   end
+
   @path_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'multiline_string')
   @merged_path_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'line_string')
   @path_projection_factory = @path_factory.projection_factory
   @merged_path_projection_factory = @merged_path_factory.projection_factory
+  @point_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'point')
+
+  def merged_path_projected
+    self.merged_path
+  end
+
+  def merged_path_projected=(value)
+    self.merged_path = value
+  end
+
+  def merged_path_geographic
+    self.class.merged_path_factory.unproject(self.merged_path)
+  end
+
+  def merged_path_geographic=(value)
+    value = self.class.merged_path_factory.parse_wkt(value) if value.class == String
+    self.merged_path = self.class.merged_path_factory.project(value)
+  end
+
+  def start_projected
+    self.start
+  end
+
+  def start_projected=(value)
+    self.start = value
+  end
+
+  def start_geographic
+    self.class.point_factory.unproject(self.start)
+  end
+
+  def start_geographic=(value)
+    value = self.class.point_factory.parse_wkt(value) if value.class == String
+    self.start = self.class.point_factory.project(value)
+  end
+
+
+  def finish_projected
+    self.finish
+  end
+
+  def finish_projected=(value)
+    self.finish = value
+  end
+
+  def finish_geographic
+    self.class.point_factory.unproject(self.finish)
+  end
+
+  def finish_geographic=(value)
+    value = self.class.point_factory.parse_wkt(value) if value.class == String
+    self.finish = self.class.point_factory.project(value)
+  end
+
+
+
+
+
   private
 
 
@@ -60,10 +120,10 @@ class Track < ActiveRecord::Base
     old_seg_id = nil
     tmp_segment = nil
     srid = find_srid_from_prj(f)
-    factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'point')
+   point_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'point')
 
     puts self.inspect
-    RGeo::Shapefile::Reader.open(f,:factory => factory) do |file|
+    RGeo::Shapefile::Reader.open(f,:factory => point_factory) do |file|
       num_records = file.num_records
       file.each do |record|
           tmp_point = Point.new
@@ -81,22 +141,29 @@ class Track < ActiveRecord::Base
   end
 
   def create_path_from_segments
-    #self.tracksegments.each do |tracksegment|
-      #tracksegment.create_path_from_points
-    #end
-    #track_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: "multiline_string")
-    #puts track_factory
-    #self.path = track_factory.multi_line_string(self.tracksegments.order(id: :asc).pluck(:tracksegment_path))
-    #line_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: "line_string")
-    #ast_sql_statement = Arel.spatial(self.path.as_text).st_function(:ST_LineMerge).st_function(:ST_AsText).st_function(:SELECT).to_sql
-    #new_path = ActiveRecord::Base.connection.execute(ast_sql_statement).values.flatten.first
-    #self.merged_path =  new_path.match('MULTILINESTRING') ? line_factory.line_string(self.points.order(id: :asc).pluck(:lonlatheight)) : new_path
-    #puts new_path
-    #puts new_path.match('MULTILINESTRING')
-    #self.start = merged_path.start_point
-    #self.finish = merged_path.end_point
+
+    multi_line_factory = self.class.path_projection_factory
+    line_factory = self.class.merged_path_projection_factory
+
+    self.tracksegments.each do |tracksegment|
+      tracksegment.create_path_from_points
+    end
+
+    merge_track_segments
 
     self.save
+  end
+
+  def merge_track_segments
+
+    multi_line_factory = self.class.path_projection_factory
+    line_factory = self.class.merged_path_projection_factory
+    ast_sql_statement = "SELECT (ST_AsEWKT(ST_MakeLine(segments.tracksegment_path ORDER BY id))) AS test from tracksegments AS segments WHERE segments.track_id = #{self.id}"
+    new_path = ActiveRecord::Base.connection.execute(ast_sql_statement).values.flatten.first
+    self.merged_path_projected = new_path
+    self.start = self.merged_path.start_point
+    self.finish = self.merged_path.end_point
+
   end
 
 
