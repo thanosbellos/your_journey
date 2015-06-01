@@ -9,5 +9,7 @@ FACTORY = RGeo::Geographic.simple_mercator_factory(srid: 3785 ,
 RGeo::ActiveRecord::SpatialFactoryStore.instance.tap do |config|
   config.register(FACTORY, geo_type: "point")
   config.register(FACTORY, geo_type: "line_string")
+  config.register(FACTORY , geo_type: "multiline_string")
+
 end
 
