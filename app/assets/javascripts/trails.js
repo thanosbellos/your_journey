@@ -1,32 +1,43 @@
-$( document ).ready(function() {
+$( window ).load(function() {
+  var path = window.location.pathname;
 
-L.mapbox.accessToken = 'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6InZqbFEtSk0ifQ.nLEw7BjpabHkHfC1g0Gr_A';
-var map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
 
-var url = track_id.toString();
+  if(path.search(/trails\/[0-9]+/)!=-1){
+      trailShow()
+  }
 
-var polyline_options = {
+    //it's peanut butter jelly time - search controller
+
+});
+
+function trailShow(){
+  L.mapbox.accessToken = 'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6InZqbFEtSk0ifQ.nLEw7BjpabHkHfC1g0Gr_A';
+  var map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
+
+  var url = track_id.toString();
+
+  var polyline_options = {
     color: '#D63333'
-};
+  };
   // As with any other AJAX request, this technique is subject to the Same Origin Policy:
   // http://en.wikipedia.org/wiki/Same_origin_policy the server delivering the request should support CORS.
- $.ajax({
-    dataType: 'json',
-    url: url
- }).done(processGeoJsonData)
+  $.ajax({
+     dataType: 'json',
+     url: url
+  }).done(processGeoJsonData)
 
 
-function processGeoJsonData(data){
-  geoJson = data;
-  points = initiateMyMap();
-  pointsAdded = 0;
-  j = 0;
-  polyline = L.polyline([], polyline_options).addTo(map);
+  function processGeoJsonData(data){
+    geoJson = data;
+    points = initiateMyMap();
+    pointsAdded = 0;
+    j = 0;
+    polyline = L.polyline([], polyline_options).addTo(map);
 
 
-  markers = createMarkers(points);
+    markers = createMarkers(points);
 
-  window.setTimeout(myBounceMarkers , 1000);
+    window.setTimeout(myBounceMarkers , 1000);
 
  // if animateDraw == true {
   //
@@ -34,7 +45,7 @@ function processGeoJsonData(data){
 
 //}
   //else {
-  window.setTimeout(animateUserMovement , 3000);
+    window.setTimeout(animateUserMovement , 3000);
   //}
 }
 
@@ -155,6 +166,8 @@ function tick() {
       map.removeLayer(marker)},2100);
     }
 
+
 }
-});
+}
+
 
