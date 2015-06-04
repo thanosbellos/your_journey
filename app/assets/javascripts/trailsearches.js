@@ -44,7 +44,8 @@ if (!navigator.geolocation) {
 // Once we've got a position, zoom and center the map
 // on it, and add a single marker.
 map.on('locationfound', function(e) {
-  var userPosition = L.marker( [e.latlng.lat, e.latlng.lng], {
+   var userPosition = L.marker( [e.latlng.lat, e.latlng.lng], {
+                                draggable: true,
                                 bounceOnAdd: true,
                                 bounceOnAddOptions: {duration:2000, height:50},
                                 title: 'You are here' ,
@@ -56,6 +57,13 @@ map.on('locationfound', function(e) {
                                  bounceHeight : 35
                                });
 
+    var circle = L.circle();
+    userPosition.on('drag', function(e){
+
+      circle.setLatLng(userPosition.getLatLng());
+
+    });
+
     window.setTimeout(function(){
     //userPosition.addTo(map).bounce();
     geolocate.innerHTML = "We found your location"
@@ -64,7 +72,11 @@ map.on('locationfound', function(e) {
     clearInterval(findUserAnimation);
     geolocate.onclick = null;
      window.setTimeout(function(){
-      map.setView([e.latlng.lat , e.latlng.lng],6);
+      map.setView([e.latlng.lat , e.latlng.lng],10);
+      circle.setLatLng([e.latlng.lat , e.latlng.lng]);
+      circle.setRadius(10000);
+      circle.addTo(map);
+
       userPosition.stopBouncing();
     } ,2000);
     },5000);
@@ -76,6 +88,8 @@ map.on('locationfound', function(e) {
 
 });
 
+
+function moveMarker()
 // If the user chooses not to allow their location
 // to be shared, display an error message.
 map.on('locationerror', function() {
