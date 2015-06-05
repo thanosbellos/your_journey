@@ -14,5 +14,6 @@
 //= require bootstrap-sprockets
 //= require jquery_ujs
 //= require leaflet.smoothmarkerbouncing
+//= require esri-leaflet-geocoder/dist/esri-leaflet-geocoder.js
 //= require turbolinks
 //= require_tree .

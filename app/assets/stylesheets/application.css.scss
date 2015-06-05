@@ -11,6 +11,7 @@
  * file per style scope.
  *
  *= require btstrap_imports
+ *= require esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css
  *= require_tree .
  *= require_self
  */
