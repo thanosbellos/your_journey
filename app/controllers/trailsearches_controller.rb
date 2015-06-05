@@ -6,5 +6,6 @@ class TrailsearchesController < ApplicationController
   end
 
   def search
+    puts params
   end
 end

@@ -72,7 +72,8 @@ map.on('locationfound', function(e) {
     clearInterval(findUserAnimation);
     geolocate.onclick = null;
      window.setTimeout(function(){
-      map.setView([e.latlng.lat , e.latlng.lng],10);
+      map.setView([e.latlng.lat , e.latlng.lng],8);
+
       circle.setLatLng([e.latlng.lat , e.latlng.lng]);
       circle.setRadius(10000);
       circle.addTo(map);
