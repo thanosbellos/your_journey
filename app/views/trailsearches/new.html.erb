@@ -24,7 +24,7 @@
 <div>
   <%= form_tag({controller: "trailsearches" , action: "search"} , method: "get") do  %>
     <%= label_tag(:radius , "radius:") %>
-    <%= number_field_tag 'radius', '1' , min:500 ,step: 500 %>
+    <%= number_field_tag 'radius', '1' , min:500 ,step: 2000 %>
     <%= label_tag(:location , "location:") %>
     <%= text_field_tag(:location) %>
     <%= submit_tag("search") %>
