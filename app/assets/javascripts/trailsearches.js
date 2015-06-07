@@ -5,124 +5,184 @@ $( window ).load(function() {
    radius = $("#radius").val();
    L.mapbox.accessToken = 'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6InZqbFEtSk0ifQ.nLEw7BjpabHkHfC1g0Gr_A';
    map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
+   map.addControl(new MyControl());
+   myGeocoder =  L.Control.Geocoder.nominatim(),
+   geocodeControl = L.Control.geocoder({
+                geocoder:myGeocoder
+   }).addTo(map);
+   drawnLayers = {size:0};
+   $("#radius").change(function(){
+     radius = parseInt($("#radius").val());
+        if(typeof drawnLayers.userCircle !=='undefined'){
+          drawnLayers.userCircle.setRadius(radius);
+        }
+   });
 
-   myGeocoder =  L.Control.Geocoder.nominatim();
-   control = L.Control.geocoder({
-	 			geocoder: myGeocoder
-  	}).addTo(map);
 
-
-   geolocateUser();
- }
+   }
 });
 
-function geolocateUser(){
 
-  var geolocate = document.getElementById('geolocate');
-  var myLayer = L.mapbox.featureLayer().addTo(map);
-  var marker = L.marker([-73, 40], {
-    icon: L.mapbox.marker.icon({
-      'marker-color': '#f86767'
-    })
-  });
-  var t = 0;
-
-if (!navigator.geolocation) {
-    geolocate.innerHTML = 'Geolocation is not available';
-} else {
-
-    geolocateHandler = function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    geolocate.innerHTML = "Searching your location"
-    marker.addTo(map);
-    map.locate();
-    findUserAnimation = window.setInterval(function() {
-    // Making a lissajous curve just for fun.
-    // Create your own animated path here.
-    marker.setLatLng(L.latLng(
-        Math.cos(t * 0.5) * 50,
-        Math.sin(t) * 50));
-        t += 0.1;
-      }, 35);
-    };
-
-   geolocate.onclick = geolocateHandler;
+function cleanDrawnLayers(){
+  for( var key in drawnLayers){
+    if (key != "size"){
+      removeDrawnLayer(key);
+    }
+  }
+}
+function removeDrawnLayer(layerType){
+  map.removeLayer(drawnLayers[layerType]);
+  delete drawnLayers[layerType];
+  drawnLayers.size--;
 }
 
-// Once we've got a position, zoom and center the map
-// on it, and add a single marker.
-  map.on('locationfound', function(e) {
-  var userPosition = L.marker( [e.latlng.lat, e.latlng.lng], {
+
+ var MyControl = L.Control.extend({
+       options: {
+       position: 'topleft'
+     },
+     onAdd: function(map){
+       var container = L.DomUtil.create('div','leaflet-control-locate leaflet-bar leaflet-control');
+        this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', container);
+        this._link.href = '#';
+        this._icon = L.DomUtil.create('span', 'fa fa-map-marker', this._link);
+        this._status = undefined;
+        this._reanimate = false;
+        L.DomEvent
+             .on(this._link, 'click', L.DomEvent.stopPropagation)
+             .on(this._link, 'click', L.DomEvent.preventDefault)
+             .on(this._link, 'click', function() {
+               console.log(this._status);
+               if(this._status == "pressed"){
+                 //this in here refers to the control
+                 this.stopGeolocate();
+               }else {
+                 this._status = "pressed"
+                 this.startGeolocate();
+               }
+             }, this)
+
+       this.bindAccuratePositionMethods();
+       return container;
+     },
+
+     bindAccuratePositionMethods: function(){
+
+        map.on('accuratepositionprogress', this.onAccuratePositionProgress,this);
+        map.on('accuratepositionfound', this.onAccuratePositionFound,this);
+        map.on('accuratepositionerror', this.onAccuratePositionError,this);
+
+     },
+
+    startGeolocate: function(){
+      if(this._reanimate == true){
+        cleanDrawnLayers();
+        maxWait = 500;
+      }else{
+        maxWait= 5000;
+        this.animateSearching();
+      }
+      map.findAccuratePosition({
+        maxWait: maxWait, // defaults to 10000
+        desiredAccuracy: 50// defaults to 20
+      })
+
+
+    },
+    stopGeolocate: function(){
+      if (typeof animateSearching !== 'undefined'){
+        clearInterval(animateSearching);
+      }
+      this._map._cleanUpAccuratePositioning();
+      this._status = "reset";
+      $("#location").val("");
+      map.setZoom(3);
+      cleanDrawnLayers();
+
+    },
+
+    animateSearching: function(){
+      t = 0
+      marker = L.marker([-73, 40], {
+             icon: L.mapbox.marker.icon({
+              'marker-color': '#f86767'
+              })
+       });
+       marker.addTo(map);
+       drawnLayers.searchAnimationaMarker = marker;
+       drawnLayers.size++;
+       animateSearching = window.setInterval(function(){
+        marker.setLatLng(L.latLng(
+           Math.cos(t * 0.5) * 50,
+           Math.sin(t) * 50));
+          t += 0.1;
+        },35);
+
+
+    },
+     onAccuratePositionProgress: function(e){
+     },
+
+    onAccuratePositionFound: function(e){
+      console.log(this._reanimate);
+      if(this._reanimate == false){
+        clearInterval(animateSearching);
+        removeDrawnLayer("searchAnimationaMarker");
+      }
+      this._reanimate = true;
+      console.log(this._reanimate);
+      var userPosition = [e.latlng.lat , e.latlng.lng];
+      this.addUserMarker(userPosition);
+    },
+
+    addUserMarker : function(userPosition){
+     userMarker = L.marker( userPosition , {
                                 draggable: true,
-                                bounceOnAdd: true,
-                                bounceOnAddOptions: {duration:2000, height:50},
                                 title: 'You are here' ,
                                 icon: L.mapbox.marker.icon({
                                 'marker-size': 'medium',
                                 'marker-symbol': 'star',
                                 'marker-color': '00E263'
-                               })}).setBouncingOptions({
+                               })
+                             }).setBouncingOptions({
                                  bounceHeight : 35
-                               });
+                                });
 
-    circle = L.circle();
+     userMarker.addTo(map).bounce();
+     drawnLayers.userMarker = userMarker;
+     drawnLayers.size++;
 
-    window.setTimeout(function(){
-    //userPosition.addTo(map).bounce();
-    geolocate.innerHTML = "We found your location"
-    userPosition.addTo(map).bounce();
-    map.removeLayer(marker);
-    clearInterval(findUserAnimation);
-    geolocate.onclick = null;
+     userCircle = L.circle();
+     drawnLayers.userCircle = userCircle;
+     drawnLayers.size++;
 
-    window.setTimeout(function(){
-      map.setView([e.latlng.lat , e.latlng.lng],11);
-      myGeocoder.reverse(e.latlng, map.options.crs.scale(map.getZoom()), function(results) {
+     userCircle.setLatLng(userPosition);
+     console.log(radius);
+     userCircle.setRadius(radius);
+     userCircle.addTo(map);
+     window.setTimeout(function(){
+     map.setView(userPosition ,12);
+
+      myGeocoder.reverse(userMarker.getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
         var r = results[0];
         $("#location").val(r.name);
       });
+      userMarker.stopBouncing();
+     },2000);
+     //add drag events on marker
+     userMarker.on('drag' , function(e){
+      userCircle.setLatLng(userMarker.getLatLng());
+     });
 
-      circle.setLatLng([e.latlng.lat , e.latlng.lng]);
-      circle.setRadius(radius);
-      circle.addTo(map);
-      userPosition.stopBouncing();
-
-    } ,2000);
-    },5000);
-
-    userPosition.on('drag', function(e){
-
-      circle.setLatLng(userPosition.getLatLng());
-
-    });
-
-    userPosition.on('dragend', function(e){
-    myGeocoder.reverse(userPosition.getLatLng(), map.options.crs.scale(map.getZoom()) ,  function(results){
-        var r = results[0];
-        $("#location").val(r.name);
+     userMarker.on('dragend', function(e){
+       myGeocoder.reverse(userMarker.getLatLng(), map.options.crs.scale(map.getZoom()) ,  function(results){
+          var r = results[0];
+         $("#location").val(r.name);
       });
-    });
+       this._status = "reset";
+       this._map._cleanUpAccuratePositioning();
+     },this)
+    },
 
 
-
-
-});
-
-
-// If the user chooses not to allow their location
-// to be shared, display an error message.
-map.on('locationerror', function() {
-    geolocate.innerHTML = 'Position could not be found';
-    clearInterval(findUserAnimation);
-    map.removeLayer(marker);
-
-});
-
-$("#radius").change( function() {
-
- circle.setRadius( parseInt($("#radius").val()));
-
-});
-
-}
+ })

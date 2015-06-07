@@ -12,6 +12,7 @@
  *
  *= require btstrap_imports
  *= require leaflet-control-geocoder/Control.Geocoder
+ *= require leaflet.locatecontrol/dist/L.Control.Locate.mapbox
  *= require_tree .
  *= require_self
  */

@@ -15,5 +15,6 @@
 //= require jquery_ujs
 //= require leaflet.smoothmarkerbouncing
 //= require leaflet-control-geocoder/Control.Geocoder
+//= require Leaflet.AccuratePosition
 //= require turbolinks
 //= require_tree .
