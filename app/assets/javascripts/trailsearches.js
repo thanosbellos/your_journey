@@ -82,6 +82,7 @@ function removeDrawnLayer(layerType){
         maxWait= 5000;
         this.animateSearching();
       }
+      this.setCssClasses('searching');
       map.findAccuratePosition({
         maxWait: maxWait, // defaults to 10000
         desiredAccuracy: 50// defaults to 20
@@ -90,6 +91,7 @@ function removeDrawnLayer(layerType){
 
     },
     stopGeolocate: function(){
+      this.cleanCssClasses();
       if (typeof animateSearching !== 'undefined'){
         clearInterval(animateSearching);
       }
@@ -124,6 +126,7 @@ function removeDrawnLayer(layerType){
      },
 
     onAccuratePositionFound: function(e){
+      this.setCssClasses('active');
       console.log(this._reanimate);
       if(this._reanimate == false){
         clearInterval(animateSearching);
@@ -157,7 +160,6 @@ function removeDrawnLayer(layerType){
      drawnLayers.size++;
 
      userCircle.setLatLng(userPosition);
-     console.log(radius);
      userCircle.setRadius(radius);
      userCircle.addTo(map);
      window.setTimeout(function(){
@@ -181,8 +183,57 @@ function removeDrawnLayer(layerType){
       });
        this._status = "reset";
        this._map._cleanUpAccuratePositioning();
+       this.cleanCssClasses();
      },this)
     },
+
+    setCssClasses: function(state){
+      if(state == 'searching'){
+          cssClassNamesToRemove = "fa fa-map-marker".split(' ');
+          cssClassNamesToAdd =  "fa fa-spinner fa-spin".split(' ');
+
+          L.DomUtil.removeClass(this._container, "active");
+          L.DomUtil.addClass(this._container, "searching");
+
+          for(var i=0, tot= cssClassNamesToRemove.length; i<tot; i++){
+            L.DomUtil.removeClass(this._icon, cssClassNamesToRemove[i]);
+          }
+
+           for(var i=0, tot= cssClassNamesToAdd.length; i<tot; i++){
+            L.DomUtil.addClass(this._icon, cssClassNamesToAdd[i]);
+          }
+        }
+      else if(state == "active"){
+          cssClassNamesToRemove = "fa fa-spinner fa-spin".split(' ');
+          cssClassNamesToAdd =  "fa fa-map-marker".split(' ');
+
+
+          L.DomUtil.removeClass(this._container, "searching");
+          L.DomUtil.addClass(this._container, "active");
+          L.DomUtil.addClass(this._container, "following");
+
+
+          for(var i=0, tot= cssClassNamesToRemove.length; i<tot; i++){
+            L.DomUtil.removeClass(this._icon, cssClassNamesToRemove[i]);
+          }
+
+           for(var i=0, tot= cssClassNamesToAdd.length; i<tot; i++){
+            L.DomUtil.addClass(this._icon, cssClassNamesToAdd[i]);
+          }
+        }
+      },
+       cleanCssClasses: function(){
+           cssClassNamesToRemove = "fa fa-spinner fa-spin".split(' ');
+           cssClassNamesToAdd = "fa fa-map-marker".split(' ');
+           L.DomUtil.removeClass(this._container, "requesting");
+           L.DomUtil.removeClass(this._container, "active");
+           for(var i=0, tot= cssClassNamesToRemove.length; i<tot; i++){
+            L.DomUtil.removeClass(this._icon, cssClassNamesToRemove[i]);
+           }
+           for(var i=0, tot= cssClassNamesToAdd.length; i<tot; i++){
+            L.DomUtil.addClass(this._icon, cssClassNamesToAdd[i]);
+           }
+      },
 
 
  })
