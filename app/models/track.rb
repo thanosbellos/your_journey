@@ -22,6 +22,45 @@ class Track < ActiveRecord::Base
   @path_projection_factory = @path_factory.projection_factory
   @merged_path_projection_factory = @merged_path_factory.projection_factory
   @point_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'point')
+  CODER = RGeo::GeoJSON.coder(geo_factory: @point_factory)
+
+
+  def to_feature(attr)
+    ast = CODER.entity_factory.feature(self[attr])
+    puts ast
+    ast
+  end
+
+  def to_geojson
+    features = []
+    track_id = self.id
+    trail_id = self.trail.id
+
+    features << CODER.entity_factory.feature(self.merged_path_geographic, "#{track_id}_path", {"stroke": "#fc4353"})
+    features << CODER.entity_factory.feature(self.start_geographic,
+                                             "#{track_id}_start" ,
+                                             {"marker-color": "#00ff00",
+                                              "marker-symbol": 's',
+                                              "marker-size": "medium",
+                                              "title": "Start point of track: #{self.trail.name}"}
+                                            )
+
+
+    features  << CODER.entity_factory.feature(self.finish_geographic,
+                                              "#{track_id}_finish",
+                                              {"marker-color": "#D63333",
+                                               "marker-symbol": "f",
+                                               "marker-size": "medium",
+                                               "title":"Finish point of trails #{self.trail.name}"
+                                              }
+                                             )
+
+
+    collection = CODER.entity_factory.feature_collection(features)
+
+    CODER.encode(collection)
+
+  end
 
   def merged_path_projected
     self.merged_path

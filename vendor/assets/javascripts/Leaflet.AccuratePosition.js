@@ -28,7 +28,7 @@ L.Map.include({
 		this._accuratePositionOptions = L.extend(this._defaultAccuratePositionOptions, options);
 		this._accuratePositionOptions.enableHighAccuracy = true;
 		this._accuratePositionOptions.maximumAge = 0;
-		
+
 		if (!this._accuratePositionOptions.timeout)
 			this._accuratePositionOptions.timeout = this._accuratePositionOptions.maxWait;
 

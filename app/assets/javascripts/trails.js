@@ -1,8 +1,8 @@
-$( window ).load(function() {
+$( document ).ready(function() {
   var path = window.location.pathname;
 
-
   if(path.search(/trails\/[0-9]+/)!=-1){
+  console.log(path);
       trailShow()
   }
 
@@ -57,11 +57,11 @@ function trailShow(){
 
 function initiateMyMap() {
 
- var coordinates_length = geoJson[0].features[0].geometry.coordinates.length;
+ var coordinates_length = geoJson.features[0].geometry.coordinates.length;
  var middle_point_index =  Math.floor((coordinates_length-1)/2);
- var  middle_point =  [geoJson[0].features[0].geometry.coordinates[middle_point_index][1] , geoJson[0].features[0].geometry.coordinates[middle_point_index][0]];
-  first_point = [geoJson[0].features[1].geometry.coordinates[1] , geoJson[0].features[1].geometry.coordinates[0]];
-  last_point = [geoJson[0].features[2].geometry.coordinates[1] , geoJson[0].features[2].geometry.coordinates[0]];
+ var  middle_point =  [geoJson.features[0].geometry.coordinates[middle_point_index][1] , geoJson.features[0].geometry.coordinates[middle_point_index][0]];
+  first_point = [geoJson.features[1].geometry.coordinates[1] , geoJson.features[1].geometry.coordinates[0]];
+  last_point = [geoJson.features[2].geometry.coordinates[1] , geoJson.features[2].geometry.coordinates[0]];
   map.fitBounds([first_point , middle_point,last_point]);
   time_step = Math.floor(12000 / coordinates_length);
   timer = Math.max(1 , time_step);
@@ -79,7 +79,7 @@ function createMarkers(points){
        var start_marker = L.marker( points.first_point, {
                                 bounceOnAdd: true,
                                 bounceOnAddOptions: {duration:2000, height:50},
-                                title: geoJson[0].features[1].properties.title,
+                                title: geoJson.features[1].properties.title,
                                 icon: L.mapbox.marker.icon({
                                 'marker-size': 'medium',
                                 'marker-symbol': 's',
@@ -91,7 +91,7 @@ function createMarkers(points){
         var finish_marker = L.marker(points.last_point, {
                                 bounceOnAdd: true,
                                 bounceOnAddOptions: {duration:2000, height:100},
-                                title: geoJson[0].features[2].properties.title,
+                                title: geoJson.features[2].properties.title,
                                 icon: L.mapbox.marker.icon({
                                 'marker-size': 'medium',
                                 'marker-symbol': 'f',
@@ -113,14 +113,14 @@ function myBounceMarkers(){
 
 
 function drawOnMap(){
+    coordinatesLength =  geoJson.features[0].geometry.coordinates.length;
+    point = [ geoJson.features[0].geometry.coordinates[j][1],
+    geoJson.features[0].geometry.coordinates[j][0]];
 
 
-  polyline.addLatLng(L.latLng(
-
-    geoJson[0].features[0].geometry.coordinates[j][1],
-    geoJson[0].features[0].geometry.coordinates[j][0]));
+  polyline.addLatLng(L.latLng(point));
     ++j;
-      if (j< geoJson[0].features[0].geometry.coordinates.length){
+      if (j< coordinatesLength){
 
         window.setTimeout(drawOnMap , timer);
       }
@@ -130,6 +130,8 @@ function drawOnMap(){
 
 
 function animateUserMovement(){
+
+
 
  //L.mapbox.featureLayer(geoJson[0].features[0]).addTo(map);
  marker = L.marker(points.first_point, {
@@ -144,22 +146,19 @@ tick();
 
 
 function tick() {
+  coordinatesLength =  geoJson.features[0].geometry.coordinates.length;
+  point = [ geoJson.features[0].geometry.coordinates[j][1],
+    geoJson.features[0].geometry.coordinates[j][0]];
 
-  polyline.addLatLng(L.latLng(
-
-    geoJson[0].features[0].geometry.coordinates[j][1],
-    geoJson[0].features[0].geometry.coordinates[j][0]));
+  polyline.addLatLng(L.latLng(point));
 
 
-  marker.setLatLng(L.latLng(
-        geoJson[0].features[0].geometry.coordinates[j][1],
-
-    geoJson[0].features[0].geometry.coordinates[j][0]));
+  marker.setLatLng(L.latLng(point));
 
 
     // Move to the next point of the line
     // until `j` reaches the length of the array.
-    if (++j <  geoJson[0].features[0].geometry.coordinates.length) setTimeout(tick, timer);
+    if (++j < coordinatesLength) setTimeout(tick, timer);
     else {
       marker.bounce(2);
       window.setTimeout(function() {

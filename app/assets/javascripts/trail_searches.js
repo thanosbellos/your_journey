@@ -1,8 +1,9 @@
-$( window ).load(function() {
+$( document).ready(function() {
  var path = window.location.pathname;
- if (path.search(/search$/)){
+ if (path.search(/\/search$/)!=-1){
    $("#location").val('')
    radius = $("#radius").val();
+
    L.mapbox.accessToken = 'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6InZqbFEtSk0ifQ.nLEw7BjpabHkHfC1g0Gr_A';
    map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
    map.addControl(new MyControl());
@@ -11,11 +12,34 @@ $( window ).load(function() {
                 geocoder:myGeocoder
    }).addTo(map);
    drawnLayers = {size:0};
+
    $("#radius").change(function(){
      radius = parseInt($("#radius").val());
         if(typeof drawnLayers.userCircle !=='undefined'){
           drawnLayers.userCircle.setRadius(radius);
         }
+   });
+
+   $("#trail-search-form").on("ajax:success", function(e, data , status ,xhr){
+     if(typeof data.message =='undefined'){
+        featureLayer = L.mapbox.featureLayer(data).addTo(map);
+
+
+
+         $(this).append(xhr.responseText)
+    } else {
+      alert(data.message);
+    }
+
+
+   })
+   $("#trail-search-form").on("ajax:before", function(e , data, status, xhr){
+     if($("#location").val()==''){
+       return false;
+     }
+     if(typeof featureLayer !=='undefined'){
+     map.removeLayer(featureLayer)
+     }
    });
 
 
@@ -28,6 +52,9 @@ function cleanDrawnLayers(){
     if (key != "size"){
       removeDrawnLayer(key);
     }
+  }
+  if(typeof featureLayer !=='undefined'){
+    map.removeLayer(featureLayer)
   }
 }
 function removeDrawnLayer(layerType){
@@ -85,13 +112,15 @@ function removeDrawnLayer(layerType){
       this.setCssClasses('searching');
       map.findAccuratePosition({
         maxWait: maxWait, // defaults to 10000
-        desiredAccuracy: 50// defaults to 20
-      })
+        desiredAccuracy: 30// defaults to 20
+      });
 
 
     },
     stopGeolocate: function(){
       this.cleanCssClasses();
+      $("#lnglat:hidden").val("");
+
       if (typeof animateSearching !== 'undefined'){
         clearInterval(animateSearching);
       }
@@ -123,11 +152,15 @@ function removeDrawnLayer(layerType){
 
     },
      onAccuratePositionProgress: function(e){
+       if(this._status=="pressed"){
+      console.log("from on proggress");
+
+       }
+
      },
 
     onAccuratePositionFound: function(e){
       this.setCssClasses('active');
-      console.log(this._reanimate);
       if(this._reanimate == false){
         clearInterval(animateSearching);
         removeDrawnLayer("searchAnimationaMarker");
@@ -135,13 +168,18 @@ function removeDrawnLayer(layerType){
       this._reanimate = true;
       console.log(this._reanimate);
       var userPosition = [e.latlng.lat , e.latlng.lng];
+      $("#lnglat:hidden").val([userPosition[1],userPosition[0]]);
       this.addUserMarker(userPosition);
+    },
+    onAccuratePositionError: function(e){
+      alert("Geolocation is not available for you right now");
+      this.stopGeolocate();
     },
 
     addUserMarker : function(userPosition){
      userMarker = L.marker( userPosition , {
                                 draggable: true,
-                                title: 'You are here' ,
+                                title: 'The most accurate geolocated position' ,
                                 icon: L.mapbox.marker.icon({
                                 'marker-size': 'medium',
                                 'marker-symbol': 'star',
@@ -181,6 +219,7 @@ function removeDrawnLayer(layerType){
           var r = results[0];
          $("#location").val(r.name);
       });
+
        this._status = "reset";
        this._map._cleanUpAccuratePositioning();
        this.cleanCssClasses();

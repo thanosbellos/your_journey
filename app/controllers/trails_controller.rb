@@ -7,40 +7,7 @@ class TrailsController < ApplicationController
     @trail = Trail.find(params[:id])
     @track = @trail.track
     @geojson = Array.new
-    @geojson << {
-      type: "FeatureCollection",
-      features: [
-        {
-            type: "Feature",
-            geometry: RGeo::GeoJSON.encode(@track.merged_path_geographic),
-            properties:{
-            stroke: "#CC0000",
-            :"stroke-width" => "5"
-            }
-      },
-
-        {
-            type: "Feature",
-            geometry: RGeo::GeoJSON.encode(@track.start_geographic),
-            properties: {      "title": "Start Point",
-                               "description": "Must be a geocoded pos",
-                        }
-
-        },
-
-        {
-          type: "Feature",
-          geometry: RGeo::GeoJSON.encode(@track.finish_geographic),
-          properties: {      "title": "Finish Point",
-                               "description": "Must be an address geocoded by lonlat",
-                      }
-
-        }
-
-
-      ]
-    }
-
+    @geojson = @track.to_geojson
     respond_to do |format|
       format.html
       format.json { render json: @geojson}

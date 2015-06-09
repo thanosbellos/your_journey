@@ -2,8 +2,9 @@ class TrailSearch
 
   include ActiveModel::Model
 
-  def initialize(opts={})
 
+  def initialize(opts={})
+    puts opts[:start_loc]
     start_loc  = factory.point(*opts[:start_loc])
     finish_loc =  factory.point(*opts[:finish_loc]) if opts[:finish_loc]
     target_obj =  (opts[:finish_loc]||opts[:route]) ?
@@ -34,9 +35,7 @@ class TrailSearch
   end
 
   def covers(column)
-    ast =      buffer.st_function(:ST_Covers, column)
-    puts ast.to_sql
-    ast
+     buffer.st_function(:ST_Covers, column)
   end
 
 
