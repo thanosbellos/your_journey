@@ -16,5 +16,7 @@
 //= require leaflet.smoothmarkerbouncing
 //= require leaflet-control-geocoder/Control.Geocoder
 //= require Leaflet.AccuratePosition
+//= require leaflet-my-control
+//= require leaflet-draw/dist/leaflet.draw-src
 //= require turbolinks
 //= require_tree .
