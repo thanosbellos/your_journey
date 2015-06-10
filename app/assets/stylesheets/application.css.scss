@@ -11,8 +11,9 @@
  * file per style scope.
  *
  *= require btstrap_imports
+ *= require leaflet/dist/leaflet
  *= require leaflet-control-geocoder/Control.Geocoder
- *= require leaflet.locatecontrol/dist/L.Control.Locate.mapbox
+ *= require leaflet.locatecontrol/dist/L.Control.Locate.min
  *= require leaflet-draw/dist/leaflet.draw
  *= require_tree .
  *= require_self
