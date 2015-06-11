@@ -1,6 +1,13 @@
 Rails.application.routes.draw do
 
 
+
+  get 'trail_searches/new'
+
+  get 'trail_searches/index'
+
+  get 'trail_searches/search'
+
   devise_for :users, :controllers => { :omniauth_callbacks => 'users/omniauth_callbacks' ,
                                        :registrations=> 'users/registrations' }
   resources :users , only: [:show] do
@@ -14,8 +21,9 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
    get 'static_pages/home'
    root 'static_pages#home'
-
-   #get 'signup' => 'users#new'
+   get 'trail_searches/index'
+   get 'search' => 'trail_searches#new'
+    #get 'signup' => 'users#new'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

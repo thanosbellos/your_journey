@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150519152055) do
+ActiveRecord::Schema.define(version: 20150601005222) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,34 +32,34 @@ ActiveRecord::Schema.define(version: 20150519152055) do
   add_index "activities_users", ["user_id", "activity_id"], name: "index_activities_users_on_user_id_and_activity_id", using: :btree
 
   create_table "points", force: :cascade do |t|
-    t.integer   "tracksegment_id"
-    t.string    "name"
-    t.geography "lonlatheight",    limit: {:srid=>4326, :type=>"point", :has_z=>true, :geographic=>true}
-    t.datetime  "created_at",                                                                             null: false
-    t.datetime  "updated_at",                                                                             null: false
+    t.integer  "tracksegment_id"
+    t.string   "name"
+    t.geometry "loc",             limit: {:srid=>3785, :type=>"point"}
+    t.datetime "created_at",                                            null: false
+    t.datetime "updated_at",                                            null: false
   end
 
   add_index "points", ["tracksegment_id"], name: "index_points_on_tracksegment_id", using: :btree
 
   create_table "tracks", force: :cascade do |t|
-    t.string    "name"
-    t.geography "path",          limit: {:srid=>4326, :type=>"multi_line_string", :geographic=>true}
-    t.geography "start",         limit: {:srid=>4326, :type=>"point", :geographic=>true}
-    t.geography "finish",        limit: {:srid=>4326, :type=>"point", :geographic=>true}
-    t.integer   "trail_id"
-    t.datetime  "created_at",                                                                         null: false
-    t.datetime  "updated_at",                                                                         null: false
-    t.string    "trackgeometry"
-    t.geography "merged_path",   limit: {:srid=>4326, :type=>"line_string", :geographic=>true}
+    t.string   "name"
+    t.geometry "path",          limit: {:srid=>3785, :type=>"multi_line_string"}
+    t.geometry "start",         limit: {:srid=>3785, :type=>"point"}
+    t.geometry "finish",        limit: {:srid=>3785, :type=>"point"}
+    t.integer  "trail_id"
+    t.datetime "created_at",                                                      null: false
+    t.datetime "updated_at",                                                      null: false
+    t.geometry "merged_path",   limit: {:srid=>3785, :type=>"line_string"}
+    t.string   "trackgeometry"
   end
 
   add_index "tracks", ["trail_id"], name: "index_tracks_on_trail_id", using: :btree
 
   create_table "tracksegments", force: :cascade do |t|
-    t.integer   "track_id"
-    t.geography "tracksegment_path", limit: {:srid=>4326, :type=>"line_string", :geographic=>true}
-    t.datetime  "created_at",                                                                       null: false
-    t.datetime  "updated_at",                                                                       null: false
+    t.integer  "track_id"
+    t.geometry "tracksegment_path", limit: {:srid=>3785, :type=>"line_string"}
+    t.datetime "created_at",                                                    null: false
+    t.datetime "updated_at",                                                    null: false
   end
 
   add_index "tracksegments", ["track_id"], name: "index_tracksegments_on_track_id", using: :btree

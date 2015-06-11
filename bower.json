@@ -1,0 +1,22 @@
+{
+  "name": "your_journey",
+  "version": "0.0.0",
+  "homepage": "https://github.com/thanosbellos/your_journey",
+  "authors": [
+    "Thanos Bellos <thanosbellos@me.com>"
+  ],
+  "description": "My Thesis",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/assets/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "esri-leaflet-geocoder": "~1.0.0-rc.4",
+    "leaflet-control-geocoder": "~1.1.0"
+  }
+}
