@@ -6,7 +6,6 @@ class TrailSearchesController < ApplicationController
   end
 
   def search
-    puts params[:lnglat]
     lonlat = params[:lnglat].split(",").map do |coordinate|
       coordinate.to_f
     end
@@ -38,7 +37,6 @@ class TrailSearchesController < ApplicationController
       @geojson = {"message": "Unfortunately there are no trails in that radius"}
     end
 
-    puts @geojson
 
 
 

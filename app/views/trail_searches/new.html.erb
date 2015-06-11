@@ -1,29 +1,24 @@
-<style>
-.ui-button {
-  background:#3887BE;
-  color:#FFF;
-  display:block;
-  position:relative;
-  bottom:0%;left:50%;
-  width:160px;
-  margin:-20px 0 0 -80px;
-  z-index:100;
-  text-align:center;
-  padding:10px;
-  border:1px solid rgba(0,0,0,0.4);
-  border-radius:3px;
-  }
-  .ui-button:hover {
-    background:#3074a4;
-    color:#fff;
-    }
-  </style>
+  <div class = "row">
+    <h3> Search Options </h3>
+    <ul class= "nav nav-pills">
+      <li class="active"><a href="#search-near-point" aria-controls="search-near-point" role="tab" data-toggle="tab">Search Trails Near You</a></li>
+      <li> <a href="#search-with-destination"aria-controls="search-with-destination" role="tab" data-toggle="tab"> Search your destination </a></li>
+    </ul>
 
+  </div>
   <div class="row">
-  <div id='map'></div>
-</div>
+  </div>
+
 <div class="row">
-  <%= form_tag({controller: "trail_searches" , action: "search"} , method: "get", remote: true, id: 'trail-search-form') do  %>
+</div>
+
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="search-near-point">
+       <div id='map'>
+  </div>
+
+
+    <%= form_tag({controller: "trail_searches" , action: "search"} , method: "get", remote: true, id: 'trail-search-form') do  %>
     <%= label_tag(:radius , "radius:") %>
     <%= number_field_tag 'radius', '500' , min:500 ,step: 2000 %>
     <%= label_tag(:location , "location:") %>
@@ -31,8 +26,13 @@
     <%= hidden_field_tag(:lnglat) %>
     <%= submit_tag("search") %>
   <% end %>
+
 </div>
+<div role="rabpanel" class="tab-pane" id="search-with-destination"> asdf</div>
+</div>
+
 <div class="row" id="results">
+
 </div>
 
 

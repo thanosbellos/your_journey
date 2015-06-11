@@ -1,23 +1,25 @@
 $( document).ready(function() {
   clearFields();
   var path = window.location.pathname;
-  if(path.search(/\/search$/) -1){
+
+  if((path.search(/\/search$/) -1)){
+    clearFields();
     map = initializeMap();
     drawnFeatureGroup = L.featureGroup().addTo(map);
     resultsFeatureLayer = undefined;
 
-    drawControl = addDrawControl(map , drawnFeatureGroup);
+   if($(window).width() >1050){
+
+     drawControl = addDrawControl(map , drawnFeatureGroup);
+
+    }
 
     geocodeControl = addGeocodeControl(map);
 
     geolocationControl = L.control.accurateLocateControl({position: 'topright',featureGroup: drawnFeatureGroup,
                                                           strings: {title: "Show me where I am"}
                                                         });
-
-    drawControl.setDrawingOptions({
-      marker: false
-    });
-    map.addControl(geolocationControl);
+    geolocationControl.addTo(map);
     $("#radius").change(function(){
      radius = $("#radius").val();
      drawnFeatureGroup.eachLayer(function(layer){
@@ -28,8 +30,8 @@ $( document).ready(function() {
     });
     $("#trail-search-form").on("ajax:success", function(e, data , status ,xhr){
      if(typeof data.message =='undefined'){
-        drawnFeatureGroup.addLayer(L.mapbox.featureLayer(data));
-
+       resultsFeatureLayer = L.mapbox.featureLayer(data);
+       drawnFeatureGroup.addLayer(resultsFeatureLayer);
          $("#results").append(xhr.responseText)
     } else {
       $("#results").append(data.message)
@@ -37,11 +39,10 @@ $( document).ready(function() {
 
    })
    $("#trail-search-form").on("ajax:before", function(e , data, status, xhr){
-   $("#results").empty();
      if(typeof resultsFeatureLayer !=='undefined'){
           map.removeLayer(resultsFeatureLayer)
      }
-     if($("#location:hidden").val()==''){
+     if($("#lnglat:hidden").val()== undefined){
        return false;
      }
    });
@@ -89,7 +90,6 @@ function addDrawControl(_map , _featureGroup){
     setLocation(position,_map);
   });
   _map.on('draw:drawstart',function(e){
-    console.log("asdf");
     geolocationControl.stopGeolocate();
   })
   _map.on('draw:deleted' , function(e) {
