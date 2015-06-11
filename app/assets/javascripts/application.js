@@ -17,6 +17,6 @@
 //= require leaflet-control-geocoder/Control.Geocoder
 //= require Leaflet.AccuratePosition
 //= require leaflet-my-control
-//= require leaflet-draw/dist/leaflet.draw-src
+//= require leaflet-draw/dist/leaflet.draw
 //= require turbolinks
 //= require_tree .
