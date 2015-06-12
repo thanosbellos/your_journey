@@ -13,9 +13,7 @@
  *= require btstrap_imports
  *= require leaflet/dist/leaflet
  *= require leaflet-control-geocoder/Control.Geocoder
- *= require leaflet.locatecontrol/dist/L.Control.Locate.min
  *= require leaflet-draw/dist/leaflet.draw
- *= require leaflet-routing-machine
  *= require_tree .
  *= require_self
  */
