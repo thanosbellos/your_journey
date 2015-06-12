@@ -1,3 +1,55 @@
 // Place all the styles related to the TrailSearches controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+//
+//
+//
+.fullscreen-container{
+  position:absolute;
+  left:0px;
+  width:100%;
+}
+
+#fake{
+  min-height:500px;
+}
+  #point-map {
+    height:500px;
+    width:100%
+  };
+
+#inputs,
+#errors,
+#directions {
+    position: absolute;
+    width: 33.3333%;
+    max-width: 300px;
+    min-width: 200px;
+    max-height:500px;
+}
+
+#inputs {
+    z-index: 10;
+    top: 0px;
+    left: 5px;
+}
+
+#directions {
+    z-index: 99;
+    background: rgba(0,0,0,.8);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+#errors {
+    z-index: 8;
+    opacity: 0;
+    padding: 10px;
+    border-radius: 0 0 3px 3px;
+    background: rgba(0,0,0,.25);
+    top: 90px;
+    left: 10px;
+}
+

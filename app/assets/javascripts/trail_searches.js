@@ -1,25 +1,27 @@
 $( document).ready(function() {
   clearFields();
   var path = window.location.pathname;
+  var active = $("div.active").attr("id");
+  mapPointDivId = 'point-map';
 
-  if((path.search(/\/search$/) -1)){
+  if((path.search(/\/search$/)!= -1)){
     clearFields();
-    map = initializeMap();
-    drawnFeatureGroup = L.featureGroup().addTo(map);
+    pointMap = initializeMap();
+    drawnFeatureGroup = L.featureGroup().addTo(pointMap);
     resultsFeatureLayer = undefined;
 
    if($(window).width() >1050){
 
-     drawControl = addDrawControl(map , drawnFeatureGroup);
+     drawControl = addDrawControl(pointMap , drawnFeatureGroup);
 
     }
 
-    geocodeControl = addGeocodeControl(map);
+    geocodeControl = addGeocodeControl(pointMap);
 
     geolocationControl = L.control.accurateLocateControl({position: 'topright',featureGroup: drawnFeatureGroup,
                                                           strings: {title: "Show me where I am"}
                                                         });
-    geolocationControl.addTo(map);
+    geolocationControl.addTo(pointMap);
     $("#radius").change(function(){
      radius = $("#radius").val();
      drawnFeatureGroup.eachLayer(function(layer){
@@ -55,8 +57,9 @@ $( document).ready(function() {
 
 function initializeMap(){
 // set up my map and set zoom
-  L.mapbox.accessToken = 'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6InZqbFEtSk0ifQ.nLEw7BjpabHkHfC1g0Gr_A';
-  var map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
+
+  L.mapbox.accessToken = 'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A';
+  var map = L.mapbox.map('point-map', 'thanosbel.lmm46d4d');
   map.setZoom(2);
   return map;
 
@@ -109,6 +112,7 @@ function addGeocodeControl(_map, _featureGroup){
 
 
 function markerFromGeocode(result){
+
   geolocationControl.stopGeolocate();
   if(this._geocodeMarker){
     this._map.removeLayer(this._geocodeMarker);
@@ -140,18 +144,23 @@ function addCustomCircleMarker(position , _featureGroup){
                         bounceHeight: 25
                       });
   _featureGroup.addLayer(userMarker);
-  userMarker.bounce(3);
 
+  userMarker.bounce(3);
+  console.log(userMarker);
   userCircle = L.circle();
   userMarker._circle = userCircle;
   userMarker.on('drag' , function(e){
     userCircle.setLatLng(userMarker.getLatLng());
   });
-
   userCircle.setLatLng(position);
+  console.log(userCircle);
+
   userCircle._marker = userMarker;
   userCircle.setRadius($("#radius").val());
+  console.log(userCircle);
+  console.log(_featureGroup);
    _featureGroup.addLayer(userCircle)
+  console.log(userCircle);
   window.setTimeout(function(){
     _featureGroup._map.setView(position , 13);
   },3000);

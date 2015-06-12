@@ -1,38 +1,28 @@
-  <div class = "row">
+
+<div class="fullscreen-container">
+  <div id="point-map">
+  </div>
+<div id='inputs'></div>
+<div id='errors'></div>
+<div id='directions'>
+  <div id='routes'>
+    <h6> Mapbox Suggested routes </h6>
+  </div>
+  <div id='instructions'></div>
+</div>
+
+  <div class="container">
+    <div class="row">
     <h3> Search Options </h3>
     <ul class= "nav nav-pills">
       <li class="active"><a href="#search-near-point" aria-controls="search-near-point" role="tab" data-toggle="tab">Search Trails Near You</a></li>
       <li> <a href="#search-with-destination"aria-controls="search-with-destination" role="tab" data-toggle="tab"> Search your destination </a></li>
     </ul>
-
-  </div>
-  <div class="row">
   </div>
 
-<div class="row">
-</div>
-
-<div class="tab-content">
-  <div role="tabpanel" class="tab-pane active" id="search-near-point">
-       <div id='map'>
   </div>
 
-
-    <%= form_tag({controller: "trail_searches" , action: "search"} , method: "get", remote: true, id: 'trail-search-form') do  %>
-    <%= label_tag(:radius , "radius:") %>
-    <%= number_field_tag 'radius', '500' , min:500 ,step: 2000 %>
-    <%= label_tag(:location , "location:") %>
-    <%= text_field_tag(:location) %>
-    <%= hidden_field_tag(:lnglat) %>
-    <%= submit_tag("search") %>
-  <% end %>
-
-</div>
-<div role="rabpanel" class="tab-pane" id="search-with-destination"> asdf</div>
 </div>
 
-<div class="row" id="results">
-
-</div>
 
 
