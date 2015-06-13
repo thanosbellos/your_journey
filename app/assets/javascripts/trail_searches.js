@@ -76,7 +76,15 @@ function addDrawControl(_map , _featureGroup){
           polyline: false,
           polygon: false,
           circle: false,
-          rectangle: false
+          rectangle: false,
+          marker: {
+            icon: L.mapbox.marker.icon({
+                              'marker-size': 'medium',
+                              'marker-symbol': 'star',
+                              'marker-color': '00E263'
+                             })
+
+            }
        },
         edit: {
         edit:false,
@@ -97,6 +105,8 @@ function addDrawControl(_map , _featureGroup){
   })
   _map.on('draw:deleted' , function(e) {
     geolocationControl.stopGeolocate();
+    console.log("lala");
+
   });
 
   _map.addControl(drawControl);
@@ -171,24 +181,24 @@ function addCustomCircleMarker(position , _featureGroup){
   userMarker.on('remove' , function(e){
      clearFields();
      this._status = 'removed';
-
-     if(e.target._circle._status !== 'removed'){
-
-      _featureGroup.removeLayer( e.target._circle);
+     if(this._circle._status !== 'removed'){
+       this._circle.fire('click');
+       this._circle._status = undefined;
      }
 
   });
 
-    userCircle.on('remove' , function(e){
-     clearFields();
-     this._status = 'removed'
-     if(e.target._marker._status !== 'removed'){
-
-      _featureGroup.removeLayer( e.target._marker);
-     }
+  userCircle.on('remove' , function(e){
+    clearFields();
+    this._status = 'removed';
+    if(this._marker._status !=='removed'){
+      this._marker.fire('click');
+      this._marker._status = undefined;
+    }
 
 
   });
+
 
 
   return {marker:userMarker , circle:userCircle};
