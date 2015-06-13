@@ -18,5 +18,6 @@
 //= require Leaflet.AccuratePosition
 //= require leaflet-my-control
 //= require leaflet-draw/dist/leaflet.draw
+//= require mapbox-directions.js/dist/mapbox.directions
 //= require turbolinks
 //= require_tree .

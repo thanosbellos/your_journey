@@ -32,7 +32,7 @@ $( document).ready(function() {
     });
     $("#trail-search-form").on("ajax:success", function(e, data , status ,xhr){
      if(typeof data.message =='undefined'){
-       resultsFeatureLayer = L.mapbox.featureLayer(data);
+       resultsFeatureLayer = L.geoJson(data,{pointToLayer: L.mapbox.marker.style});
        drawnFeatureGroup.addLayer(resultsFeatureLayer);
          $("#results").append(xhr.responseText)
     } else {
@@ -42,7 +42,7 @@ $( document).ready(function() {
    })
    $("#trail-search-form").on("ajax:before", function(e , data, status, xhr){
      if(typeof resultsFeatureLayer !=='undefined'){
-          map.removeLayer(resultsFeatureLayer)
+         pointMap.removeLayer(resultsFeatureLayer)
      }
      if($("#lnglat:hidden").val()== undefined){
        return false;
@@ -146,21 +146,16 @@ function addCustomCircleMarker(position , _featureGroup){
   _featureGroup.addLayer(userMarker);
 
   userMarker.bounce(3);
-  console.log(userMarker);
   userCircle = L.circle();
   userMarker._circle = userCircle;
   userMarker.on('drag' , function(e){
     userCircle.setLatLng(userMarker.getLatLng());
   });
   userCircle.setLatLng(position);
-  console.log(userCircle);
 
   userCircle._marker = userMarker;
   userCircle.setRadius($("#radius").val());
-  console.log(userCircle);
-  console.log(_featureGroup);
    _featureGroup.addLayer(userCircle)
-  console.log(userCircle);
   window.setTimeout(function(){
     _featureGroup._map.setView(position , 13);
   },3000);

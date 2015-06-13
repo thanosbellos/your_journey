@@ -2,13 +2,17 @@
 <div class="fullscreen-container">
   <div id="point-map">
   </div>
-<div id='inputs'></div>
-<div id='errors'></div>
-<div id='directions'>
-  <div id='routes'>
-    <h6> Mapbox Suggested routes </h6>
+  <div id='inputs'></div>
+  <div id='errors'></div>
+  <div id='directions'>
+    <h5> Mapbox Suggested routes </h5>
+
+    <div id='routes'>
+
+      </div>
+  <div id='instructions'>
+    <h5> Our suggestions </h5>
   </div>
-  <div id='instructions'></div>
 </div>
 
   <div class="container">
@@ -20,9 +24,29 @@
     </ul>
   </div>
 
+  <div class="row">
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="search-near-point">
+        <%= form_tag({controller: "trail_searches" , action: "search"} , method: "get", remote: true, id: 'trail-search-form') do  %>
+        <%= label_tag(:radius , "radius:") %>
+        <%= number_field_tag 'radius', '500' , min:500 ,step: 2000 %>
+        <%= label_tag(:location , "location:") %>
+        <%= text_field_tag(:location) %>
+        <%= hidden_field_tag(:lnglat) %>
+        <%= submit_tag("search") %>
+        <% end %>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="search-with-destination"> asdf</div>
+      </div>
+    </div>
   </div>
 
+
+
+
+
 </div>
+
 
 
 
