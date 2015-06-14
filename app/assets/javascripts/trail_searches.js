@@ -27,7 +27,7 @@ $( document).ready(function() {
     $("#radius").change(function(){
      radius = $("#radius").val();
      drawnFeatureGroup.eachLayer(function(layer){
-       if(typeof layer._mradius !== 'undefined'){
+       if(typeof layer._mRadius !== 'undefined'){
           layer.setRadius(radius);
        }
      });
