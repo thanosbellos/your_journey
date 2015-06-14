@@ -8,7 +8,9 @@ $( document).ready(function() {
     clearFields();
     pointMap = initializeMap();
     drawnFeatureGroup = L.featureGroup().addTo(pointMap);
-    resultsFeatureLayer = undefined;
+    resultsFeatureLayer = L.geoJson(undefined,{pointToLayer: L.mapbox.marker.style});
+
+
 
    if($(window).width() >1050){
 
@@ -25,16 +27,20 @@ $( document).ready(function() {
     $("#radius").change(function(){
      radius = $("#radius").val();
      drawnFeatureGroup.eachLayer(function(layer){
-       if(typeof layer._circle == 'undefined'){
+       if(typeof layer._mradius !== 'undefined'){
           layer.setRadius(radius);
        }
      });
     });
     $("#trail-search-form").on("ajax:success", function(e, data , status ,xhr){
      if(typeof data.message =='undefined'){
-       resultsFeatureLayer = L.geoJson(data,{pointToLayer: L.mapbox.marker.style});
-       drawnFeatureGroup.addLayer(resultsFeatureLayer);
-         $("#results").append(xhr.responseText)
+       resultsFeatureLayer.addData(data);
+       resultsFeatureLayer.addTo(pointMap);
+       resultsFeatureLayer.eachLayer(function(layer){
+         drawnFeatureGroup.addLayer(layer);
+       })
+
+                $("#results").append(xhr.responseText)
     } else {
       $("#results").append(data.message)
     }
@@ -42,7 +48,12 @@ $( document).ready(function() {
    })
    $("#trail-search-form").on("ajax:before", function(e , data, status, xhr){
      if(typeof resultsFeatureLayer !=='undefined'){
-         pointMap.removeLayer(resultsFeatureLayer)
+         pointMap.removeLayer(resultsFeatureLayer);
+         resultsFeatureLayer.eachLayer(function(layer){
+           drawnFeatureGroup.removeLayer(layer);
+         })
+         resultsFeatureLayer.clearLayers();
+
      }
      if($("#lnglat:hidden").val()== undefined){
        return false;
@@ -102,10 +113,12 @@ function addDrawControl(_map , _featureGroup){
   });
   _map.on('draw:drawstart',function(e){
     geolocationControl.stopGeolocate();
+  });
+  _map.on('draw:deletestart', function(e){
+    console.log(_featureGroup);
   })
   _map.on('draw:deleted' , function(e) {
     geolocationControl.stopGeolocate();
-    console.log("lala");
 
   });
 
@@ -149,7 +162,8 @@ function addCustomCircleMarker(position , _featureGroup){
                               'marker-size': 'medium',
                               'marker-symbol': 'star',
                               'marker-color': '00E263'
-                             })
+                             }),
+                             zIndexOffset: 100
                     }).setBouncingOptions({
                         bounceHeight: 25
                       });
@@ -182,7 +196,7 @@ function addCustomCircleMarker(position , _featureGroup){
      clearFields();
      this._status = 'removed';
      if(this._circle._status !== 'removed'){
-       this._circle.fire('click');
+       this._circle.fireEvent('click');
        this._circle._status = undefined;
      }
 
@@ -192,7 +206,7 @@ function addCustomCircleMarker(position , _featureGroup){
     clearFields();
     this._status = 'removed';
     if(this._marker._status !=='removed'){
-      this._marker.fire('click');
+      this._marker.fireEvent('click');
       this._marker._status = undefined;
     }
 
@@ -213,9 +227,13 @@ function setLocation(latlng ,map , name){
         var r = results[0];
         name = r.name
         $("#location").val(name);
+        $("#location").change();
     });
   }
-  $("#location").val(name);
+  if(name){
+    $("#location").val(name);
+    $("#loction").change();
+  }
 }
 
 function clearFields(){
