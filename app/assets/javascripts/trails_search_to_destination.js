@@ -1,25 +1,41 @@
 $( document).ready(function() {
   var path = window.location.pathname;
-  if((path.search(/\/search$/)!== -1)){
+  if((path.search(/\/trail_searches\/new$/)!== -1)){
 
     zoomControl = pointMap.zoomControl;
     directions = L.mapbox.directions({units: 'metric'});
-    var directionsLayer = L.mapbox.directions.layer(directions);
+    directionsLayer = L.mapbox.directions.layer(directions);
     var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(pointMap);
     var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions).addTo(pointMap);
     var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(pointMap);
     var locationName;
-
-    $("#location").change( function(){
-      locationName = $("#location").val();
-      console.log(locationName);
+    x = 0;
+    $("#origin").change( function(){
+      locationName = $("#origin").val();
     })
+
+    directions.on('load' , function(e){
+      console.log(e);
+
+      var origin = e.origin;
+      var destination = e.destination;
+      var route = e.routes[0];
+      var routeGeoJson = {type: route.geometry.type , coordinates: route.geometry.coordinates};
+      $("#origin_lnglat:hidden").val([origin.geometry.coordinates[0] , origin.geometry.coordinates[1]]);
+      $("#destination_lnglat:hidden").val([destination.geometry.coordinates[0], destination.geometry.coordinates[1]]);
+      $("#sample_route:hidden").val(JSON.stringify(routeGeoJson));
+
+      $("#search-button").click();
+
+
+    });
 
      $('#directions').hide();
      $('#inputs').hide();
      $('#errors').hide();
      $('#routes').hide();
      $('#instructions').hide();
+     $('label[for=destination] , input#destination').hide();
 
 
 
@@ -34,12 +50,13 @@ $( document).ready(function() {
 
           directionsLayer.addTo(pointMap);
           pointMap.removeLayer(drawnFeatureGroup);
-
+          $('label[for=destination] , input#destination').show();
           $('#directions').show();
           $('#inputs').show();
           $('#errors').show();
           $('#routes').show();
           $('#instructions').show();
+          $('label[for=origin] , input#origin').hide();
 
 
           $('.leaflet-top').hide();

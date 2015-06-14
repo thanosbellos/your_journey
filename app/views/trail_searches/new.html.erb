@@ -26,17 +26,23 @@
 
   <div class="row">
     <div class="tab-content">
-      <div role="tabpanel" class="tab-pane active" id="search-near-point">
-        <%= form_tag({controller: "trail_searches" , action: "search"} , method: "get", remote: true, id: 'trail-search-form') do  %>
+        <%= form_tag({controller: "trail_searches" , action: "search"} , method: "post", remote: true, id: 'trail-search-form') do  %>
         <%= label_tag(:radius , "radius:") %>
-        <%= number_field_tag 'radius', '500' , min:500 ,step: 2000 %>
-        <%= label_tag(:location , "location:") %>
-        <%= text_field_tag(:location) %>
-        <%= hidden_field_tag(:lnglat) %>
-        <%= submit_tag("search") %>
-        <% end %>
+        <%= number_field_tag 'radius', '500' , min:500 ,step: 2000 %></br>
+        <%= label_tag(:origin , "Origin:") %>
+        <%= text_field_tag(:origin) %>
+        <%= hidden_field_tag(:origin_lnglat) %>
+
+      <div role="tabpanel" class="tab-pane active" id="search-near-point">
       </div>
-      <div role="tabpanel" class="tab-pane" id="search-with-destination"> asdf</div>
+      <div role="tabpanel" class="tab-pane" id="search-with-destination">
+        <%= hidden_field_tag(:destination_lnglat) %>
+        <%= hidden_field_tag(:sample_route) %>
+        <%= submit_tag("search", id: "search-button") %>
+        <% end %>
+
+
+      </div>
       </div>
     </div>
   </div>

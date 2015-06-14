@@ -4,16 +4,23 @@ class TrailSearch
 
 
   def initialize(opts={})
-    puts opts[:start_loc]
     start_loc  = factory.point(*opts[:start_loc])
     finish_loc =  factory.point(*opts[:finish_loc]) if opts[:finish_loc]
-    target_obj =  (opts[:finish_loc]||opts[:route]) ?
-                  factory.line_string([start_loc , finish_loc]) :
-                  start_loc
+    route = JSON.parse(opts[:sample_route]) if(opts[:sample_route])
+
+    if(route || finish_loc)
+      if(route)
+        puts coder
+        target_obj = coder.decode(route)
+      else
+
+      end
+    else
+      target_obj =start_loc
+    end
     @mercator_radius = (opts[:radius] * (1 / Math.cos(start_loc.y / 180.0 * Math::PI))).ceil
     @target_object_for_buffer = target_obj.projection
 
-    puts @target_object_for_buffer
 
   end
 
@@ -50,5 +57,10 @@ class TrailSearch
   def geometry_from_text(spatial_object)
      Arel.spatial(spatial_object.as_text)
   end
+
+  def coder
+    @coder ||= RGeo::GeoJSON.coder(geo_factory: factory)
+  end
+
 
 end
