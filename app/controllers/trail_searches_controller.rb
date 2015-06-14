@@ -9,10 +9,9 @@ class TrailSearchesController < ApplicationController
 
     puts RGeo::GeoJSON.decode(params[:sample_route])
     origin_lonlat = params[:origin_lnglat].split(",").map do |coordinate|
-    destinaton_lonlat = nil
-    sample_route = nil
       coordinate.to_f
     end
+
 
     if(params[:destination_lnglat])
         destination_lonlat = params[:destination_lnglat].split(",").map do |coordinate|

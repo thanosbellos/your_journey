@@ -6,13 +6,16 @@ class TrailSearch
   def initialize(opts={})
     start_loc  = factory.point(*opts[:start_loc])
     finish_loc =  factory.point(*opts[:finish_loc]) if opts[:finish_loc]
-    route = JSON.parse(opts[:sample_route]) if(opts[:sample_route])
+    route_coordinates = Polylines::Decoder.decode_polyline(opts[:sample_route]) if (opts[:sample_route])
+    route = { "type": "LineString" , "coordinates": route_coordinates}
 
     if(route || finish_loc)
       if(route)
-        puts coder
-        target_obj = coder.decode(route)
+        puts route
+        target_obj = coder.decode(route.deep_stringify_keys)
       else
+
+        target_obj = factory.line_string([start_loc , finish_loc])
 
       end
     else

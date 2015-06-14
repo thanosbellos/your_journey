@@ -20,10 +20,10 @@ $( document).ready(function() {
       var origin = e.origin;
       var destination = e.destination;
       var route = e.routes[0];
-      var routeGeoJson = {type: route.geometry.type , coordinates: route.geometry.coordinates};
+      var encodedPolyline = polyline.encode(route.geometry.coordinates);
       $("#origin_lnglat:hidden").val([origin.geometry.coordinates[0] , origin.geometry.coordinates[1]]);
       $("#destination_lnglat:hidden").val([destination.geometry.coordinates[0], destination.geometry.coordinates[1]]);
-      $("#sample_route:hidden").val(JSON.stringify(routeGeoJson));
+      $("#sample_route:hidden").val(encodedPolyline);
 
       $("#search-button").click();
 

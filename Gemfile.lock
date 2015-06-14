@@ -195,6 +195,7 @@ GEM
       cocaine (~> 0.5.3)
       mime-types
     pg (0.18.2)
+    polylines (0.3.0)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -351,6 +352,7 @@ DEPENDENCIES
   omniauth-facebook (~> 2.0.0)
   paperclip (~> 4.2.1)
   pg
+  polylines
   pry-rails (~> 0.3.4)
   puma
   rack-livereload
