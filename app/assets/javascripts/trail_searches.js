@@ -1,82 +1,13 @@
-$( document).ready(function() {
-  clearFields();
-  var path = window.location.pathname;
-  var active = $("div.active").attr("id");
-  mapPointDivId = 'point-map';
-
-  if((path.search(/\/trail_searches\/new$/)!= -1)){
-    clearFields();
-    pointMap = initializeMap();
-    drawnFeatureGroup = L.featureGroup().addTo(pointMap);
-    resultsFeatureLayer = L.geoJson(undefined,{pointToLayer: L.mapbox.marker.style});
-
-
-
-   if($(window).width() >1050){
-
-     drawControl = addDrawControl(pointMap , drawnFeatureGroup);
-
-    }
-
-    geocodeControl = addGeocodeControl(pointMap);
-
-    geolocationControl = L.control.accurateLocateControl({position: 'topright',featureGroup: drawnFeatureGroup,
-                                                          strings: {title: "Show me where I am"}
-                                                        });
-    geolocationControl.addTo(pointMap);
-    $("#radius").change(function(){
-     radius = $("#radius").val();
-     drawnFeatureGroup.eachLayer(function(layer){
-       if(typeof layer._mRadius !== 'undefined'){
-          layer.setRadius(radius);
-       }
-     });
-    });
-    $("#trail-search-form").on("ajax:success", function(e, data , status ,xhr){
-     if(typeof data.message =='undefined'){
-       resultsFeatureLayer.addData(data);
-       resultsFeatureLayer.addTo(pointMap);
-       resultsFeatureLayer.eachLayer(function(layer){
-         drawnFeatureGroup.addLayer(layer);
-       })
-
-                $("#results").append(xhr.responseText)
-    } else {
-      $("#results").append(data.message)
-    }
-
-   })
-   $("#trail-search-form").on("ajax:before", function(e){
-     if(typeof resultsFeatureLayer !=='undefined'){
-         pointMap.removeLayer(resultsFeatureLayer);
-         resultsFeatureLayer.eachLayer(function(layer){
-           drawnFeatureGroup.removeLayer(layer);
-         })
-         resultsFeatureLayer.clearLayers();
-
-     }
-     if($("#origin_lnglat:hidden").val()== undefined){
-       return false;
-     }
-   });
-
-
-  }
-});
 
 
 
 function initializeMap(){
 // set up my map and set zoom
 
-  L.mapbox.accessToken = 'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A';
+  L.mapbox.accessToken = "pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A";
   var map = L.mapbox.map('point-map', 'thanosbel.lmm46d4d');
-  map.setZoom(2);
+  map.setZoom(3);
   return map;
-
-
-// add my controls on map
-
 }
 
 function addDrawControl(_map , _featureGroup){
@@ -167,6 +98,7 @@ function addCustomCircleMarker(position , _featureGroup){
                     }).setBouncingOptions({
                         bounceHeight: 25
                       });
+
   _featureGroup.addLayer(userMarker);
 
   userMarker.bounce(3);
@@ -183,6 +115,9 @@ function addCustomCircleMarker(position , _featureGroup){
   window.setTimeout(function(){
     userCircle._map.setView(position , 13);
   },3000);
+
+   circleMarkerLayer = L.featureGroup([userMarker,userCircle]);
+
   userMarker.on('drag' , function(e){
     userCircle.setLatLng(userMarker.getLatLng());
   });
@@ -254,10 +189,13 @@ function _setDestination(latlng , map , name){
 }
 
 function clearFields(){
- $("#origin:hidden").val('');
- $("#origin").empty();
- $("#destination:hidden").val('');
- $("#destination").empty();
+ //reset radius default value();
+ $("#origin").val('');
+
+ $("#origin_lnglat:hidden").val('');
+ $("#destination_lnglat:hidden").val('');
+ $("#destination").val('');
+ $("#sample_route:hidden").val('');
 }
 function clearCustomLayers(_featureGroup){
   _featureGroup.clearLayers();

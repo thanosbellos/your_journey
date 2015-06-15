@@ -7,7 +7,7 @@ class TrailSearch
     start_loc  = factory.point(*opts[:start_loc])
     finish_loc =  factory.point(*opts[:finish_loc]) if opts[:finish_loc]
     route_coordinates = Polylines::Decoder.decode_polyline(opts[:sample_route]) if (opts[:sample_route])
-    route = { "type": "LineString" , "coordinates": route_coordinates}
+    route = { "type": "LineString" , "coordinates": route_coordinates} if route_coordinates
 
     if(route || finish_loc)
       if(route)
