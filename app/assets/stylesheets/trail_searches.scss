@@ -10,9 +10,9 @@
   width:100%;
 }
 
-#fake{
-  min-height:500px;
-}
+/*#fake{*/
+  /*min-height:500px;*/
+/*}*/
   #point-map {
     height:500px;
     width:100%
@@ -20,6 +20,7 @@
 
 #inputs,
 #errors,
+#suggestions,
 #directions {
     position: absolute;
     width: 33.3333%;
@@ -33,7 +34,6 @@
     top: 5px;
     left: 5px;
 }
-
 #directions {
     z-index: 99;
     background: rgba(0,0,0,.8);

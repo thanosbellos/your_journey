@@ -11,8 +11,8 @@ $( document ).ready(function() {
 });
 
 function trailShow(){
-  L.mapbox.accessToken = 'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6InZqbFEtSk0ifQ.nLEw7BjpabHkHfC1g0Gr_A';
-  var map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
+  L.mapbox.accessToken = 'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A';
+  var map = L.mapbox.map('point-map', 'thanosbel.lmm46d4d');
 
   var url = track_id.toString();
 

@@ -34,9 +34,15 @@ class Track < ActiveRecord::Base
   def to_geojson
     features = []
     track_id = self.id
-    trail_id = self.trail.id
+    trail = self.trail
+    trail_id = trail.id
 
-    features << CODER.entity_factory.feature(self.merged_path_geographic, "#{track_id}_path", {"stroke": "#fc4353"})
+    features << CODER.entity_factory.feature(self.merged_path_geographic,
+                                             "#{track_id}_path",
+                                             {
+                                               "stroke":"#fc4353",
+                                               "Name": "self.trail.name"
+                                              })
     features << CODER.entity_factory.feature(self.start_geographic,
                                              "#{track_id}_start" ,
                                              {"marker-color": "#00ff00",
@@ -189,7 +195,7 @@ class Track < ActiveRecord::Base
     end
 
     merge_track_segments
-
+    self.trail.save
     self.save
   end
 
@@ -202,7 +208,11 @@ class Track < ActiveRecord::Base
     self.merged_path_projected = new_path
     self.start = self.merged_path.start_point
     self.finish = self.merged_path.end_point
-
+    puts self.merged_path_geographic
+    ast_sql_length = "SELECT ST_length(ST_GeographyFromText('#{self.merged_path_geographic.as_text}'))"
+    length_in_kms = self.class.connection.execute(ast_sql_length ).values.flatten.first.to_f.round(3)/1000.0
+    puts length_in_kms
+    self.trail.length = length_in_kms
   end
 
 

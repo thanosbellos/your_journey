@@ -47,13 +47,13 @@ $( document).ready(function() {
     var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(pointMap);
 
     directions.on('load' , function(e){
+
+
       var origin = e.origin;
       var destination = e.destination;
       var route = e.routes[0];
       var encodedPolyline = polyline.encode(route.geometry.coordinates);
 
-      var originLonLat = $("#origin_lnglat:hidden");
-      var destinationLonLat = $("#destination_lnglat:hidden");
       var sampleRoute = $("#sample_route");
 
 
@@ -61,18 +61,43 @@ $( document).ready(function() {
 
 
 
-     originLonLat.val([origin.geometry.coordinates[0] , origin.geometry.coordinates[1]]);
-     destinationLonLat.val([destination.geometry.coordinates[0], destination.geometry.coordinates[1]]);
      sampleRoute.val(encodedPolyline);
-
-     originLonLat.data("prev-origin-lnglat-with-destination" , originLonLat.val());
-     destinationLonLat.data("prev-destination-lnglat-with-destination" , destinationLonLat.val());
      sampleRoute.data("prev-sample-route-with-destination" , sampleRoute.val());
 
       $("#search-button").click();
 
 
     });
+
+    directions.on('origin', function(e){
+      var originLonLat = $("#origin_lnglat:hidden");
+
+      if(typeof e.origin !=='undefined'){
+        originLonLat.val([e.origin.geometry.coordinates[0] ,e.origin.geometry.coordinates[1]]);
+      } else{
+
+        originLonLat.val('');
+
+
+      }
+
+      originLonLat.data("prev-origin-lnglat-with-destination" , originLonLat.val());
+    });
+
+    directions.on('destination', function(e){
+       var destinationLonLat = $("#destination_lnglat:hidden");
+
+      if(typeof e.destination !=='undefined'){
+        destinationLonLat.val([e.destination.geometry.coordinates[0] ,e.destination.geometry.coordinates[1]]);
+      } else{
+
+        destinationLonLat.val('');
+
+      }
+      console.log(destinationLonLat.val());
+      destinationLonLat.data("prev-destination-lnglat-with-destination" , destinationLonLat.val());
+
+    })
 
 
     //listen to events on pages various changes
@@ -87,12 +112,12 @@ $( document).ready(function() {
 
     $("#trail-search-form").on("ajax:beforeSend", function(e,xhr){
      xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
-      console.log(xhr)
-      x = xhr
+
         var activeTabId = $("div.tab-pane.active").attr("id");
-         var originLngLat = $("#origin_lnglat:hidden");
-         var destinationLngLat = $("#destination_lnglat:hidden");
-         var route = $("#sample_route:hidden");
+        var originLngLat = $("#origin_lnglat:hidden");
+        var destinationLngLat = $("#destination_lnglat:hidden");
+        var route = $("#sample_route:hidden");
+
 
         var results = (activeTabId =="search-near-point") ? tracksNearPoint : tracksLikeSampleRoute
         results.eachLayer(function(layer){
@@ -119,6 +144,10 @@ $( document).ready(function() {
         results.eachLayer(function(layer){
            drawnFeatureGroup.addLayer(layer);
         });
+
+        //function to add info on our suggestions div
+        //
+        addSuggestionsInfo(results);
 
         $("#results").append(xhr.responseText);
       } else {
@@ -157,10 +186,11 @@ $( document).ready(function() {
 
 
 
+
           originLonLat.val(originLonLat.data("prev-origin-lnglat-with-destination"));
           destinationLonLat.val(destinationLonLat.data("prev-destination-lnglat-with-destination"));
           sampleRoute.val(sampleRoute.data("prev-sample-route-with-destination"));
-          console.log(originLonLat.val());
+
           if(originLonLat.val() == '' && userMarker.getLayers()[0]!== undefined){
             var userMarkerLatLng = userMarker.getLayers()[0].getLatLng();
             directions.setOrigin(userMarkerLatLng);
@@ -244,3 +274,37 @@ $( document).ready(function() {
      return this;
 }
 
+
+function addSuggestionsInfo(suggestions){
+
+  console.log(suggestions);
+
+  var  container = L.DomUtil.get("suggestions");
+  var routes = container.append('ul')
+      .selectAll('li')
+      .data(suggestions.routes)
+      .enter().append('li')
+      .attr('class' , 'mapbox-directions-route');
+
+      routes.append('div')
+          .attr('class', 'mapbox-directions-route-heading')
+          .text(function(route) {console.log(route)});
+
+        routes.on('mouseover', function (route) {
+            directions.highlightRoute(route);
+        });
+
+        routes.on('mouseout', function () {
+            directions.highlightRoute(null);
+        });
+
+        //routes.on('click', function (route) {
+            //directions.selectRoute(route);
+        //});
+        //
+            //directions.on('selectRoute', function (e) {
+        //container.selectAll('.mapbox-directions-route')
+            //.classed('mapbox-directions-route-active', function (route) { return route === e.route; });
+    //});
+
+}
