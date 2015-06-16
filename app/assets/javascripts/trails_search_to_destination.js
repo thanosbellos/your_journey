@@ -40,7 +40,7 @@ $( document).ready(function() {
 
 
     var zoomControl = pointMap.zoomControl;
-    var directions = L.mapbox.directions({units: 'metric'});
+    directions = L.mapbox.directions({units: 'metric'});
     var directionsLayer = L.mapbox.directions.layer(directions);
     var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(pointMap);
     var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions).addTo(pointMap);
@@ -149,15 +149,22 @@ $( document).ready(function() {
         clearFields();
 
         if(newTabId == 'search-with-destination'){
+          directionsLayer.addTo(pointMap);
+
            var originLonLat = $("#origin_lnglat:hidden");
            var destinationLonLat =$("#destination_lnglat:hidden");
            var sampleRoute = $("#sample_route");
 
 
+
           originLonLat.val(originLonLat.data("prev-origin-lnglat-with-destination"));
           destinationLonLat.val(destinationLonLat.data("prev-destination-lnglat-with-destination"));
           sampleRoute.val(sampleRoute.data("prev-sample-route-with-destination"));
-
+          console.log(originLonLat.val());
+          if(originLonLat.val() == '' && userMarker.getLayers()[0]!== undefined){
+            var userMarkerLatLng = userMarker.getLayers()[0].getLatLng();
+            directions.setOrigin(userMarkerLatLng);
+          }
          $('.leaflet-top').hide();
 
           directionsDivs.forEach(function(value){
@@ -165,7 +172,6 @@ $( document).ready(function() {
           });
           $('label[for=origin] , input#origin').hide();
 
-          directionsLayer.addTo(pointMap);
           drawnFeatureGroup.addLayer(tracksLikeSampleRoute);
 
         }else{
