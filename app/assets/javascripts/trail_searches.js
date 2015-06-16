@@ -1,6 +1,3 @@
-
-
-
 function initializeMap(){
 // set up my map and set zoom
 
@@ -10,7 +7,7 @@ function initializeMap(){
   return map;
 }
 
-function addDrawControl(_map , _featureGroup){
+function addDrawControl(_map , _drawnFeatureGroup , _userMarkerFeatureGroup){
 
   var drawOnMapOptions = {
        position: 'topleft',
@@ -30,34 +27,55 @@ function addDrawControl(_map , _featureGroup){
        },
         edit: {
         edit:false,
-        featureGroup: _featureGroup
+        featureGroup: _drawnFeatureGroup
        }
     }
 
   var drawControl = new L.Control.Draw(drawOnMapOptions);
   _map.on('draw:created', function(e) {
-    geolocationControl.stopGeolocate();
-    clearCustomLayers(_featureGroup);
-    position = e.layer._latlng;
-    circleMarker = addCustomCircleMarker(position , _featureGroup);
-    _setOrigin(position,_map);
-  });
+
+    var position = e.layer._latlng;
+    addCustomCircleMarker(position, _userMarkerFeatureGroup);
+    _userMarkerFeatureGroup.eachLayer( function(layer){
+      _drawnFeatureGroup.addLayer(layer);
+    });
+    _setOrigin(position);
+
+    });
+
   _map.on('draw:drawstart',function(e){
-    geolocationControl.stopGeolocate();
+    _drawnFeatureGroup.clearLayers();
+
+    });
+  _map.on('draw:drawstop',function(e){
+    if(_drawnFeatureGroup.getLayers().length ==0){
+      _userMarkerFeatureGroup.eachLayer(function(layer){
+        _drawnFeatureGroup.addLayer(layer);
+      })
+    }
   });
-  _map.on('draw:deletestart', function(e){
-    console.log(_featureGroup);
-  })
   _map.on('draw:deleted' , function(e) {
-    geolocationControl.stopGeolocate();
-
+    if(e.layers.getLayers().length !=0){
+    _userMarkerFeatureGroup.eachLayer(function(layer){
+      if(e.layers.hasLayer(layer)){
+        clearFields();
+        _userMarkerFeatureGroup.removeLayer(layer)
+      }
+    })
+    }
   });
 
+  _map.on('draw:deletestart' , function(e){
+    _userMarkerFeatureGroup.eachLayer(function(layer){
+      layer._status = undefined;
+    })
+
+  })
   _map.addControl(drawControl);
   return drawControl;
 }
 
-function addGeocodeControl(_map, _featureGroup){
+function addGeocodeControl(_map){
   var myGeocoder = L.Control.geocoder().addTo(_map);
   myGeocoder.markGeocode = markerFromGeocode;
   return  myGeocoder;
@@ -65,28 +83,10 @@ function addGeocodeControl(_map, _featureGroup){
 
 
 
-function markerFromGeocode(result){
-
-  geolocationControl.stopGeolocate();
-  if(this._geocodeMarker){
-    this._map.removeLayer(this._geocodeMarker);
-    this._map.removeLayer(this._geocodeCircle);
-  }
-  this._map.fitBounds(result.bbox);
-  var markerCircle =  addCustomCircleMarker([result.center.lat, result.center.lng] , drawnFeatureGroup);
-  this._geocodeMarker = markerCircle.marker;
-  this._geocodeCircle = markerCircle.circle;
-  this._geocodeMarker.bindPopup(result.html || result.name)
-  .addTo(this._map)
-  .openPopup();
-
-  _setOrigin(result.center,result.name|| result.html);
-  return this;
-}
 
 
-function addCustomCircleMarker(position , _featureGroup){
- var userMarker = L.marker( position, {
+function addCustomCircleMarker(position,_userMarkerFeatureGroup){
+  var userMarker = L.marker( position, {
                              draggable:true,
                              title: 'Start Search Point- You can move me around if you want',
                              icon: L.mapbox.marker.icon({
@@ -98,25 +98,25 @@ function addCustomCircleMarker(position , _featureGroup){
                     }).setBouncingOptions({
                         bounceHeight: 25
                       });
-
-  _featureGroup.addLayer(userMarker);
+  _userMarkerFeatureGroup.clearLayers();
+  _userMarkerFeatureGroup.addLayer(userMarker);
 
   userMarker.bounce(3);
-  userCircle = L.circle();
-  userMarker._circle = userCircle;
-  userMarker.on('drag' , function(e){
-    userCircle.setLatLng(userMarker.getLatLng());
-  });
+  var userCircle = L.circle();
   userCircle.setLatLng(position);
 
-  userCircle._marker = userMarker;
+
   userCircle.setRadius($("#radius").val());
-   _featureGroup.addLayer(userCircle)
+  _userMarkerFeatureGroup.addLayer(userCircle);
+
   window.setTimeout(function(){
     userCircle._map.setView(position , 13);
-  },3000);
+  },1500);
 
-   circleMarkerLayer = L.featureGroup([userMarker,userCircle]);
+
+  userMarker._circle = userCircle;
+  userCircle._marker = userMarker;
+
 
   userMarker.on('drag' , function(e){
     userCircle.setLatLng(userMarker.getLatLng());
@@ -128,9 +128,9 @@ function addCustomCircleMarker(position , _featureGroup){
   });
 
   userMarker.on('remove' , function(e){
-     clearFields();
-     this._status = 'removed';
      if(this._circle._status !== 'removed'){
+        this._status = 'removed';
+
        this._circle.fireEvent('click');
        this._circle._status = undefined;
      }
@@ -138,9 +138,10 @@ function addCustomCircleMarker(position , _featureGroup){
   });
 
   userCircle.on('remove' , function(e){
-    clearFields();
-    this._status = 'removed';
     if(this._marker._status !=='removed'){
+
+      this._status = 'removed';
+
       this._marker.fireEvent('click');
       this._marker._status = undefined;
     }
@@ -148,21 +149,28 @@ function addCustomCircleMarker(position , _featureGroup){
 
   });
 
+  return;
+};
 
-
-  return {marker:userMarker , circle:userCircle};
+function resetMarkerState(){
+  userMarker.eachLayer( function(layer){
+    layer._status = undefined;
+  })
 }
 
-
 function _setOrigin(latlng ,map , name){
-  clearFields();
-  $("#origin_lnglat:hidden").val([latlng.lng, latlng.lat]);
+  var originLonLat = $("#origin_lnglat:hidden");
+  var originName = $("#origin");
+
+  originLonLat.val([latlng.lng, latlng.lat]);
+  originLonLat.data("prev-origin-lnglat" , originLonLat.val());
+
   if(!name){
     geocodeControl.options.geocoder.reverse(latlng , 12 , function(results){
         var r = results[0];
         name = r.name
-        $("#origin").val(name);
-        $("#origin").change();
+        originName.val(name);
+        originName.data("prev-origin-name" , originName.val());
     });
   }
   if(name){
