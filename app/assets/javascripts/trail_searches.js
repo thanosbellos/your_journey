@@ -152,11 +152,6 @@ function addCustomCircleMarker(position,_userMarkerFeatureGroup){
   return;
 };
 
-function resetMarkerState(){
-  userMarker.eachLayer( function(layer){
-    layer._status = undefined;
-  })
-}
 
 function _setOrigin(latlng ,map , name){
   var originLonLat = $("#origin_lnglat:hidden");
@@ -179,22 +174,6 @@ function _setOrigin(latlng ,map , name){
   }
 }
 
-function _setDestination(latlng , map , name){
-  clearFields();
-  $("#destination_lnglat:hidden").val([latlng.lng, latlng.lat]);
-  if(!name){
-    geocodeControl.options.geocoder.reverse(latlng , 12 , function(results){
-        var r = results[0];
-        name = r.name
-        $("#destination").val(name);
-    });
-  }
-  if(name){
-    $("#destination").val(name);
-  }
-
-
-}
 
 function clearFields(){
  //reset radius default value();
