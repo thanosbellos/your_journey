@@ -1,27 +1,26 @@
 <%= provide(:title , "Add Trail")%>
-<div>
-  <h2>Add a new trail </h2>
-  <h3> Trail Info </h3>
-  <%= simple_form_for [@user , @trail] do |f| %>
-    <%= f.input :name %>
-    <%= f.input :start_point %>
-    <%= f.input :end_point %>
-    <%= f.input :length %>
-    <%= f.input :duration %>
-    <%= f.input :travel_by , collection:['Car' , 'Bike' , 'On Feet'],:selected =>'Car' %>
-    <%= f.input :rating , collection: 1..5 , as: :radio_buttons , :item_wrapper_class=>'inline', prompt: "Rate your trail" %>
-    <%= f.input :difficulty,
-                :collection => [[1 , 'Easy'] , [2, 'Moderate'], [3,'Extreme']],
-                :label_method=>:last ,
-                :value_method=>:first ,
-                :as=> :radio_buttons,
-                :item_wrapper_class=>'inline' ,
-                :checked => 1 %>
+<div class= 'col-md-8'>
+  <div id="trail-form">
+    <h2>Add a new trail </h2>
+    <%= render 'form' %>
+  </div>
+</div>
+<div class='col-md-4'>
+  <div class='row'>
+    <h2>Preview of your trail </h2>
+    <div id='map'>
+    </div>
+  </div>
 
-    <%=f.simple_fields_for :track do |t| %>
-      <%= t.input :trackgeometry %>
-    <% end %>
-    <%= f.button :submit , 'Create route'%>
+  <div class="row">
+    <div id="trail-info">
+      <h3> Trail Info </h3>
+      <ul>
+        <li> Trail Length: </li>
+        <li> Start Point: </li>
+        <li> End Point: </li>
 
-  <% end %>
+      </ul>
+    </div>
+  </div>
 </div>

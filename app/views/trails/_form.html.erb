@@ -1,0 +1,23 @@
+  <%= simple_form_for [@user , @trail] do |f| %>
+    <%= f.input :name %>
+    <%= f.input :start_point %>
+    <%= f.input :end_point %>
+    <%= f.input :length %>
+    <%= f.input :duration %>
+    <%= f.input :travel_by , collection:['Car' , 'Bike' , 'On Feet'],:selected =>'Car' %>
+    <%= f.input :rating , collection: 1..5 , as: :radio_buttons , :item_wrapper_class=>'inline', prompt: "Rate your trail" %>
+    <%= f.input :difficulty,
+                :collection => [[1 , 'Easy'] , [2, 'Moderate'], [3,'Extreme']],
+                :label_method=>:last ,
+                :value_method=>:first ,
+                :as=> :radio_buttons,
+                :item_wrapper_class=>'inline' ,
+                :checked => 1 %>
+
+    <%=f.simple_fields_for :track do |t| %>
+      <%= t.input :trackgeometry %>
+    <% end %>
+    <%= f.button :submit , 'Create route'%>
+
+  <% end %>
+

@@ -2,7 +2,6 @@ $( document ).ready(function() {
   var path = window.location.pathname;
 
   if(path.search(/trails\/[0-9]+/)!=-1){
-  console.log(path);
       trailShow()
   }
 

@@ -18,6 +18,12 @@ class TrailsController < ApplicationController
     @user = current_user
     @trail = @user.trails.new
     @trail.track = Track.new
+
+    @method_name ="trails/new"
+    respond_to do|format|
+      format.html{render :action => 'new'}
+      format.js{ }
+    end
   end
 
   def create

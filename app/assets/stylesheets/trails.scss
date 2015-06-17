@@ -2,4 +2,16 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+  #map {
+    height:300px;
+    width:100%
+  };
+
+#trail-info{
+
+  min-height: 300px;
+  z-index:99;
+  background: rgba(255,255,255,1.0);
+
+}
 
