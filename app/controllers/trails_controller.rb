@@ -8,6 +8,7 @@ class TrailsController < ApplicationController
     @track = @trail.track
     @geojson = Array.new
     @geojson = @track.to_geojson
+    @method_name = "trails//show"
     respond_to do |format|
       format.html
       format.json { render json: @geojson}
@@ -20,10 +21,6 @@ class TrailsController < ApplicationController
     @trail.track = Track.new
 
     @method_name ="trails/new"
-    respond_to do|format|
-      format.html{render :action => 'new'}
-      format.js{ }
-    end
   end
 
   def create

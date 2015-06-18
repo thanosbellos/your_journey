@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$( document ).on("ready, page:change",function() {
   var path = window.location.pathname;
 
   if(path.search(/trails\/[0-9]+/)!=-1){
@@ -13,7 +13,7 @@ function trailShow(){
   L.mapbox.accessToken = 'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A';
   var map = L.mapbox.map('point-map', 'thanosbel.lmm46d4d');
 
-  var url = track_id.toString();
+  var url = window.track_id.toString();
 
   var polyline_options = {
     color: '#D63333'
