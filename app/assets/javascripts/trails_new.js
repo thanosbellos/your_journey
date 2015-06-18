@@ -1,6 +1,7 @@
 $( document ).on("ready, page:change", function() {
- // var path = (typeof window.method_name == 'undefined') ? window.location.pathname : window.method_name
   var path = window.location.pathname;
+  var path = window.location.pathname;
+  console.log(path);
   if(path.search(/trails\/new/)!=-1){
 
       L.mapbox.accessToken =
@@ -62,6 +63,7 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
   var myPolyline = L.polyline(coordinates, polyline_options);
   var length = myPolyline.length_in_meters();
   drawnLayers.addLayer(myPolyline);
+  $(window).scrollTop(0)
 
   firstMarker =  L.marker( coordinates[0], {
                              draggable:false,

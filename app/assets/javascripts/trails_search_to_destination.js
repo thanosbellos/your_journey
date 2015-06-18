@@ -147,7 +147,7 @@ $( document).on("ready, page:change" , function() {
 
         //function to add info on our suggestions div
         //
-        addSuggestionsInfo(results);
+        addSuggestionsInfo(data);
 
         $("#results").append(xhr.responseText);
       } else {
@@ -276,35 +276,40 @@ $( document).on("ready, page:change" , function() {
 
 
 function addSuggestionsInfo(suggestions){
+  //array of routes
+     routes =undefined;
+    suggestions.features.forEach(function(i) {if (i.id== 'Polyline') {routes = i}});
 
-  console.log(suggestions);
+    container = $("#suggestions");
+    container.html('');
 
-  var  container = L.DomUtil.get("suggestions");
-  var routes = container.append('ul')
-      .selectAll('li')
-      .data(suggestions.routes)
-      .enter().append('li')
-      .attr('class' , 'mapbox-directions-route');
 
-      routes.append('div')
-          .attr('class', 'mapbox-directions-route-heading')
-          .text(function(route) {console.log(route)});
+    html = '<ul>';
 
-        routes.on('mouseover', function (route) {
-            directions.highlightRoute(route);
-        });
+    html +=  '<li class="mapbox-directions-route">'
 
-        routes.on('mouseout', function () {
-            directions.highlightRoute(null);
-        });
+    var routeIndex = "<div class='mapbox-directions-route-heading'>"+ 'Route ' + 1 +  '</div>'
+    html += routeIndex;
 
-        //routes.on('click', function (route) {
-            //directions.selectRoute(route);
-        //});
-        //
-            //directions.on('selectRoute', function (e) {
-        //container.selectAll('.mapbox-directions-route')
-            //.classed('mapbox-directions-route-active', function (route) { return route === e.route; });
-    //});
+    var routeName = "<div class='mapbox-directions-route-summary'>" + routes.properties.Name + '</div>'
+    html += routeName;
+
+    var routeInfo = "<div class='mapbox-directions-route-details'>" + routes.properties.Length + ' km'+ '</div>'
+
+    html += routeInfo;
+
+    html += '</li>'
+
+    html += '</ul>';
+
+
+
+    container.append(html);
+
+
+
+
+
+
 
 }

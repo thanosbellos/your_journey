@@ -6,8 +6,8 @@ class Track < ActiveRecord::Base
   has_many :points , :through => :tracksegments
   mount_uploader :trackgeometry , TrackGeometryUploader
 
-   after_create :store_trackgeometry! ,:process_geometry_files ,  :create_path_from_segments
-  #before_save :check_trackgeometry
+   after_create :store_trackgeometry! ,:process_geometry_files ,
+     #before_save :check_trackgeometry
 
   class << self;
     attr_accessor :path_factory
@@ -38,13 +38,14 @@ class Track < ActiveRecord::Base
     trail_id = trail.id
 
     features << CODER.entity_factory.feature(self.merged_path_geographic,
-                                             "#{track_id}_path",
+                                             "Polyline",
                                              {
                                                "stroke":"#fc4353",
-                                               "Name": "self.trail.name"
+                                               "Name": "#{self.trail.name}",
+                                               "Length": "#{self.trail.length}"
                                               })
     features << CODER.entity_factory.feature(self.start_geographic,
-                                             "#{track_id}_start" ,
+                                             "Start Point" ,
                                              {"marker-color": "#00ff00",
                                               "marker-symbol": 's',
                                               "marker-size": "medium",
@@ -53,7 +54,7 @@ class Track < ActiveRecord::Base
 
 
     features  << CODER.entity_factory.feature(self.finish_geographic,
-                                              "#{track_id}_finish",
+                                              "Finish Point",
                                               {"marker-color": "#D63333",
                                                "marker-symbol": "f",
                                                "marker-size": "medium",
@@ -129,8 +130,15 @@ class Track < ActiveRecord::Base
 
   def process_geometry_files
 
+
+puts "Breakpoing 134"
     if trackgeometry.present? && trackgeometry_changed?
+      puts "Breakpoing 136"
+
+
       parse_points_shp_file
+      create_path_from_segments
+
     end
 
   end
@@ -162,6 +170,7 @@ class Track < ActiveRecord::Base
   def parse_points_shp_file
 
     f = trackgeometry.shp_track_points.path
+    puts "BreakPoint line 166"
     old_seg_id = nil
     tmp_segment = nil
     srid = find_srid_from_prj(f)
@@ -210,7 +219,8 @@ class Track < ActiveRecord::Base
     self.finish = self.merged_path.end_point
     puts self.merged_path_geographic
     ast_sql_length = "SELECT ST_length(ST_GeographyFromText('#{self.merged_path_geographic.as_text}'))"
-    length_in_kms = self.class.connection.execute(ast_sql_length ).values.flatten.first.to_f.round(3)/1000.0
+
+    length_in_kms = (self.class.connection.execute(ast_sql_length ).values.flatten.first.to_f/1000.0).round(3);
     puts length_in_kms
     self.trail.length = length_in_kms
   end

@@ -32,12 +32,12 @@ class TrailsController < ApplicationController
       redirect_to [@user , @trail]
       flash[:notice] = "Successfully created a new route."
     else
-      render 'new'
+      render  'new'
     end
   end
 
   private
     def trail_params
-      params.require(:trail).permit(:name , :start_point , :end_point , :length , :duration , :travel_by , :difficulty , :rating , track_attributes: [:trackgeometry])
+      params.require(:trail).permit(:name , :start_point , :end_point , :length , :duration , :travel_by , :difficulty , :rating , track_attributes: [:trackgeometry, :trackegeometry_cache])
     end
 end

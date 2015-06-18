@@ -2,7 +2,7 @@
     <%= f.input :name %>
     <%= f.input :start_point , as: :hidden  %>
     <%= f.input :end_point , as: :hidden %>
-    <%= f.input :length , as: :hidden %>
+    <%= f.input :length %>
     <%= f.input :duration %>
     <%= f.input :travel_by , collection:['Car' , 'Bike' , 'On Feet'],:selected =>'Car' %>
     <%= f.input :rating , collection: 1..5 , as: :radio_buttons , :item_wrapper_class=>'inline', prompt: "Rate your trail" %>
@@ -16,8 +16,10 @@
 
     <%=f.simple_fields_for :track do |t| %>
       <%= t.input :trackgeometry %>
-    <% end %>
+      <%= t.input :trackgeometry_cache , as: :hidden %>
+    <% end%>
     <%= f.button :submit , 'Create route'%>
+
 
   <% end %>
 
