@@ -174,10 +174,14 @@ class Trail < ActiveRecord::Base
     str = str.join(',')
     ast = "SELECT (ST_AsEWKT(ST_MakeLine(ARRAY[#{str}])))"
     self.trail_path_geographic = self.class.connection.execute(ast).values.flatten.first
-
-
     self.origin_point = self.trail_path_projected.start_point
     self.destination_point = self.trail_path_projected.end_point
+    unless self.length
+
+      ast_sql_length = "SELECT ST_length(ST_GeographyFromText('#{self.trail_path_geographic.as_text}'))"
+      self.length = (self.class.connection.execute(ast_sql_length ).values.flatten.first.to_f/1000.0).round(3);
+
+    end
   end
 
 end

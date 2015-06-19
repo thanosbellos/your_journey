@@ -59,6 +59,7 @@ function trailShow(){
 function initiateMyMap() {
 
  var coordinates_length = geoJson.features[0].geometry.coordinates.length;
+ console.log(coordinates_length);
  var middle_point_index =  Math.floor((coordinates_length-1)/2);
  var  middle_point =  [geoJson.features[0].geometry.coordinates[middle_point_index][1] , geoJson.features[0].geometry.coordinates[middle_point_index][0]];
   first_point = [geoJson.features[1].geometry.coordinates[1] , geoJson.features[1].geometry.coordinates[0]];
