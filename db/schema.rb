@@ -31,39 +31,6 @@ ActiveRecord::Schema.define(version: 20150618191726) do
   add_index "activities_users", ["activity_id", "user_id"], name: "index_activities_users_on_activity_id_and_user_id", using: :btree
   add_index "activities_users", ["user_id", "activity_id"], name: "index_activities_users_on_user_id_and_activity_id", using: :btree
 
-  create_table "points", force: :cascade do |t|
-    t.integer  "tracksegment_id"
-    t.string   "name"
-    t.geometry "loc",             limit: {:srid=>3785, :type=>"point"}
-    t.datetime "created_at",                                            null: false
-    t.datetime "updated_at",                                            null: false
-  end
-
-  add_index "points", ["tracksegment_id"], name: "index_points_on_tracksegment_id", using: :btree
-
-  create_table "tracks", force: :cascade do |t|
-    t.string   "name"
-    t.geometry "path",          limit: {:srid=>3785, :type=>"multi_line_string"}
-    t.geometry "start",         limit: {:srid=>3785, :type=>"point"}
-    t.geometry "finish",        limit: {:srid=>3785, :type=>"point"}
-    t.integer  "trail_id"
-    t.datetime "created_at",                                                      null: false
-    t.datetime "updated_at",                                                      null: false
-    t.geometry "merged_path",   limit: {:srid=>3785, :type=>"line_string"}
-    t.string   "trackgeometry"
-  end
-
-  add_index "tracks", ["trail_id"], name: "index_tracks_on_trail_id", using: :btree
-
-  create_table "tracksegments", force: :cascade do |t|
-    t.integer  "track_id"
-    t.geometry "tracksegment_path", limit: {:srid=>3785, :type=>"line_string"}
-    t.datetime "created_at",                                                    null: false
-    t.datetime "updated_at",                                                    null: false
-  end
-
-  add_index "tracksegments", ["track_id"], name: "index_tracksegments_on_track_id", using: :btree
-
   create_table "trails", force: :cascade do |t|
     t.string   "name"
     t.string   "start_point"
@@ -115,6 +82,4 @@ ActiveRecord::Schema.define(version: 20150618191726) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
-  add_foreign_key "points", "tracksegments"
-  add_foreign_key "tracksegments", "tracks"
 end
