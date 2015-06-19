@@ -1,8 +1,10 @@
 $( document ).on("ready, page:change",function() {
+  console.log("asdf")
   var path = window.location.pathname;
+  console.log(path);
 
   if(path.search(/trails\/[0-9]+/)!=-1){
-      trailShow()
+      trailShow();
   }
 
     //it's peanut butter jelly time - search controller

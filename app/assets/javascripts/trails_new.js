@@ -1,14 +1,51 @@
 $( document ).on("ready, page:change", function() {
   var path = window.location.pathname;
-  var path = window.location.pathname;
-  console.log(path);
-  if(path.search(/trails\/new/)!=-1){
+  if(path.search(/trails\/new/) !=-1) {sessionStorage.clear()}
+  if(path.search(/trails\/new/)!=-1 || path.search(/users\/[0-9]+\/trails$/) !=-1){
 
       L.mapbox.accessToken =
         'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A';
        map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
-      var drawnLayers = L.featureGroup().addTo(map);
-      var geocoder =  L.Control.Geocoder.nominatim()
+       var drawnLayers = undefined;
+       drawnLayers = L.featureGroup().addTo(map);
+
+
+       if(sessionStorage.length>0){
+         var geoJsonLayer = L.geoJson(undefined , {
+           pointToLayer: function (feature , latlng){
+             return  L.marker( latlng, {
+                             draggable:false,
+                             title: 'Start Point',
+                             icon: L.mapbox.marker.icon({
+                              'marker-size': 'medium',
+                              'marker-symbol': feature.properties.markerSymbol,
+                              'marker-color': feature.properties.markerColor
+                             }),
+                             zIndexOffset: 100
+                    });
+
+
+           }
+         });
+
+         var origin = JSON.parse(sessionStorage.originMarker);
+         var destination = JSON.parse(sessionStorage.destinationMarker);
+         var trailPath = JSON.parse(sessionStorage.trailPath);
+
+         geoJsonLayer.addData(destination);
+         geoJsonLayer.addData(origin);
+         geoJsonLayer.addData(trailPath);
+         drawnLayers.addLayer(geoJsonLayer);
+         map.fitBounds(drawnLayers.getBounds());
+
+         $( "#trail-info ul li" ).eq(0).text($("#trail_start_point:hidden").val());
+         $( "#trail-info ul li" ).eq(1).text($("#trail_end_point:hidden").val());
+         $( "#trail-info ul li" ).eq(2).text($("#trail_length:hidden").val());
+
+
+
+       }
+      var geocoder =  L.Control.Geocoder.nominatim();
 
 
       $("input[type=file]").on('change',function(e){
@@ -60,12 +97,15 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
 
 
 
-  var myPolyline = L.polyline(coordinates, polyline_options);
-  var length = myPolyline.length_in_meters();
-  drawnLayers.addLayer(myPolyline);
+  var trailPath = L.polyline(coordinates, polyline_options);
+  var length = trailPath.length_in_meters();
+
+  sessionStorage.trailPath = JSON.stringify(trailPath.toGeoJSON());
+
+  drawnLayers.addLayer(trailPath);
   $(window).scrollTop(0)
 
-  firstMarker =  L.marker( coordinates[0], {
+  var originMarker =  L.marker( coordinates[0], {
                              draggable:false,
                              title: 'Start Point',
                              icon: L.mapbox.marker.icon({
@@ -76,7 +116,7 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
                              zIndexOffset: 100
                     });
 
-  lastMarker =  L.marker( coordinates[coordinates.length-1], {
+  var destinationMarker =  L.marker( coordinates[coordinates.length-1], {
                              draggable:false,
                              title: 'Finish Point',
                              icon: L.mapbox.marker.icon({
@@ -87,19 +127,34 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
                              zIndexOffset: 100
                     });
 
-  drawnLayers.addLayer(firstMarker);
-  drawnLayers.addLayer(lastMarker);
+
+  drawnLayers.addLayer(originMarker);
+  drawnLayers.addLayer(destinationMarker);
+
+  var originMarkerGeoJSON = originMarker.toGeoJSON();
+  originMarkerGeoJSON.properties.name = 'origin';
+  originMarkerGeoJSON.properties.markerSymbol= 's';
+  originMarkerGeoJSON.properties.markerColor = '#00E263'
+
+  sessionStorage.originMarker = JSON.stringify(originMarkerGeoJSON);
+
+
+  var destinationMarkerGeoJSON = destinationMarker.toGeoJSON();
+  destinationMarkerGeoJSON.properties.name = 'destination';
+  destinationMarkerGeoJSON.properties.markerSymbol= 'f';
+  destinationMarkerGeoJSON.properties.markerColor = '#D63333';
+
+  sessionStorage.destinationMarker = JSON.stringify(destinationMarkerGeoJSON);
 
   map.fitBounds(drawnLayers.getBounds());
 
-   origin = 0;
-  geocoder.reverse(firstMarker.getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
+  var origin = undefined;
+  geocoder.reverse(originMarker.getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
 
   var r = results[0].name.split(",");
 
     origin = r.slice(0,3) + r.pop();
 
-    console.log(r.name);
      var $li =$( "#trail-info ul li" ).eq(0);
      $li.text("Start Point: ");
      $li.text(" " + $li.text() + origin);
@@ -107,15 +162,13 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
   })
 
 
-  //$("#trail-info ul li").get(1).text(origin);
 
 
-  var destination;
-  geocoder.reverse(lastMarker.getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
-console.log(results[0].html);
+  var destination = undefined;
+  geocoder.reverse(destinationMarker.getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
 
    var r = results[0].name.split(",");
-   destination =  r.slice(0,3) + r.pop();
+    destination =  r.slice(0,3) + r.pop();
      var $li =$( "#trail-info ul li" ).eq(1);
      $li.text("Finish Point: ");
      $li.text($li.text() + destination);
@@ -127,6 +180,7 @@ console.log(results[0].html);
      $("#trail_length:hidden").val(length);
 
   });
+
 
 
  // console.log(destination);
