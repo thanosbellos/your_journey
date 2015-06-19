@@ -5,10 +5,10 @@ class TrailsController < ApplicationController
 
   def show
     @trail = Trail.find(params[:id])
-    @track = @trail.track
     @geojson = Array.new
-    @geojson = @track.to_geojson
-    @method_name = "trails//show"
+    @geojson = @trail.to_geojson
+    puts @geojson
+    @method_name = "trails/show"
     respond_to do |format|
       format.html
       format.json { render json: @geojson}
@@ -18,7 +18,6 @@ class TrailsController < ApplicationController
   def new
     @user = current_user
     @trail = @user.trails.new
-    @trail.track = Track.new
 
     @method_name ="trails/new"
   end
@@ -38,6 +37,6 @@ class TrailsController < ApplicationController
 
   private
     def trail_params
-      params.require(:trail).permit(:name , :start_point , :end_point , :length , :duration , :travel_by , :difficulty , :rating , track_attributes: [:trackgeometry, :trackegeometry_cache])
+      params.require(:trail).permit(:name , :start_point , :end_point , :length , :duration , :travel_by , :difficulty , :rating ,:trailgeometry , :trailgeometry_cache)
     end
 end

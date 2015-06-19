@@ -1,7 +1,7 @@
 <%= provide(:title ,  @trail.name) %>
 <h2><%= @trail.name%></h2>
 <%= javascript_tag do %>
-  window.track_id = '<%= @trail.track.id %>';
+  window.track_id = '<%= @trail.id %>';
   window.method = '<%= @method_name %>';
 <% end %>
 <div class="row">

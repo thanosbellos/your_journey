@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150601005222) do
+ActiveRecord::Schema.define(version: 20150618191726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,9 +72,17 @@ ActiveRecord::Schema.define(version: 20150601005222) do
     t.float    "duration"
     t.integer  "rating"
     t.string   "travel_by"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",                                                    null: false
+    t.datetime "updated_at",                                                    null: false
     t.integer  "difficulty"
+    t.geometry "trail_path",        limit: {:srid=>3785, :type=>"line_string"}
+    t.geometry "origin_point",      limit: {:srid=>3785, :type=>"point"}
+    t.geometry "destination_point", limit: {:srid=>3785, :type=>"point"}
+    t.string   "gpx_file_name"
+    t.string   "gpx_content_type"
+    t.integer  "gpx_file_size"
+    t.datetime "gpx_updated_at"
+    t.string   "trailgeometry"
   end
 
   create_table "trails_users", id: false, force: :cascade do |t|

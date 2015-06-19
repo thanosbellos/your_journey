@@ -14,10 +14,9 @@
                 :item_wrapper_class=>'inline' ,
                 :checked => 1 %>
 
-    <%=f.simple_fields_for :track do |t| %>
-      <%= t.input :trackgeometry %>
-      <%= t.input :trackgeometry_cache , as: :hidden %>
-    <% end%>
+    <%= f.input :trailgeometry %>
+    <%= f.input :remove_trailgeometry, :as => :boolean %>
+    <%= f.input :trailgeometry_cache , as: :hidden %>
     <%= f.button :submit , 'Create route'%>
 
 
