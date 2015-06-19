@@ -160,7 +160,6 @@ class Trail < ActiveRecord::Base
         multiline_path = record.geometry
       end
     end
-    puts multiline_path
     make_linestring(multiline_path)#
     self.save
 
