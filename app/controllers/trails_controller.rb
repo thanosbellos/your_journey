@@ -7,7 +7,6 @@ class TrailsController < ApplicationController
     @trail = Trail.find(params[:id])
     @geojson = Array.new
     @geojson = @trail.to_geojson
-    puts @geojson
     @method_name = "trails/show"
     respond_to do |format|
       format.html

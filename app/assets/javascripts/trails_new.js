@@ -55,7 +55,7 @@ $( document ).on("ready, page:change", function() {
           var parser = new DOMParser();
           var doc = parser.parseFromString(e.target.result, "application/xml");
 
-          trackPath = toGeoJSON.gpx(doc);
+          var trackPath = toGeoJSON.gpx(doc);
 
           previewTrackPath(trackPath, drawnLayers, geocoder);
 
