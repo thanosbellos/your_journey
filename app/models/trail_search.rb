@@ -28,7 +28,7 @@ class TrailSearch
   end
 
   def search
-     Track.where(path_matches)
+     Trail.where(path_matches)
   end
 
   alias_method :search_near_user_location ,:search
@@ -41,7 +41,7 @@ class TrailSearch
   end
 
   def path_matches
-     covers(Track.arel_table[:merged_path])
+     covers(Trail.arel_table[:trail_path])
   end
 
   def covers(column)

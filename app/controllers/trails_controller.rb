@@ -24,6 +24,7 @@ class TrailsController < ApplicationController
   def create
     @trail = current_user.trails.new(trail_params)
     @user = current_user
+    puts(trail_params)
     if @trail.save
 
       @trail.users << @user
