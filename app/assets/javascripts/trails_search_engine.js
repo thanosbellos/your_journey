@@ -6,31 +6,34 @@ $( document).on("ready, page:change" , function() {
 
     //clear old fields on reload
     clearFields();
-    pointMap = initializeMap();
+    var pointMap = initializeMap();
     drawnFeatureGroup = L.featureGroup().addTo(pointMap);
 
     userMarker = L.featureGroup().addTo(pointMap);
 
-    tracksNearPoint =  L.geoJson(undefined , {pointToLayer: L.mapbox.marker.style});
-    tracksLikeSampleRoute = L.geoJson(undefined , {pointToLayer: L.mapbox.marker.style});
+    var tracksNearPoint =  L.geoJson(undefined , {pointToLayer: L.mapbox.marker.style});
+    var tracksLikeSampleRoute = L.geoJson(undefined , {pointToLayer: L.mapbox.marker.style});
+
+    var zoomControl = pointMap.zoomControl;
+    geolocationControl = L.control.accurateLocateControl({position: 'topleft',
+                                                          strings: {title: "Show me where I am"},
+                                                          featureGroup: drawnFeatureGroup,
+                                                          userMarker: userMarker
+                                                        });
+
+    geolocationControl.addTo(pointMap);
+
+    geocodeControl = L.Control.geocoder({position: 'topleft'}).addTo(pointMap);
+    geocodeControl.markGeocode = markerFromGeocode
 
 
 
     if($(window).width() >1050){
 
-     drawControl = addDrawControl(pointMap , drawnFeatureGroup , userMarker);
+     var drawControl = addDrawControl(pointMap , drawnFeatureGroup , userMarker);
 
     }
 
-    geolocationControl = L.control.accurateLocateControl({position: 'topright',
-                                                         featureGroup: drawnFeatureGroup,
-                                                         userMarker: userMarker,
-                                                          strings: {title: "Show me where I am"}
-                                                        });
-
-    geolocationControl.addTo(pointMap);
-    geocodeControl = L.Control.geocoder().addTo(pointMap);
-    geocodeControl.markGeocode = markerFromGeocode
 
 
 
@@ -39,7 +42,7 @@ $( document).on("ready, page:change" , function() {
 
 
 
-    var zoomControl = pointMap.zoomControl;
+
     directions = L.mapbox.directions({units: 'metric'});
     var directionsLayer = L.mapbox.directions.layer(directions);
     var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(pointMap);
@@ -94,7 +97,6 @@ $( document).on("ready, page:change" , function() {
         destinationLonLat.val('');
 
       }
-      console.log(destinationLonLat.val());
       destinationLonLat.data("prev-destination-lnglat-with-destination" , destinationLonLat.val());
 
     })
@@ -136,7 +138,6 @@ $( document).on("ready, page:change" , function() {
       if(typeof data.message == 'undefined'){
 
         var activeTabId = $("div.tab-pane.active").attr("id");
-        console.log(activeTabId);
         var results = (activeTabId =="search-near-point") ? tracksNearPoint : tracksLikeSampleRoute;
 
 
@@ -149,8 +150,10 @@ $( document).on("ready, page:change" , function() {
         //
         addSuggestionsInfo(data);
 
+
         $("#results").append(xhr.responseText);
       } else {
+        $("#suggestions").html('');
         $("#results").append(data.message)
         //append to error section of mapbox-dir pane
       }
@@ -161,8 +164,8 @@ $( document).on("ready, page:change" , function() {
 
     // what to hide and show on each tab
 
-     directionsDivs = ["#directions", "#inputs" , "#errors",
-       "#routes", "#instructions" , 'label[for=destination] , input#destination'];
+     directionsDivs = ["#inputs","#mapbox-routes-h5",
+       "#routes",  'label[for=destination] , input#destination'];
      directionsDivs.forEach( function(value){
        $(value).hide();
      });
@@ -180,13 +183,9 @@ $( document).on("ready, page:change" , function() {
         if(newTabId == 'search-with-destination'){
           directionsLayer.addTo(pointMap);
 
-           var originLonLat = $("#origin_lnglat:hidden");
-           var destinationLonLat =$("#destination_lnglat:hidden");
-           var sampleRoute = $("#sample_route");
-
-
-
-
+          var originLonLat = $("#origin_lnglat:hidden");
+          var destinationLonLat =$("#destination_lnglat:hidden");
+          var sampleRoute = $("#sample_route");
           originLonLat.val(originLonLat.data("prev-origin-lnglat-with-destination"));
           destinationLonLat.val(destinationLonLat.data("prev-destination-lnglat-with-destination"));
           sampleRoute.val(sampleRoute.data("prev-sample-route-with-destination"));
@@ -222,18 +221,6 @@ $( document).on("ready, page:change" , function() {
             drawnFeatureGroup.addLayer(layer);
           })
 
-
-
-
-          //userCircleMarker should be added
-
-          //tab = search near a point
-          //hide mapbox-directions controls ,inputs and show info areas
-          //disable the mapbox directions plugin temporary
-
-          //add previous userCircleMarker
-          //set orign_lnglat and origin_name to previous values
-          //restore old search values
         }
     })
   }
@@ -277,39 +264,65 @@ $( document).on("ready, page:change" , function() {
 
 function addSuggestionsInfo(suggestions){
   //array of routes
-     routes =undefined;
-    suggestions.features.forEach(function(i) {if (i.id== 'Polyline') {routes = i}});
-
+   var routes = [];
+    suggestions.features.forEach(function(i) {if (i.id== 'Polyline') {routes.push(i)}});
+    console.log(routes);
     container = $("#suggestions");
     container.html('');
 
 
+    for(var i=0, length = routes.length; i<length ; i++){
     html = '<ul>';
 
     html +=  '<li class="mapbox-directions-route">'
 
-    var routeIndex = "<div class='mapbox-directions-route-heading'>"+ 'Route ' + 1 +  '</div>'
+    var routeIndex = "<div class='mapbox-directions-route-heading'>"+ 'Trail ' + (i+1) +  '</div>'
     html += routeIndex;
 
-    var routeName = "<div class='mapbox-directions-route-summary'>" + routes.properties.Name + '</div>'
+    var routeName = "<div class='mapbox-directions-route-summary'>" + routes[i].properties.Name + '</div>'
     html += routeName;
 
-    var routeInfo = "<div class='mapbox-directions-route-details'>" + routes.properties.Length + ' km'+ '</div>'
+    var routeInfo = "<div class='mapbox-directions-route-details'>" + routes[i].properties.Length + ' km'+ '</div>'
 
     html += routeInfo;
 
     html += '</li>'
 
     html += '</ul>';
-
-
-
     container.append(html);
+    $(container.html).data('route-id' , i);
+
+    }
 
 
 
+    $(container).find('ul').on('click' , function(e){
+      console.log(e)
+          route = e.delegateTarget;
+              $('#routes ul li.mapbox-directions-route-active').removeClass('mapbox-directions-route-active');
+
+              $('#suggestions ul li.mapbox-directions-route-active').removeClass('mapbox-directions-route-active');
+              $(route).find('li').addClass('mapbox-directions-route-active')
+    });
 
 
+    $('#routes').on('click' , function(e){
+      $('#suggestions ul li.mapbox-directions-route-active').removeClass('mapbox-directions-route-active');
+    });
 
-
+    $(container).find('ul').get(0).click();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
