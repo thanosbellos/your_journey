@@ -86,3 +86,4 @@ gem 'activerecord-postgis-adapter', '~> 3.0.0'
 gem 'rgeo-geojson'
 gem 'rgeo-shapefile'
 gem 'polylines'
+

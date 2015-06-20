@@ -2,7 +2,7 @@ function initializeMap(){
 // set up my map and set zoom
 
   L.mapbox.accessToken = "pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A";
-  var map = L.mapbox.map('point-map', 'thanosbel.lmm46d4d');
+  var map = L.mapbox.map('point-map', 'thanosbel.lmm46d4d',{tileLayer:{reuseTiles: true, unloadInvisibleTiles:true,updateWhenIdle:true}});
   map.setZoom(3);
   return map;
 }

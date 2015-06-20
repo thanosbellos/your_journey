@@ -29,16 +29,16 @@ class TrailSearchesController < ApplicationController
                               radius: params[:radius].to_f,
                               finish_loc: destination_lonlat,
                               sample_route: sample_route)
-    @tracks = matcher.search
-    puts @tracks.length
-    if(@tracks.length>0)
+    tracks = matcher.search
 
-      @json = @tracks.map do |track|
+    if(tracks.length>0)
+
+      json = tracks.map do |track|
        track.to_geojson
       end
-      @geojson = @json.first
+      @geojson = json.first
 
-      @json.each_with_index do | json , index|
+      json.each_with_index do | json , index|
        unless(index ==0)
          @geojson.merge!(json) do |key, oldval ,newval|
             if(key=="features")

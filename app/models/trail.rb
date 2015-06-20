@@ -37,7 +37,7 @@ class Trail < ActiveRecord::Base
                                              {
                                                "stroke":"#fc4353",
                                                "Name": "#{self.name}",
-#                                               "Length": "#{self.length}"
+                                               "Length": "#{self.length}"
                                               })
     features << CODER.entity_factory.feature(self.origin_point_geographic,
                                              "Start Point" ,
