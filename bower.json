@@ -11,12 +11,11 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "app/assets/components",
     "test",
     "tests"
   ],
   "dependencies": {
-    "esri-leaflet-geocoder": "~1.0.0-rc.4",
-    "leaflet-control-geocoder": "~1.1.0"
+    "leaflet-control-geocoder": "1.1.0",
+    "leaflet-draw": "0.2.4"
   }
 }
