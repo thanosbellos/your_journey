@@ -44,7 +44,9 @@ class TrailSearch
   end
 
   def covers(column)
-     buffer.st_function(:ST_Covers, column)
+    ast = buffer.st_function(:ST_Covers, column)
+    puts ast.to_sql
+    ast
   end
 
 

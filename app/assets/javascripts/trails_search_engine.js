@@ -99,6 +99,7 @@ $(document).on('ready, page:change', function(){
       });
 
        if(typeof directions.directions !== 'undefined'){
+         console.log(directions.directions);
          createTurfBuffer(directions.directions.routes[0]);
        }
 
@@ -107,7 +108,7 @@ $(document).on('ready, page:change', function(){
 
       directions.on('load' , function(e){
         var origin = e.origin;
-         var destination = e.destination;
+        var destination = e.destination;
         var  route = e.routes[0];
         var encodedPolyline = polyline.encode(route.geometry.coordinates);
         var sampleRoute = $("#sample_route");
@@ -377,11 +378,16 @@ function createTurfBuffer(route){
   var bufferSize = $("#radius").val();
 
   var buffered = turf.buffer(linestring, bufferSize , 'meters');
+  var activeTabId = $("div.tab-pane.active").attr("id");
+
   drawnFeatureGroup.removeLayer(sampleBuffer);
   sampleBuffer.clearLayers();
   sampleBuffer.addData(buffered);
   sampleBuffer.setStyle({stroke: 'red', fillColor: '#0033ff', fillOpacity: 0.2 });
-  drawnFeatureGroup.addLayer(sampleBuffer);
+
+  if(activeTabId =='search-with-destination'){
+    drawnFeatureGroup.addLayer(sampleBuffer);
+  }
 
 }
 
