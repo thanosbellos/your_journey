@@ -4,9 +4,6 @@ $( document ).on("ready, page:change",function() {
   if(path.search(/trails\/[0-9]+$/)!=-1){
       trailShow();
   }
-
-    //it's peanut butter jelly time - search controller
-
 });
 
 function trailShow(){
@@ -24,7 +21,7 @@ function trailShow(){
      dataType: 'json',
      url: url
   }).done(processGeoJsonData)
-
+}
 
   function processGeoJsonData(data){
     geoJson = data;
@@ -125,14 +122,14 @@ function animateUserMovement(){
 
 
  //L.mapbox.featureLayer(geoJson[0].features[0]).addTo(map);
- marker = L.marker(points.first_point, {
-  icon: L.mapbox.marker.icon({
-    'marker-size' :'medium',
-    'marker-symbol': 'pitch',
-    'marker-color': '#66A3FF'
-  })
-}).addTo(map);
-tick();
+  marker = L.marker(points.first_point, {
+    icon: L.mapbox.marker.icon({
+      'marker-size' :'medium',
+      'marker-symbol': 'pitch',
+      'marker-color': '#66A3FF'
+   })
+  }).addTo(map);
+  tick();
 }
 
 
@@ -156,6 +153,3 @@ function tick() {
       map.removeLayer(marker)},2100);
     }
 }
-
-
-

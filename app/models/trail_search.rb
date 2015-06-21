@@ -11,7 +11,6 @@ class TrailSearch
 
     if(route || finish_loc)
       if(route)
-        puts route
         target_obj = coder.decode(route.deep_stringify_keys)
       else
 

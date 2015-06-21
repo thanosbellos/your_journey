@@ -7,7 +7,6 @@ class TrailSearchesController < ApplicationController
 
   def search
 
-    puts RGeo::GeoJSON.decode(params[:sample_route])
     origin_lonlat = params[:origin_lnglat].split(",").map do |coordinate|
       coordinate.to_f
     end
@@ -16,13 +15,11 @@ class TrailSearchesController < ApplicationController
     if(params[:destination_lnglat]!="")
         destination_lonlat = params[:destination_lnglat].split(",").map do |coordinate|
           coordinate.to_f
-          puts coordinate.to_f
         end
     end
 
     if(params[:sample_route]!= "")
       sample_route = params[:sample_route]
-      puts sample_route
     end
 
     matcher = TrailSearch.new(start_loc: origin_lonlat,
@@ -30,7 +27,7 @@ class TrailSearchesController < ApplicationController
                               finish_loc: destination_lonlat,
                               sample_route: sample_route)
     tracks = matcher.search
-
+    puts tracks.length
     if(tracks.length>0)
 
       json = tracks.map do |track|
