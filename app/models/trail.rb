@@ -161,12 +161,13 @@ class Trail < ActiveRecord::Base
         multiline_path = record.geometry
       end
     end
-    make_linestring(multiline_path)#
+    make_linestring(multiline_path)
     self.save
 
   end
 
   def make_linestring(multiline_string)
+    puts multiline_string
     lines = multiline_string._elements
     str =  lines.map do|line|
       "ST_GeomFromEWKT('#{line.as_text}')"
@@ -179,6 +180,7 @@ class Trail < ActiveRecord::Base
     unless self.length
 
       ast_sql_length = "SELECT ST_length(ST_GeographyFromText('#{self.trail_path_geographic.as_text}'))"
+      puts ast_sql_length
       self.length = (self.class.connection.execute(ast_sql_length ).values.flatten.first.to_f/1000.0).round(3);
 
     end

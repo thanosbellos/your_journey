@@ -42,9 +42,9 @@ ActiveRecord::Schema.define(version: 20150618191726) do
     t.datetime "created_at",                                                    null: false
     t.datetime "updated_at",                                                    null: false
     t.integer  "difficulty"
-    t.geometry "trail_path",        limit: {:srid=>3875, :type=>"line_string"}
-    t.geometry "origin_point",      limit: {:srid=>3875, :type=>"point"}
-    t.geometry "destination_point", limit: {:srid=>3875, :type=>"point"}
+    t.geometry "trail_path",        limit: {:srid=>3857, :type=>"line_string"}
+    t.geometry "origin_point",      limit: {:srid=>3857, :type=>"point"}
+    t.geometry "destination_point", limit: {:srid=>3857, :type=>"point"}
     t.string   "gpx_file_name"
     t.string   "gpx_content_type"
     t.integer  "gpx_file_size"
