@@ -17,7 +17,6 @@ class TrailsController < ApplicationController
   def new
     @user = current_user
     @trail = @user.trails.new
-
     @method_name ="trails/new"
   end
 
