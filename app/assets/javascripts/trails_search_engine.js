@@ -28,8 +28,8 @@ $(document).on('ready, page:change', function(){
 
    }
 
-    directions = L.mapbox.directions({units: 'metric'});
-    directionsLayer = L.mapbox.directions.layer(directions );
+   directions = L.mapbox.directions({units: 'metric'});
+   directionsLayer = L.mapbox.directions.layer(directions );
    var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(map);
    var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions).addTo(map);
    var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);
@@ -99,8 +99,11 @@ $(document).on('ready, page:change', function(){
       });
 
        if(typeof directions.directions !== 'undefined'){
-         console.log(directions.directions);
-         createTurfBuffer(directions.directions.routes[0]);
+         var polygonBuffer =  createTurfBuffer(directions.directions.routes[0]);
+         sampleRoute.val(JSON.stringify(polygonBuffer));
+         sampleRoute.data("prev-sample-route-with-destination" , sampleRoute.val());
+
+
        }
 
     });
@@ -110,12 +113,16 @@ $(document).on('ready, page:change', function(){
         var origin = e.origin;
         var destination = e.destination;
         var  route = e.routes[0];
-        var encodedPolyline = polyline.encode(route.geometry.coordinates);
         var sampleRoute = $("#sample_route");
-        createTurfBuffer(route);
 
-        sampleRoute.val(encodedPolyline);
+        var polygonBuffer = createTurfBuffer(route);
+        sampleRoute.val(JSON.stringify(polygonBuffer));
         sampleRoute.data("prev-sample-route-with-destination" , sampleRoute.val());
+
+
+        //var encodedPolyline = polyline.encode(createTurfBuffer(route).toGeoJSON(),6);
+
+
         $("#search-button").click();
       });
 
@@ -388,10 +395,9 @@ function createTurfBuffer(route){
   if(activeTabId =='search-with-destination'){
     drawnFeatureGroup.addLayer(sampleBuffer);
   }
+  return sampleBuffer.toGeoJSON();
 
 }
-
-  //end of document ready()
 
 });
 

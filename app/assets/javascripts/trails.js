@@ -1,9 +1,14 @@
 $( document ).on("ready, page:change",function() {
+  console.log("asdf")
   var path = window.location.pathname;
+  console.log(path);
 
   if(path.search(/trails\/[0-9]+$/)!=-1){
       trailShow();
   }
+
+    //it's peanut butter jelly time - search controller
+
 });
 
 function trailShow(){
@@ -21,7 +26,7 @@ function trailShow(){
      dataType: 'json',
      url: url
   }).done(processGeoJsonData)
-}
+
 
   function processGeoJsonData(data){
     geoJson = data;
@@ -34,7 +39,15 @@ function trailShow(){
     markers = createMarkers(points);
 
     window.setTimeout(myBounceMarkers , 1000);
+
+ // if animateDraw == true {
+  //
+ // window.setTimeout(drawOnMap ,3000);
+
+//}
+  //else {
     window.setTimeout(animateUserMovement , 3000);
+  //}
 }
 
 
@@ -46,10 +59,11 @@ function trailShow(){
 function initiateMyMap() {
 
  var coordinates_length = geoJson.features[0].geometry.coordinates.length;
+ console.log(coordinates_length);
  var middle_point_index =  Math.floor((coordinates_length-1)/2);
  var  middle_point =  [geoJson.features[0].geometry.coordinates[middle_point_index][1] , geoJson.features[0].geometry.coordinates[middle_point_index][0]];
- var first_point = [geoJson.features[1].geometry.coordinates[1] , geoJson.features[1].geometry.coordinates[0]];
- var  last_point = [geoJson.features[2].geometry.coordinates[1] , geoJson.features[2].geometry.coordinates[0]];
+  first_point = [geoJson.features[1].geometry.coordinates[1] , geoJson.features[1].geometry.coordinates[0]];
+  last_point = [geoJson.features[2].geometry.coordinates[1] , geoJson.features[2].geometry.coordinates[0]];
   map.fitBounds([first_point , middle_point,last_point]);
   time_step = Math.floor(12000 / coordinates_length);
   timer = Math.max(1 , time_step);
@@ -122,14 +136,14 @@ function animateUserMovement(){
 
 
  //L.mapbox.featureLayer(geoJson[0].features[0]).addTo(map);
-  marker = L.marker(points.first_point, {
-    icon: L.mapbox.marker.icon({
-      'marker-size' :'medium',
-      'marker-symbol': 'pitch',
-      'marker-color': '#66A3FF'
-   })
-  }).addTo(map);
-  tick();
+ marker = L.marker(points.first_point, {
+  icon: L.mapbox.marker.icon({
+    'marker-size' :'medium',
+    'marker-symbol': 'pitch',
+    'marker-color': '#66A3FF'
+  })
+}).addTo(map);
+tick();
 }
 
 
@@ -152,4 +166,7 @@ function tick() {
       window.setTimeout(function() {
       map.removeLayer(marker)},2100);
     }
+
+
+}
 }

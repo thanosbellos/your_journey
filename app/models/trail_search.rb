@@ -4,30 +4,39 @@ class TrailSearch
 
 
   def initialize(opts={})
-    start_loc  = factory.point(*opts[:start_loc])
-    finish_loc =  factory.point(*opts[:finish_loc]) if opts[:finish_loc]
-    route_coordinates = Polylines::Decoder.decode_polyline(opts[:sample_route]) if (opts[:sample_route])
-    route = { "type": "LineString" , "coordinates": route_coordinates} if route_coordinates
+    start_loc  = FACTORY.point(*opts[:start_loc])
+    finish_loc =  FACTORY.point(*opts[:finish_loc]) if opts[:finish_loc]
+   # route_coordinates = Polylines::Decoder.decode_polyline(opts[:sample_route],1e6) if (opts[:sample_route])
+
+    @mercator_radius = (opts[:radius] * (1 / Math.cos(start_loc.y / 180.0 * Math::PI))).floor
+
+
+    route = JSON.parse(opts[:sample_route]).deep_stringify_keys if opts[:sample_route]
 
     if(route || finish_loc)
       if(route)
-        target_obj = coder.decode(route.deep_stringify_keys)
+        #target_obj = coder.decode(route.deep_stringify_keys)
+        target_obj = coder.decode(route).first.geometry
+        puts target_obj.geometry_type
       else
 
-        target_obj = factory.line_string([start_loc , finish_loc])
+        target_obj = FACTORY.line_string([start_loc , finish_loc])
 
       end
+      #target_obj = target_obj.buffer(opts[:radius]).projection
+
     else
-      target_obj =start_loc
+      target_obj = start_loc
+
     end
-    @mercator_radius = (opts[:radius] * (1 / Math.cos(start_loc.y / 180.0 * Math::PI))).ceil
     @target_object_for_buffer = target_obj.projection
+
 
 
   end
 
   def search
-     Trail.where(path_matches)
+    Trail.where(path_matches)
   end
 
   alias_method :search_near_user_location ,:search
@@ -36,7 +45,7 @@ class TrailSearch
   protected
 
   def factory
-     @geo_factory ||= RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => 'point')
+     @geo_factory ||= FACTORY
   end
 
   def path_matches
@@ -44,14 +53,12 @@ class TrailSearch
   end
 
   def covers(column)
-    ast = buffer.st_function(:ST_Covers, column)
-    puts ast.to_sql
-    ast
-  end
-
-
-  def buffer
-     geometry_as_spatial_node.st_function(:ST_Buffer , @mercator_radius, 16)
+    case @target_object_for_buffer.geometry_type
+    when RGeo::Feature::Point
+      geometry_as_spatial_node.st_function(:ST_DWithin , column , @mercator_radius)
+    else
+      geometry_as_spatial_node.st_function(:ST_Covers, column)
+    end
   end
 
   def geometry_as_spatial_node
