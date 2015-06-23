@@ -17,11 +17,17 @@ class TrailSearch
         target_obj = factory.line_string([start_loc , finish_loc])
 
       end
+
+      buffer_ast =
+        "SELECT ST_AsEWKT(ST_Transform(ST_GeomFromEWKT(ST_AsEWKT(ST_Buffer(ST_GeographyFromText('#{target_obj.as_text}'), #{opts[:radius]}))),3857))"
+      target_obj = FACTORY.projection_factory.parse_wkt(Trail.connection.execute(buffer_ast).values.flatten.first)
+
     else
       target_obj =start_loc
     end
     @mercator_radius = (opts[:radius] * (1 / Math.cos(start_loc.y / 180.0 * Math::PI))).ceil
-    @target_object_for_buffer = target_obj.projection
+    puts @mercator_radius
+    @target_object_for_buffer = route ? target_obj : target_obj.projection
 
 
   end
@@ -36,7 +42,7 @@ class TrailSearch
   protected
 
   def factory
-     @geo_factory ||= RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => 'point')
+     @geo_factory ||= FACTORY
   end
 
   def path_matches
@@ -44,15 +50,22 @@ class TrailSearch
   end
 
   def covers(column)
-    ast = buffer.st_function(:ST_Covers, column)
-    puts ast.to_sql
-    ast
+    case @target_object_for_buffer.geometry_type
+    when RGeo::Feature::Point
+      ast = geometry_as_spatial_node.st_function(:ST_DWithin ,column , @mercator_radius)
+    else
+      ast =geometry_as_spatial_node.st_function(:ST_Covers, column)
+    end
+
+
+
   end
 
 
-  def buffer
-     geometry_as_spatial_node.st_function(:ST_Buffer , @mercator_radius, 16)
-  end
+  #def buffer
+    #case @target_object
+     #geometry_as_spatial_node.st_function(:ST_Buffer , @mercator_radius, 16)
+  #end
 
   def geometry_as_spatial_node
     geometry_from_text(@target_object_for_buffer)

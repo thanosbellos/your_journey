@@ -11,7 +11,7 @@ COORD_SYS_4326 = entry.coord_sys
 FACTORY = RGeo::Geographic.projected_factory(projection_proj4: PROJ4_3857,
                                              projection_coord_sys: COORD_SYS,
                                              projection_srid: 3857,
-                                             buffer_resolution: 1,
+                                             buffer_resolution: 8,
                                              proj4: PROJ4_4326,
                                              coord_sys: COORD_SYS_4326,
                                              srid: 4326,
