@@ -6,11 +6,11 @@ class Trail < ActiveRecord::Base
   has_and_belongs_to_many :users
   mount_uploader :trailgeometry , TrailGeometryUploader
 
-  validates :name , :start_point , :travel_by , presence: true
-  validates :rating , numericality: {only_integer:true , greater_than_or_equal_to:1 , less_than_or_equal_to:5}
-  validate :trail_file_size_validation
-  validates :trailgeometry,
-            :presence => true
+  #validates :name , :start_point , :travel_by , presence: true
+  #validates :rating , numericality: {only_integer:true , greater_than_or_equal_to:1 , less_than_or_equal_to:5}
+  #validate :trail_file_size_validation
+  #validates :trailgeometry,
+            #:presence => true
   after_create :store_trailgeometry! , :process_geometry_files
 
   def trail_file_size_validation
@@ -25,7 +25,7 @@ class Trail < ActiveRecord::Base
   end
 
   self.trail_path_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'line_string')
-  self.trail_path_projection_factory = trail_path_factory.projection_factory
+ # self.trail_path_projection_factory = trail_path_factory.projection_factory
   self.point_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'point')
   CODER = RGeo::GeoJSON.coder(geo_factory: self.trail_path_factory)
 
@@ -73,13 +73,14 @@ class Trail < ActiveRecord::Base
   end
 
   def trail_path_geographic
-    self.class.trail_path_factory.unproject(self.trail_path_projected)
+    FACTORY.unproject(self.trail_path_projected)
   end
 
   def trail_path_geographic=(value)
-    value = self.class.trail_path_factory.parse_wkt(value) if value.class == String
-    self.trail_path = self.class.trail_path_factory.project(value)
+    value = FACTORY.parse_wkt(value) if value.class == String
+    self.trail_path = FACTORY.project(value)
   end
+
 
   def origin_point_projected
     self.origin_point
@@ -90,12 +91,12 @@ class Trail < ActiveRecord::Base
   end
 
   def origin_point_geographic
-    self.class.point_factory.unproject(self.origin_point)
+    FACTORY.unproject(self.origin_point_projected)
   end
 
   def origin_point_geographic=(value)
-    value = self.class.point_factory.parse_wkt(value) if value.class == String
-    self.origin_point = self.class.point_factory.project(value)
+    value =  FACTORY.parse_wkt(value) if value.class == String
+    self.origin_point = FACTORY.project(value)
   end
 
 
@@ -108,12 +109,12 @@ class Trail < ActiveRecord::Base
   end
 
   def destination_point_geographic
-    self.class.point_factory.unproject(self.destination_point)
+    FACTORY.unproject(self.destination_point)
   end
 
   def destination_point_geographic=(value)
-    value = self.class.point_factory.parse_wkt(value) if value.class == String
-    self.destination_point = self.class.point_factory.project(value)
+    value = FACTORY.parse_wkt(value) if value.class == String
+    self.destination_point = FACTORY.project(value)
   end
 
   private
@@ -156,17 +157,18 @@ class Trail < ActiveRecord::Base
     factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'line_string');
 
     multiline_path = nil
-    RGeo::Shapefile::Reader.open(f, factory: factory) do |file|
+    RGeo::Shapefile::Reader.open(f, factory: FACTORY) do |file|
       file.each do |record|
         multiline_path = record.geometry
       end
     end
-    make_linestring(multiline_path)#
+    make_linestring(multiline_path)
     self.save
 
   end
 
   def make_linestring(multiline_string)
+    puts multiline_string
     lines = multiline_string._elements
     str =  lines.map do|line|
       "ST_GeomFromEWKT('#{line.as_text}')"
@@ -179,6 +181,7 @@ class Trail < ActiveRecord::Base
     unless self.length
 
       ast_sql_length = "SELECT ST_length(ST_GeographyFromText('#{self.trail_path_geographic.as_text}'))"
+      puts ast_sql_length
       self.length = (self.class.connection.execute(ast_sql_length ).values.flatten.first.to_f/1000.0).round(3);
 
     end
