@@ -89,31 +89,58 @@ $(document).on('ready, page:change', function(){
     function setUpEventsHandlers(directions){
      $("#radius").change(function(){
        var radius = $("#radius").val();
-
+       var activeTabId = $("div.tab-pane.active").attr("id");
+       if(activeTabId == 'search-near-point'){
        userMarker.eachLayer(function(layer){
-       if(typeof layer._mRadius !== 'undefined'){
-          layer.setRadius(radius);
-       }
+          if(typeof layer._mRadius !== 'undefined'){
+            layer.setRadius(radius);
+          }
+        });
 
-
-      });
-
-       if(typeof directions.directions !== 'undefined'){
-         var polygonBuffer =  createTurfBuffer(directions.directions.routes[0]);
-         sampleRoute.val(JSON.stringify(polygonBuffer));
-         sampleRoute.data("prev-sample-route-with-destination" , sampleRoute.val());
+        $("#radius").data('search-near-point-radius', radius);
 
 
        }
+       else {
+
+        if(typeof directions.directions !== 'undefined'){
+
+          $("#radius").data('search-with-destination-radius', radius);
+          var sampleRoute = $("#sample_route");
+          var simplifiedSampleRoute = createSimplifiedRoute();
+          createTurfBuffer(simplifiedSampleRoute);
+
+
+          var encodedPolyline = polyline.encode(simplifiedSampleRoute.toGeoJSON().geometry.coordinates);
+
+
+          sampleRoute.val(encodedPolyline);
+          sampleRoute.data("prev-sample-route-with-destination" , sampleRoute.val());
+
+        }
+
+       }
+
+
+
+
+
 
     });
 
 
       directions.on('load' , function(e){
+
         var origin = e.origin;
         var destination = e.destination;
         var  route = e.routes[0];
         var sampleRoute = $("#sample_route");
+        var simplifiedSampleRoute = createSimplifiedRoute();
+        createTurfBuffer(simplifiedSampleRoute);
+
+
+        var encodedPolyline = polyline.encode(simplifiedSampleRoute.toGeoJSON().geometry.coordinates);
+
 
         var polygonBuffer = createTurfBuffer(route);
         sampleRoute.val(JSON.stringify(polygonBuffer));
@@ -241,6 +268,10 @@ $(document).on('ready, page:change', function(){
     var originLonLat = $("#origin_lnglat:hidden");
     var destinationLonLat =$("#destination_lnglat:hidden");
     var sampleRoute = $("#sample_route");
+
+    var radius = $("#radius");
+    radius.val(radius.data("search-with-destination-radius"));
+
     originLonLat.val(originLonLat.data("prev-origin-lnglat-with-destination"));
     destinationLonLat.val(destinationLonLat.data("prev-destination-lnglat-with-destination"));
     sampleRoute.val(sampleRoute.data("prev-sample-route-with-destination"));
@@ -274,9 +305,14 @@ $(document).on('ready, page:change', function(){
     originName.val(originName.data("prev-origin-name"));
     originLngLat.val(originLngLat.data("prev-origin-lnglat"));
 
+    var radius = $("#radius");
+    radius.val(radius.data("search-near-point-radius"));
+
     $('label[for=origin] , input#origin').show();
     $('.leaflet-top').show();
     var $suggestions = $("#suggestions");
+
+
 
     $suggestions.html('');
     $suggestions.html($suggestions.data('prev-suggestions-search-near-point'));
@@ -373,24 +409,22 @@ $(document).on('ready, page:change', function(){
   }
 
 
-function createTurfBuffer(route){
+function createTurfBuffer(simplifiedRoute){
 
-  var linestring = {
-    "type" : "Feature",
-    "properties": {},
-    "geometry" : route.geometry
-  }
 
-  var unit = 'meters'
-  var bufferSize = $("#radius").val();
 
-  var buffered = turf.buffer(linestring, bufferSize , 'meters');
-  var activeTabId = $("div.tab-pane.active").attr("id");
+  //var coordinates = linestring
 
-  drawnFeatureGroup.removeLayer(sampleBuffer);
-  sampleBuffer.clearLayers();
-  sampleBuffer.addData(buffered);
-  sampleBuffer.setStyle({stroke: 'red', fillColor: '#0033ff', fillOpacity: 0.2 });
+
+
+   var bufferSize = $("#radius").val();
+   var buffer = turf.merge(turfBuffer(simplifiedRoute.toGeoJSON(), bufferSize/1000 , 'kilometers',16));
+   var activeTabId = $("div.tab-pane.active").attr("id");
+
+   drawnFeatureGroup.removeLayer(sampleBuffer);
+   sampleBuffer.clearLayers();
+   sampleBuffer.addData(buffer);
+   sampleBuffer.setStyle({stroke: 'red', fillColor: '#0033ff', fillOpacity: 0.2 });
 
   if(activeTabId =='search-with-destination'){
     drawnFeatureGroup.addLayer(sampleBuffer);
@@ -399,5 +433,22 @@ function createTurfBuffer(route){
 
 }
 
+function createSimplifiedRoute(route){
+
+ var zoomLevel = map.getBoundsZoom(directionsLayer.routeLayer.getBounds());
+ var coordinates = directionsLayer.routeLayer.getLayers()[0]._latlngs
+                .map(function(latLng){
+                  return map.project(latLng , zoomLevel);
+                });
+
+
+  coordinates = L.LineUtil.simplify(coordinates, 0.4);
+  coordinates = coordinates.map(function(latLng){ return map.unproject(latLng, zoomLevel)});
+
+  var simplifiedRoute = L.polyline(coordinates);
+  return simplifiedRoute
+
+
+}
 });
 
