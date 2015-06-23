@@ -6,17 +6,17 @@ class TrailSearch
   def initialize(opts={})
     start_loc  = FACTORY.point(*opts[:start_loc])
     finish_loc =  FACTORY.point(*opts[:finish_loc]) if opts[:finish_loc]
-   # route_coordinates = Polylines::Decoder.decode_polyline(opts[:sample_route],1e6) if (opts[:sample_route])
+    route_coordinates = Polylines::Decoder.decode_polyline(opts[:sample_route])if (opts[:sample_route])
 
     @mercator_radius = (opts[:radius] * (1 / Math.cos(start_loc.y / 180.0 * Math::PI))).floor
 
+    route = { "type": "LineString" , "coordinates": route_coordinates} if route_coordinates
 
-    route = JSON.parse(opts[:sample_route]).deep_stringify_keys if opts[:sample_route]
 
     if(route || finish_loc)
       if(route)
-        #target_obj = coder.decode(route.deep_stringify_keys)
-        target_obj = coder.decode(route).first.geometry
+        target_obj = coder.decode(route.deep_stringify_keys)
+        #target_obj = coder.decode(route).first.geometry
         puts target_obj.geometry_type
       else
 

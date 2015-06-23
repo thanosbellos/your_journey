@@ -142,12 +142,10 @@ $(document).on('ready, page:change', function(){
         var encodedPolyline = polyline.encode(simplifiedSampleRoute.toGeoJSON().geometry.coordinates);
 
 
-        var polygonBuffer = createTurfBuffer(route);
-        sampleRoute.val(JSON.stringify(polygonBuffer));
+        sampleRoute.val(encodedPolyline);
         sampleRoute.data("prev-sample-route-with-destination" , sampleRoute.val());
 
 
-        //var encodedPolyline = polyline.encode(createTurfBuffer(route).toGeoJSON(),6);
 
 
         $("#search-button").click();
