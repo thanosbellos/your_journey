@@ -339,15 +339,14 @@ $(document).on('ready, page:change', function(){
   //array of routes
    var routes = [];
    var suggestionsState = activeTabId == 'search-near-point'? suggestionsNearPoint : suggestionsForDestination;
-    suggestions.features.forEach(function(i) {if (i.id== 'Polyline') {routes.push(i)}});
 
+    suggestions.features.forEach(function(i) {if (i.id== 'Polyline') {routes.push(i)}});
     var $container = $("#suggestions");
     $container.html('');
 
 
     for(var i=0, length = routes.length; i<length ; i++){
     ul = '<ul>';
-
     ul +=  '<li class="mapbox-directions-route">'
 
     var routeIndex = "<div class='mapbox-directions-route-heading'>"+ 'Trail ' + (i+1) +  '</div>'
@@ -357,24 +356,20 @@ $(document).on('ready, page:change', function(){
     ul += routeName;
 
     var routeInfo = "<div class='mapbox-directions-route-details'>" + routes[i].properties.Length + ' km'+ '</div>'
-
     ul += routeInfo;
-    var rating = "<div id='raty' class='mapbox-directions-route-details'>" + "<label>Avg Rating: </label>"+ '</div>'
 
+    raty_id = "raty"+i;
+    var rating = "<div id= " +raty_id+ " class='mapbox-directions-route-details'>" + "<label>Avg Rating: </label>"+ '</div>'
     ul += rating;
 
-
-
     ul += '</li>'
-
     ul += '</ul>';
+
     $container.append(ul);
+    var totalRaters= 'Rated by:' + routes[i].properties.totalRaters;
 
-       $container.find('ul').data('route-id' , i);
-
-       totalRaters= 'Rated by:' + routes[i].properties.totalRaters;
-
-    $("#raty").raty({
+    raty_id = "#"+raty_id;
+    $(raty_id).raty({
                       hints: [totalRaters, totalRaters, totalRaters, totalRaters, totalRaters],
                       halfShow:true,
                       readOnly: true,
@@ -383,6 +378,9 @@ $(document).on('ready, page:change', function(){
                       starOff: 'star-off-small.png',
                       starHalf: 'star-half-small.png'
                    });
+
+
+    $container.find('ul').data('route-id' , i);
 
     }
     $container.data('prev-suggestions-'+ activeTabId , $container.html());

@@ -1,7 +1,5 @@
 $( document ).on("ready, page:change",function() {
-  console.log("asdf")
   var path = window.location.pathname;
-  console.log(path);
 
   if(path.search(/trails\/[0-9]+$/)!=-1){
       trailShow();
@@ -64,9 +62,12 @@ function initiateMyMap() {
  var  middle_point =  [geoJson.features[0].geometry.coordinates[middle_point_index][1] , geoJson.features[0].geometry.coordinates[middle_point_index][0]];
   first_point = [geoJson.features[1].geometry.coordinates[1] , geoJson.features[1].geometry.coordinates[0]];
   last_point = [geoJson.features[2].geometry.coordinates[1] , geoJson.features[2].geometry.coordinates[0]];
-  map.fitBounds([first_point , middle_point,last_point]);
   time_step = Math.floor(12000 / coordinates_length);
   timer = Math.max(1 , time_step);
+
+  var f = L.mapbox.featureLayer(geoJson.features[0]);
+  map.fitBounds(f.getBounds());
+  delete f;
 
   return { first_point: first_point , last_point: last_point};
 
@@ -148,9 +149,9 @@ tick();
 
 
 function tick() {
-  coordinatesLength =  geoJson.features[0].geometry.coordinates.length;
-  point = [ geoJson.features[0].geometry.coordinates[j][1],
-    geoJson.features[0].geometry.coordinates[j][0]];
+  var coordinatesLength =  geoJson.features[0].geometry.coordinates.length;
+  var point = [ geoJson.features[0].geometry.coordinates[j][1],
+   geoJson.features[0].geometry.coordinates[j][0]];
 
   polyline.addLatLng(L.latLng(point));
 

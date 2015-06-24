@@ -159,7 +159,7 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
      var $li =$( "#trail-info ul li" ).eq(0);
      $li.text("Start Point: ");
      $li.text(" " + $li.text() + origin);
-     $("#trail_start_point:hidden").val($li.text());
+     $("#trail_start_point:hidden").val(origin);
   })
 
 
@@ -173,7 +173,7 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
      var $li =$( "#trail-info ul li" ).eq(1);
      $li.text("Finish Point: ");
      $li.text($li.text() + destination);
-     $("#trail_end_point:hidden").val($li.text());
+     $("#trail_end_point:hidden").val(destination);
 
      $li = $("#trail-info ul li").eq(2);
      $li.text("Trail length: ");

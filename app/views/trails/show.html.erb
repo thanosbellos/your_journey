@@ -3,49 +3,59 @@
   window.track_id = '<%= @trail.id %>';
   window.method = '<%= @method_name %>';
 <% end %>
+
+
 <div class="fullscreen-container">
-   <%= flash_messages %>
+  <%= flash_messages %>
 
- <div id='map'>
- </div>
- <div class="container">
-   <div class="row">
-      <h2><%= @trail.name%></h2>
-
-     <div class="col-md-5">
-       <div id="trail-info">
-            <h3> Trail Info </h3>
-            <ul>
-              <li>
-                   Start Point: <%= @trail.start_point %>
-              </li>
-              <li>
-                   End Point: <%= @trail.end_point %>
-              </li>
-              <li> Trail length: <%= @trail.length %></li>
-            </ul>
-            <h4> Rate this Trail </h4>
-            <% if current_user %>
-             <%= rating_for @trail, nil ,  disable_after_rate: false %>
-          <%  else%>
-                You habe to log in in order to rate this trail
-           <% end %>
-
+  <div id='map'>
+  </div>
+  <div id="directions">
+    <div id="routes" class="mapbox-directions-routes">
+      <h5> Trail Info </h5>
+      <ul>
+        <li class= "mapbox-directions-route mapbox-directions-route-active">
+          <div class="mapbox-directions-route-heading">
+            Trail Name:
           </div>
-        </div>
-
-        <div class="col-md-offset-2 col-md-3">
-          <div class = "readonly-star">
-            <h3>Average Rating</h3>
-            <% if @trail.rate_average_without_dimension.avg.nil? %>
-              :( Noone has rated this trail yet
-            <%else %>
-                 <%= rating_for @trail , nil,disable_after_rate:false ,  imdb_avg: true, readonly: true%>
-            <% end %>
+          <div class="mapbox-directions-route-summary">
+            <%= @trail.name %>
           </div>
+          <div class="mapbox-directions-route-heading">
+            First Point:
+          </div>
+          <div class="mapbox-directions-route-details">
+            <%= @trail.start_point %>
+          </div>
+          <div class="mapbox-directions-route-heading">
+            Finish Point
+          </div>
+          <div class= "mapbox-directions-route-details">
+            <%= @trail.end_point %>
+          </div>
+          <div class="mapbox-directions-route-heading">
+            Length:
+          </div>
+          <div class="mapbox-directions-route-details">
+            <%= @trail.length %>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div id="instructions">
+      <div class="imdb-star-avg">
+         <div class="col-md-offset-4">
+            <h5> Average Rating </h5>
+         </div>
+        <div class="col-md-offset-5">
+          <% if @trail.rate_average_without_dimension.avg.nil? %>
+            :( Noone has rated this trail yet
+          <%else %>
+          <%= rating_for @trail , nil,disable_after_rate:false ,  imdb_avg: true, readonly: true%>
+        <% end %>
         </div>
-   </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-
 
