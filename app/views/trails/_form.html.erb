@@ -1,24 +1,27 @@
-  <%= simple_form_for [@user , @trail] do |f| %>
-    <%= f.input :name %>
-    <%= f.input :start_point , as: :hidden  %>
-    <%= f.input :end_point , as: :hidden %>
-    <%= f.input :length , as: :hidden %>
-    <%= f.input :duration %>
+<%= simple_form_for [@user , @trail] do |f| %>
+  <%= f.input :name %>
+  <%= f.input :trailgeometry, label: 'Trail gpx file'  %>
+  <%= f.input :trailgeometry_cache , as: :hidden %>
 
-    <%= f.input :travel_by , collection:['Car' , 'Bike' , 'On Feet'],:selected =>'Car' %>
-    <%= f.input :rating , collection: 1..5 , as: :radio_buttons , :item_wrapper_class=>'inline', prompt: "Rate your trail" %>
-    <%= f.input :difficulty,
-                :collection => [[1 , 'Easy'] , [2, 'Moderate'], [3,'Extreme']],
-                :label_method=>:last ,
-                :value_method=>:first ,
-                :as=> :radio_buttons,
-                :item_wrapper_class=>'inline' ,
-                :checked => 1 %>
+  <%= f.input :start_point , as: :hidden  %>
+  <%= f.input :end_point , as: :hidden %>
+  <%= f.input :length , as: :hidden %>
 
-    <%= f.input :trailgeometry  %>
-    <%= f.input :trailgeometry_cache , as: :hidden %>
-    <%= f.button :submit , 'Create route'%>
+  <%= f.input :travel_by , collection:['Car' , 'Bike' , 'On Feet'],:selected =>'Car' %>
+  <%= f.input :difficulty,
+    :collection => [[1 , 'Easy'] , [2, 'Moderate'], [3,'Extreme']],
+    :label_method=>:last ,
+    :value_method=>:first ,
+    :as=> :radio_buttons,
+    :item_wrapper_class=>'inline' ,
+    :checked => 1 %>
+  <div id="raty">
+
+    <label>How would you rate this trail? </label>
+
+  </div>
+  <%= f.button :submit , 'Create route'%>
 
 
-  <% end %>
+<% end %>
 

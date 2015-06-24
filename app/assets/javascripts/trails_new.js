@@ -2,6 +2,7 @@ $( document ).on("ready, page:change", function() {
   var path = window.location.pathname;
   if(path.search(/trails\/new/) !=-1) {sessionStorage.clear()}
   if(path.search(/trails\/new/)!=-1 || path.search(/users\/[0-9]+\/trails$/) !=-1){
+    $("#raty").raty();
 
       L.mapbox.accessToken =
         'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A';

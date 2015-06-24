@@ -24,11 +24,26 @@
               </li>
               <li> Trail length: <%= @trail.length %></li>
             </ul>
+            <h4> Rate this Trail </h4>
+            <% if current_user %>
+             <%= rating_for @trail, nil ,  disable_after_rate: false %>
+          <%  else%>
+                You habe to log in in order to rate this trail
+           <% end %>
 
-       </div>
+          </div>
+        </div>
 
-
-     </div>
+        <div class="col-md-offset-2 col-md-3">
+          <div class = "readonly-star">
+            <h3>Average Rating</h3>
+            <% if @trail.rate_average_without_dimension.avg.nil? %>
+              :( Noone has rated this trail yet
+            <%else %>
+                 <%= rating_for @trail , nil,disable_after_rate:false ,  imdb_avg: true, readonly: true%>
+            <% end %>
+          </div>
+        </div>
    </div>
 </div>
 

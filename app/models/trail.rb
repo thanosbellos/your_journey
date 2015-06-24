@@ -13,6 +13,7 @@ class Trail < ActiveRecord::Base
             #:presence => true
   after_create :store_trailgeometry! , :process_geometry_files
 
+  ratyrate_rateable
   def trail_file_size_validation
     errors[:trailgeometry] << "should be less than 5 mb" if trailgeometry.size >5.megabytes
   end
