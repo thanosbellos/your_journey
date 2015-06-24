@@ -59,7 +59,7 @@ class TrailSearch
   def covers(column)
     case @target_object_for_buffer.geometry_type
     when RGeo::Feature::Point
-      ast = geometry_as_spatial_node.st_function(:ST_DWithin ,column , @mercator_radius)
+      ast = geometry_as_spatial_node.st_function(:ST_DFullyWithin ,column , @mercator_radius)
     else
       ast =geometry_as_spatial_node.st_function(:ST_Covers, column)
     end

@@ -90,6 +90,7 @@ $(document).on('ready, page:change', function(){
      $("#radius").change(function(){
        var radius = $("#radius").val();
        var activeTabId = $("div.tab-pane.active").attr("id");
+       console.log(activeTabId);
        if(activeTabId == 'search-near-point'){
        userMarker.eachLayer(function(layer){
           if(typeof layer._mRadius !== 'undefined'){
@@ -358,6 +359,11 @@ $(document).on('ready, page:change', function(){
     var routeInfo = "<div class='mapbox-directions-route-details'>" + routes[i].properties.Length + ' km'+ '</div>'
 
     ul += routeInfo;
+    var rating = "<div id='raty' class='mapbox-directions-route-details'>" + "<label>Avg Rating: </label>"+ '</div>'
+
+    ul += rating;
+
+
 
     ul += '</li>'
 
@@ -366,12 +372,21 @@ $(document).on('ready, page:change', function(){
 
        $container.find('ul').data('route-id' , i);
 
+       totalRaters= 'Rated by:' + routes[i].properties.totalRaters;
+
+    $("#raty").raty({
+                      hints: [totalRaters, totalRaters, totalRaters, totalRaters, totalRaters],
+                      halfShow:true,
+                      readOnly: true,
+                      score:routes[i].properties.Rating,
+                      starOn: 'star-on-small.png',
+                      starOff: 'star-off-small.png',
+                      starHalf: 'star-half-small.png'
+                   });
 
     }
     $container.data('prev-suggestions-'+ activeTabId , $container.html());
 
-    // save state in ul data
-    //
     //
     setEventsOnSuggestions();
 

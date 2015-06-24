@@ -38,11 +38,14 @@ class Trail < ActiveRecord::Base
                                              {
                                                "stroke":"#fc4353",
                                                "Name": "#{self.name}",
-                                               "Length": "#{self.length}"
+                                               "Length": "#{self.length}",
+                                               "Rating": "#{self.rate_average_without_dimension.avg}",
+                                               "totalRaters": "#{self.raters_without_dimension_ids.length} #{'user'.pluralize(self.raters_without_dimension_ids.length)}"
+
                                               })
     features << CODER.entity_factory.feature(self.origin_point_geographic,
                                              "Start Point" ,
-                                             {"marker-color": "#00ff00",
+                                             {"marker-color": "#007A00",
                                               "marker-symbol": 's',
                                               "marker-size": "medium",
                                               "title": "Start point of track: #{self.name}"}
@@ -51,7 +54,7 @@ class Trail < ActiveRecord::Base
 
     features  << CODER.entity_factory.feature(self.destination_point_geographic,
                                               "Finish Point",
-                                              {"marker-color": "#D63333",
+                                              {"marker-color": "#CC0000",
                                                "marker-symbol": "f",
                                                "marker-size": "medium",
                                                "title":"Finish point of trails #{self.name}"
