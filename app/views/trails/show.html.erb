@@ -40,21 +40,34 @@
     </div>
     <div id="instructions">
       <div class="imdb-star-avg">
-        <div class="col-md-offset-4 col-sm-offset-4 col-xs-offset-4">
-          <h5> Average Rating </h5>
+        <div class>
+          <h5 style="text-align: center"> Average Rating </h5>
         </div>
-        <div class="col-md-offset-5 col-sm-offset-4 col-xs-offset-5">
+        <div class="col-md-offset-5 col-sm-offset-5 col-xs-offset-5">
           <% if @trail.rate_average_without_dimension.avg.nil? %>
             :( Noone has rated this trail yet
           <%else %>
-            <%= rating_for @trail , nil,disable_after_rate:false ,  imdb_avg: true, readonly: true%>
+            <%= rating_for @trail , nil,disable_after_rate:false ,  imdb_avg: true,readonly: true%>
           <% end %>
         </div>
+        <div class="">
+          <h5 style="text-align: center"> From <%= @trail.raters_without_dimension_ids.length %> <%= "user".pluralize(@trail.raters_without_dimension_ids.length) %></h5>
+        </div>
+
+
       </div>
     </div>
   </div>
 </div>
 <div class="container">
+
+  <h3> <%= @trail.name %> </h3>
+  <label>Rate it </label>
+  <% if current_user %>
+    <%= rating_for @trail, nil  ,readonly:false, disable_after_rate: false %>
+<% else %>
+  You must login in order to rate
+<% end %>
 
 </div>
 

@@ -39,7 +39,7 @@ $( document ).on("ready, page:change", function() {
          drawnLayers.addLayer(geoJsonLayer);
          map.fitBounds(drawnLayers.getBounds());
 
-         $("#routes ul li .mapbox-directions-routes-details").eq(0).text($("#trail_name").val());
+      //   $("#routes ul li .mapbox-directions-routes-details").eq(0).text($("#trail_name").val());
          $( "#routes ul li .mapbox-directions-routes-details" ).eq(1).text($("#trail_start_point:hidden").val());
          $( "#routes ul li  .mapbox-directions-routes-details" ).eq(2).text($("#trail_end_point:hidden").val());
          $( "#routes ul li  .mapbox-directions-routes-details" ).eq(3).text($("#trail_length:hidden").val());
@@ -148,6 +148,8 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
   sessionStorage.destinationMarker = JSON.stringify(destinationMarkerGeoJSON);
 
   map.fitBounds(drawnLayers.getBounds());
+  window.scrollTo(0, 0);
+
 
   var $div =$("#routes ul li .mapbox-directions-route-summary").eq(0);
   if ($("#trail_name").val() !=''){
@@ -185,6 +187,7 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
      $("#trail_length:hidden").val(length);
 
   });
+
 
 
 
