@@ -1,30 +1,49 @@
+<%= provide(:title , "Add Trail")%>
+
 <%= javascript_tag do %>
   window.method_name = '<%= @method_name %>';
 <% end %>
-<%= provide(:title , "Add Trail")%>
 <div class="fullscreen-container">
- <div id='map'>
- </div>
- <div class="container">
-   <div class="row">
-     <div class="col-md-offset-1 col-md-4">
-       <h2>Add a new trail </h2>
-       <%= render 'form' %>
-     </div>
-     <div class="col-md-offset-2 col-md-5">
-       <div id="trail-info">
-            <h3> Trail Info </h3>
-            <ul>
-              <li> Start Point: </li>
-              <li> End Point: </li>
-              <li> Trail length: </li>
-            </ul>
-
-       </div>
-
-
-     </div>
+  <div id='map'>
+  </div>
+  <div id="directions">
+    <div id="routes" class="mapbox-directions-routes">
+      <h5> Preview Trail </h5>
+      <ul style="display:none">
+        <li class= "mapbox-directions-route mapbox-directions-route-active">
+          <div class="mapbox-directions-route-heading">
+            Trail Name:
+          </div>
+          <div class="mapbox-directions-route-summary">
+          </div>
+          <div class="mapbox-directions-route-heading">
+            First Point:
+          </div>
+          <div class="mapbox-directions-route-details">
+          </div>
+          <div class="mapbox-directions-route-heading">
+            Finish Point
+          </div>
+          <div class= "mapbox-directions-route-details">
+          </div>
+          <div class="mapbox-directions-route-heading">
+            Length:
+          </div>
+          <div class="mapbox-directions-route-details">
+          </div>
+        </li>
+      </ul>
+    </div>
    </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Add a new trail </h2>
+      <%= render 'form' %>
+    </div>
+  </div>
 </div>
 
 

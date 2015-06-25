@@ -3,11 +3,7 @@
   window.track_id = '<%= @trail.id %>';
   window.method = '<%= @method_name %>';
 <% end %>
-
-
 <div class="fullscreen-container">
-  <%= flash_messages %>
-
   <div id='map'>
   </div>
   <div id="directions">
@@ -44,18 +40,21 @@
     </div>
     <div id="instructions">
       <div class="imdb-star-avg">
-         <div class="col-md-offset-4">
-            <h5> Average Rating </h5>
-         </div>
-        <div class="col-md-offset-5">
+        <div class="col-md-offset-4 col-sm-offset-4 col-xs-offset-4">
+          <h5> Average Rating </h5>
+        </div>
+        <div class="col-md-offset-5 col-sm-offset-4 col-xs-offset-5">
           <% if @trail.rate_average_without_dimension.avg.nil? %>
             :( Noone has rated this trail yet
           <%else %>
-          <%= rating_for @trail , nil,disable_after_rate:false ,  imdb_avg: true, readonly: true%>
-        <% end %>
+            <%= rating_for @trail , nil,disable_after_rate:false ,  imdb_avg: true, readonly: true%>
+          <% end %>
         </div>
       </div>
     </div>
   </div>
+</div>
+<div class="container">
+
 </div>
 

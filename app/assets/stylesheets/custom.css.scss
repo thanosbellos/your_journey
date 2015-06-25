@@ -4,7 +4,6 @@ html {
 
 body {
   background-color:inherit;
-  padding-top: 60px;
 }
 
 section {
@@ -23,6 +22,15 @@ p {
   line-height: 41px;
 }
 
+#wrap{
+            min-height: 100%;
+            height: auto !important;
+            height: 100%;
+            margin: 0 auto -4em;
+}
+.push {
+            height:63.5px;
+        }
 #logo {
   float: left;
   margin-right: 10px;
@@ -39,61 +47,48 @@ p {
   text-decoration: none;
 }
 
-footer {
-  margin-top: 45px;
-  padding-top: 5px;
-  border-top: 1px solid #eaeaea;
-  color: #777;
+.footer {
+    background: #EDEFF1;
+    height: auto;
+    padding-bottom: 30px;
+    position: relative;
+    width: 100%;
+    border-bottom: 1px solid #CCCCCC;
+    border-top: 1px solid #DDDDDD
+}
+.footer p {
+    margin: 0
 }
 
-footer a {
-  color: white;
+.footer img {
+    max-width: 100%
 }
 
-footer a:hover {
-  color: #222;
+.footer h3 {
+    border-bottom: 1px solid #BAC1C8;
+    color: #54697E;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 27px;
+    padding: 40px 0 10px
 }
 
-footer small {
-  float: left;
-}
-footer ul {
-  float: right;
-  list-style: none;
+.footer ul {
+    list-style-type: none;
+    margin-left: 0;
+    padding-left: 0;
+    margin-top: 15px;
+    color: #7F8C8D
 }
 
-footer ul li {
-  float: left;
-  margin-left: 15px;
+.footer ul li a {
+    padding: 0 0 5px 0;
+    display: block
 }
-abbr {
+
+.footer a {
+    color: #78828D
+}abbr {
   border-bottom: 0px  !important;
 }
-.leaflet-touch {
-  .leaflet-bar-part-single {
-    -webkit-border-radius: 7px 7px 7px 7px;
-            border-radius: 7px 7px 7px 7px;
-    border-bottom: none;
-  }
 
-  .leaflet-control-locate {
-    box-shadow: none;
-    border: 2px solid rgba(0,0,0,0.2);
-    background-clip: padding-box;
-  }
-}
-
-.leaflet-control-locate {
-  a {
-    font-size: 1.4em;
-    color: #444;
-  }
-  &.active {
-    a {
-      color: #2074B6;
-    }
-    &.following a {
-      color: #FC8428;
-    }
-  }
-}

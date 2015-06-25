@@ -39,9 +39,10 @@ $( document ).on("ready, page:change", function() {
          drawnLayers.addLayer(geoJsonLayer);
          map.fitBounds(drawnLayers.getBounds());
 
-         $( "#trail-info ul li" ).eq(0).text($("#trail_start_point:hidden").val());
-         $( "#trail-info ul li" ).eq(1).text($("#trail_end_point:hidden").val());
-         $( "#trail-info ul li" ).eq(2).text($("#trail_length:hidden").val());
+         $("#routes ul li .mapbox-directions-routes-details").eq(0).text($("#trail_name").val());
+         $( "#routes ul li .mapbox-directions-routes-details" ).eq(1).text($("#trail_start_point:hidden").val());
+         $( "#routes ul li  .mapbox-directions-routes-details" ).eq(2).text($("#trail_end_point:hidden").val());
+         $( "#routes ul li  .mapbox-directions-routes-details" ).eq(3).text($("#trail_length:hidden").val());
 
 
 
@@ -104,7 +105,6 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
   sessionStorage.trailPath = JSON.stringify(trailPath.toGeoJSON());
 
   drawnLayers.addLayer(trailPath);
-  $(window).scrollTop(0)
 
   var originMarker =  L.marker( coordinates[0], {
                              draggable:false,
@@ -149,6 +149,11 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
 
   map.fitBounds(drawnLayers.getBounds());
 
+  var $div =$("#routes ul li .mapbox-directions-route-summary").eq(0);
+  if ($("#trail_name").val() !=''){
+    $div.text( $("#trail_name").val());
+  }
+
   var origin = undefined;
   geocoder.reverse(originMarker.getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
 
@@ -156,9 +161,8 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
 
     origin = r.slice(0,3) + r.pop();
 
-     var $li =$( "#trail-info ul li" ).eq(0);
-     $li.text("Start Point: ");
-     $li.text(" " + $li.text() + origin);
+     var $div =$( "#routes ul li .mapbox-directions-route-details" ).eq(0);
+     $div.text($div.text()+ origin);
      $("#trail_start_point:hidden").val(origin);
   })
 
@@ -170,14 +174,14 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
 
    var r = results[0].name.split(",");
     destination =  r.slice(0,3) + r.pop();
-     var $li =$( "#trail-info ul li" ).eq(1);
-     $li.text("Finish Point: ");
-     $li.text($li.text() + destination);
+     var $div =$( "#routes ul li .mapbox-directions-route-details" ).eq(1);
+     $div.text($div.text() + destination);
      $("#trail_end_point:hidden").val(destination);
 
-     $li = $("#trail-info ul li").eq(2);
-     $li.text("Trail length: ");
-     $li.text("  "+$li.text() + length + ' Kilometers');
+     $div = $("#routes ul li .mapbox-directions-route-details").eq(2);
+     $div.text($div.text() + length + ' Kilometers');
+     $("#routes ul").show();
+
      $("#trail_length:hidden").val(length);
 
   });
