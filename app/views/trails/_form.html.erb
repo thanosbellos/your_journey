@@ -20,8 +20,12 @@
     <label>How would you rate this trail? </label>
 
   </div>
+
+  <%= f.simple_fields_for :photos do |photos_form|%>
+    <%= photos_form.input_field :image , :multiple => true, name: "trail[photos_attributes][][image]" , :id => "trail_photos"%>
+  <% end %>
+
   <%= f.button :submit , 'Create route'%>
 
 
 <% end %>
-

@@ -2,6 +2,12 @@ Rails.application.routes.draw do
 
 
 
+  get 'photos/new'
+
+  get 'photos/create'
+
+  get 'photos/index'
+
   post '/rate' => 'rater#create', :as => 'rate'
   get 'trail_searches/new'
 

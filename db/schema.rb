@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150624040103) do
+ActiveRecord::Schema.define(version: 20150627162624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,15 @@ ActiveRecord::Schema.define(version: 20150624040103) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "photos", force: :cascade do |t|
+    t.string   "image"
+    t.integer  "trail_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "photos", ["trail_id"], name: "index_photos_on_trail_id", using: :btree
 
   create_table "rates", force: :cascade do |t|
     t.integer  "rater_id"
@@ -91,6 +100,7 @@ ActiveRecord::Schema.define(version: 20150624040103) do
     t.integer  "gpx_file_size"
     t.datetime "gpx_updated_at"
     t.string   "trailgeometry"
+    t.string   "picture"
   end
 
   create_table "trails_users", id: false, force: :cascade do |t|
@@ -123,4 +133,5 @@ ActiveRecord::Schema.define(version: 20150624040103) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "photos", "trails"
 end
