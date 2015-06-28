@@ -76,6 +76,7 @@ class TrailGeometryUploader < CarrierWave::Uploader::Base
       parameters << "#{tmpfile}"
       parameters << "#{target_layer}"
       parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
+      puts      `ogr2ogr #{parameters}`
 
       Dir.glob("#{tmpdir}/shp*") do |filename|
         if filename.match("^*.shp$")
