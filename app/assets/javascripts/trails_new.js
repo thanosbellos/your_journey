@@ -50,7 +50,7 @@ $( document ).on("ready, page:change", function() {
       var geocoder =  L.Control.Geocoder.nominatim();
 
 
-      $("input[type=file]").on('change',function(e){
+      $("#trail_trailgeometry").on('change',function(e){
         var selectedFile = this.files[0];
         var reader = new FileReader();
         reader.onload = function(e){
@@ -68,6 +68,16 @@ $( document ).on("ready, page:change", function() {
 
 
   }
+  $(function(){
+
+  $('#fileupload').fileupload({
+
+    downloadTemplateId: null,
+    singleFileUpload: false,
+    replaceFileInput: false,
+    autoUpload: false
+    });
+  });
 
 });
 

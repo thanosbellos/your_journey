@@ -87,3 +87,5 @@ gem 'rgeo-geojson'
 gem 'rgeo-shapefile'
 gem 'polylines'
 
+
+gem 'jquery-fileupload-rails'

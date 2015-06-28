@@ -13,6 +13,7 @@
 //= require jquery
 //= require bootstrap-sprockets
 //= require jquery_ujs
+//= require jquery-fileupload
 //= require leaflet.smoothmarkerbouncing
 //= require leaflet-control-geocoder/Control.Geocoder
 //= require Leaflet.AccuratePosition

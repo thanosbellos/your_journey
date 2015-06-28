@@ -33,7 +33,6 @@ class Trail < ActiveRecord::Base
   end
 
   self.trail_path_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'line_string')
- # self.trail_path_projection_factory = trail_path_factory.projection_factory
   self.point_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'point')
   CODER = RGeo::GeoJSON.coder(geo_factory: self.trail_path_factory)
 
@@ -179,7 +178,6 @@ class Trail < ActiveRecord::Base
   end
 
   def make_linestring(multiline_string)
-    puts multiline_string
     lines = multiline_string._elements
     str =  lines.map do|line|
       "ST_GeomFromEWKT('#{line.as_text}')"
