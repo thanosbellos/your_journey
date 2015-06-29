@@ -28,6 +28,15 @@ class TrailsController < ApplicationController
 
       puts "Breakpoint"
       puts params[:hidden_trail_id]
+      @trail = Trail.find(params[:hidden_trail_id])
+      @trail.photos.build(trail_params[:photos_attributes])
+
+     respond_to do |format|
+       if @trail.save
+         format.html
+         format.json {render json: {redirect_url: user_trail_path(current_user , @trail)}}
+       end
+     end
 
 
     else
@@ -42,7 +51,7 @@ class TrailsController < ApplicationController
           @trail.users << @user
 
           format.html
-          format.json { render json: {id: @trail.id , :type => :trail}}
+          format.json { render json: {id: @trail.id , :type => :trail, redirect_url: user_trail_path(current_user , @trail)}}
         end
 
       end

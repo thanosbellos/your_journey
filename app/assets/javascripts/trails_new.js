@@ -9,6 +9,7 @@ $( document ).on("ready, page:change", function() {
   var fileList = []
   var photos_data =[]
   var e_table = [];
+  var redirect_url= undefined;
   $(function(){
     $('#fileupload').fileupload({
       downloadTemplateId: null,
@@ -33,16 +34,29 @@ $( document ).on("ready, page:change", function() {
         }
       })
     }).bind('fileuploaddone', function(e,data){
-      if(data.result.type =="trail"){
-
+      console.log(data.result.type)
+      if(data.result.type !== undefined){
+        console.log("asdf")
         for(var i=0, length=photos_data.length; i<length; i++){
           photos_data[i].formData = {hidden_trail_id: data.result.id};
           photos_data[i].submit();
         }
-
+      }else if (data.result.redirect_url !== undefined ) {
+        console.log("baba");
+        redirect_url = data.result.redirect_url;
+        console.log(redirect_url);
 
 
       }
+    })
+    .bind('fileuploadalways' , function(e,data){
+
+      if(redirect_url !== 'undefined'){
+        console.log(redirect_url);
+       $(location).attr('href',redirect_url);
+      }
+
+
     })
   })
 
