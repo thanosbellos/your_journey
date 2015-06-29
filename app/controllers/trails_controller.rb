@@ -24,23 +24,35 @@ class TrailsController < ApplicationController
 
   def create
 
+    if(trail_params[:photos_attributes])
 
-    @user = current_user
-    @trail = @user.trails.new(trail_params)
+      puts "Breakpoint"
+      puts params[:hidden_trail_id]
 
-
-
-   if @trail.save
-
-      @trail.rate(params[:score], @user )
-      @trail.users << @user
-      redirect_to [@user , @trail]
-      flash[:notice] = "Successfully created a new route."
 
     else
-      render  'new'
+
+      @user = current_user
+      @trail = @user.trails.new(trail_params)
+
+
+      respond_to do |format|
+        if @trail.save
+          @trail.rate(params[:score], @user)
+          @trail.users << @user
+
+          format.html
+          format.json { render json: {id: @trail.id , :type => :trail}}
+        end
+
+      end
+
+
     end
+
   end
+
+
 
   private
     def trail_params

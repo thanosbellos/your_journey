@@ -5,8 +5,8 @@
     <i class="glyphicon glyphicon-plus"></i>
     <span>Add Gpx File...</span>
     <%= f.input_field :trailgeometry,  label: 'Trail gpx file'  %>
-
   </span>
+
 
 
   <%= f.input :start_point , as: :hidden  %>
@@ -26,18 +26,20 @@
     <label>How would you rate this trail? </label>
 
   </div>
+  <%= hidden_field_tag 'hidden_trail_id'  , 'nil' %>
 
     <%= f.simple_fields_for :photos do |photos_form|%>
-      <div class="row fileupload-buttonbar">
+      <div class="row fileupload-buttonbar disabled">
         <div class="col-lg-7">
           <!-- The fileinput-button span is used to style the file input field as button -->
-          <span class="btn btn-success fileinput-button">
+          <button class="btn btn-success fileinput-button">
             <i class="glyphicon glyphicon-plus"></i>
             <span>Add Photos...</span>
             <%= photos_form.input_field :image , :multiple => true, name: "trail[photos_attributes][][image]" , :id => "trail_photos"%>
+            <% end %>
 
-          </span>
-          <button type="submit" class="btn btn-primary start">
+          </button>
+          <button type="button" class="btn btn-primary" id ="submit-button">
             <i class="glyphicon glyphicon-upload"></i>
             <span>Start upload</span>
           </button>
@@ -65,9 +67,7 @@
       </div>
       <!-- The table listing the files available for upload/download -->
       <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
-    <% end %>
 
-  <%= f.button :submit %>
 
 <% end %>
 

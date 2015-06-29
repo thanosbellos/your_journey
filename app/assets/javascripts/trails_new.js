@@ -2,6 +2,53 @@ $( document ).on("ready, page:change", function() {
   var path = window.location.pathname;
   if(path.search(/trails\/new/) !=-1) {sessionStorage.clear()}
   if(path.search(/trails\/new/)!=-1 || path.search(/users\/[0-9]+\/trails$/) !=-1){
+    var fileList = [];
+  $(".fileupload-buttonbar :button").attr("disabled", true);
+
+  var trail_id = undefined;
+  var fileList = []
+  var photos_data =[]
+  var e_table = [];
+  $(function(){
+    $('#fileupload').fileupload({
+      downloadTemplateId: null,
+      singleFileUploads: false,
+      autoUpload: false,
+      sequentialUploads: true
+    }).bind('fileuploadadd',function(e,data){
+
+      if(data.paramName[0] !== "trail[trailgeometry]"){
+
+        fileList.push(this);
+        photos_data.push(data);
+        e_table.push(e);
+      }
+
+      data.context = $("#submit-button")
+
+      .click(function(){
+        //
+        if(data.paramName[0] =="trail[trailgeometry]"){
+          data.submit();
+        }
+      })
+    }).bind('fileuploaddone', function(e,data){
+      if(data.result.type =="trail"){
+
+        for(var i=0, length=photos_data.length; i<length; i++){
+          photos_data[i].formData = {hidden_trail_id: data.result.id};
+          photos_data[i].submit();
+        }
+
+
+
+      }
+    })
+  })
+
+
+
+
     $("#raty").raty();
 
       L.mapbox.accessToken =
@@ -52,7 +99,12 @@ $( document ).on("ready, page:change", function() {
 
       $("#trail_trailgeometry").on('change',function(e){
         var selectedFile = this.files[0];
-        var reader = new FileReader();
+
+         $(".fileupload-buttonbar :button").removeAttr('disabled');
+
+        var fileExtension = selectedFile.name.split('.').pop();
+        if(fileExtension =="gpx"){
+          var reader = new FileReader();
         reader.onload = function(e){
           var parser = new DOMParser();
           var doc = parser.parseFromString(e.target.result, "application/xml");
@@ -64,21 +116,16 @@ $( document ).on("ready, page:change", function() {
 
         }
         reader.readAsText(selectedFile);
+
+
+        }else {
+          alert('pls select a gpx file');
+        }
+
       });
 
 
   }
-  $(function(){
-
-  $('#fileupload').fileupload({
-
-    downloadTemplateId: null,
-    singleFileUpload: false,
-    replaceFileInput: false,
-    autoUpload: false
-    });
-  });
-
 });
 
 
@@ -221,5 +268,6 @@ L.Polyline.prototype.length_in_meters = function(){
     return ((total_length_in_meters)/1000.0).toFixed(2);
 
 }
+
 
 
