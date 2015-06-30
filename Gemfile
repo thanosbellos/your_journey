@@ -89,3 +89,4 @@ gem 'polylines'
 
 
 gem 'jquery-fileupload-rails'
+gem 'fancybox2-rails', '~> 0.2.8'

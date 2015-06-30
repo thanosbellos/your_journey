@@ -1,36 +1,39 @@
 
-<%= provide(:title, current_user.name) %>
+<%= provide(:title, @user.name) %>
 
 <div class="container">
   <div class="push"> </div>
   <div class="row">
 
     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 img-circle">
-      <%= image_tag current_user.avatar.rounded.url , :class=> "img-circle" %>
+      <%= image_tag @user.avatar.rounded.url , :class=> "img-circle" %>
     </div>
 
     <div class="cols-xs-12 col-sm-12 col-md-3 col-lg-3">
-      <h2><%= current_user.name %> </h2>
+      <h2><%= @user.name %> </h2>
       <h4> Preffered activities </h4>
       <p>
-      <% current_user.activities.each do |activity| %>
+      <% @user.activities.each do |activity| %>
         <%= activity.name %>
       <% end %>
       </p>
     </div>
+      <% if current_user == @user %>
+
     <div class="col-xs-12 col-sm-12 col-md-2 col-lg-3 pull-right">
       <%= link_to "Edit your profile", edit_user_registration_path %>
       <br>
-      <%= link_to "Add Trail" , new_user_trail_path(current_user) %>
+      <%= link_to "Add Trail" , new_user_trail_path(@user) %>
       <br>
       <%= link_to "Search New Trails" , trail_searches_new_path %>
     </div>
+    <%end %>
 
 
 
   </div>
   <div class="row">
-    <h3> Your best rated trails </h3>
+    <h3> <%= @user.name %> best rated trails </h3>
 
     <%= render @trails %>
   </div>
