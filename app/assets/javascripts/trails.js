@@ -2,7 +2,9 @@ $( document ).on("ready, page:change",function() {
   var path = window.location.pathname;
 
   if(path.search(/trails\/[0-9]+$/)!=-1){
+      $("a.fancybox").fancybox();
       trailShow();
+
   }
 
     //it's peanut butter jelly time - search controller
