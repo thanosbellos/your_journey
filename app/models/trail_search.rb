@@ -40,7 +40,7 @@ class TrailSearch
   end
 
   def search
-    Trail.where(path_matches)
+    Trail.where(path_matches).best_rated
   end
 
   alias_method :search_near_user_location ,:search

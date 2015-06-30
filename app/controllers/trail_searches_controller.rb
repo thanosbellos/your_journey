@@ -27,7 +27,6 @@ class TrailSearchesController < ApplicationController
                               finish_loc: destination_lonlat,
                               sample_route: sample_route)
     tracks = matcher.search
-    puts tracks.length
     if(tracks.length>0)
 
       json = tracks.map do |track|

@@ -2,7 +2,8 @@ class Trail < ActiveRecord::Base
 
   #has_many :trailsegments , :dependent => :destroy
   #has_many :points ,
-  #
+
+
   has_and_belongs_to_many :users
   has_many :photos, :inverse_of => :trail , :dependent => :destroy
 
@@ -10,8 +11,9 @@ class Trail < ActiveRecord::Base
     :allow_destroy => true,
     :reject_if => :all_blank
 
-  ratyrate_rateable
+  scope :best_rated, -> {includes(:rate_average_without_dimension).order("rating_caches.avg DESC")}
 
+  ratyrate_rateable
   mount_uploader :trailgeometry , TrailGeometryUploader
 
   validates :name , :start_point , :travel_by , presence: true
