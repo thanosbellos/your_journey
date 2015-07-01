@@ -45,7 +45,7 @@ $( document ).on("ready, page:change",function() {
   var blob=undefined;
   directions.on('load' , function(e){
 
-    routeGeoJson = {type: "Feature", geometry: e.routes[0].geometry};
+    routeGeoJson = {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": e.routes[0].geometry}]};
 
     blob = new Blob( [JSON.stringify(routeGeoJson)] , {type: "application/json"})
     link.href= url.createObjectURL(blob);

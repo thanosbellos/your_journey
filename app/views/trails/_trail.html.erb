@@ -3,7 +3,7 @@
   <tr class="template-upload fade in">
     <td class="col-md-1">
       <span class="preview">
-        <%= image_tag trail.photos.first.image.thumb.url %>
+        <%= image_tag trail.photos.first.image.thumb.url unless trail.photos.empty? %>
       </span>
     </td>
     <td class="col-md-2">
