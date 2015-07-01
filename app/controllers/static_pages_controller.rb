@@ -4,4 +4,7 @@ class StaticPagesController < ApplicationController
 
   end
 
+  def export
+
+  end
 end
