@@ -110,24 +110,29 @@ $( document ).on("ready, page:change", function() {
       var fileExtension = selectedFile.name.split('.').pop();
       var reader = new FileReader();
       reader.onload = function(e){
-        console.log(fileExtension);
         if(fileExtension.match(/gpx|kml/)){
 
           var parser = new DOMParser();
-          content_type = "application/xml"
-          var doc = parser.parseFromString(e.target.result, content_type);
+          var content_type = "application/xml"
+          doc = parser.parseFromString(e.target.result, content_type);
 
           if (fileExtension == "gpx"){
-            var trackPath = toGeoJSON.gpx(doc);
+            trackPath = toGeoJSON.gpx(doc);
           }else{
-            var trackPath = toGeoJSON.kml(doc);
+            trackPath = toGeoJSON.kml(doc);
           }
+          var routes = [];
+
+          for(var i=0, length= trackPath.features.length; i<length; i++){
+            if (trackPath.features[i].geometry.type =="LineString"){
+              routes.push(trackPath.features[i]);
+            }
+          }
+          trackPath.features = routes;
 
         }else{
-          console.log("Breakpoint 126")
-          var trackPath = JSON.parse(e.target.result);
+          trackPath = JSON.parse(e.target.result);
         }
-          console.log(trackPath);
 
 
         previewTrackPath(trackPath, drawnLayers, geocoder);
