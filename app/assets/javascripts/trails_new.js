@@ -114,7 +114,7 @@ $( document ).on("ready, page:change", function() {
         if(fileExtension.match(/gpx|kml/)){
 
           var parser = new DOMParser();
-          content_type = fileExtension == "gpx" ? "application/xml" : "application/vnd.google-earth.kml+xml"
+          content_type = "application/xml"
           var doc = parser.parseFromString(e.target.result, content_type);
 
           if (fileExtension == "gpx"){

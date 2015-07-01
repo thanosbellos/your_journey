@@ -163,12 +163,15 @@ class Trail < ActiveRecord::Base
   def parse_tracks_shp_file
 
     f = trailgeometry.shp_trail.path
+    puts "Breakpoint 166"
+    puts f.inspect
     srid = find_srid_from_prj(f)
 
     factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'line_string');
 
     multiline_path = nil
     RGeo::Shapefile::Reader.open(f, factory: FACTORY) do |file|
+      puts file
       file.each do |record|
         multiline_path = record.geometry
       end

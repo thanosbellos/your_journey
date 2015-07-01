@@ -10,11 +10,11 @@ class TrailGeometryUploader < CarrierWave::Uploader::Base
   process :set_content_type
 
   def extension_white_list
-    %w(gpx json)
+    %w(gpx json kml)
   end
 
   def whitelist_mime_type_pattern
-    /application\/[json|gpx+xml]/
+    /application\/[json|gpx+xml|vnd.google-earth.kml+xml]/
   end
   # Choose what kind of storage to use for this uploader:
   storage :file
@@ -92,6 +92,17 @@ class TrailGeometryUploader < CarrierWave::Uploader::Base
         parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
         puts      `ogr2ogr #{parameters}`
       when "kml"
+        parameters << '-WHERE "OGR_GEOMETRY=\"LineString\""'
+        parameters << "-f"
+        parameters << '"ESRI Shapefile"'
+        parameters << '-lco ENCODING=UTF-8'
+        parameters << '-nlt LINESTRING'
+        parameters << "#{dst}"
+        parameters << "#{tmpfile}"
+        parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
+        puts parameters
+        puts      `ogr2ogr #{parameters}`
+
       when "json"
 
         parameters << "-f"
@@ -100,7 +111,6 @@ class TrailGeometryUploader < CarrierWave::Uploader::Base
         parameters << "#{tmpfile}"
         parameters << "OGRGeoJSON"
         parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
-
         puts      `ogr2ogr #{parameters}`
 
       end
