@@ -10,17 +10,17 @@ class TrailGeometryUploader < CarrierWave::Uploader::Base
   process :set_content_type
 
   def extension_white_list
-    %w(gpx)
+    %w(gpx json)
   end
 
   def whitelist_mime_type_pattern
-    /application\/gpx+xml/
+    /application\/[json|gpx+xml]/
   end
   # Choose what kind of storage to use for this uploader:
   storage :file
   # storage :fog
   #
-  after :store,  :convert_to_shp
+  after :store, :convert_to_shp
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
@@ -30,33 +30,44 @@ class TrailGeometryUploader < CarrierWave::Uploader::Base
 
 
 
-  version :shp_tracks do
+  version :shp_trail do
     def full_filename(for_file = model.source.file)
       super.chomp(File.extname(super)) + '.shp'
     end
   end
 
-  version :shp_track_points do
-    def full_filename(for_file = model.source.file)
-      super.chomp(File.extname(super)) + '.shp'
-    end
+  #version :shp_track_points do
+  #def full_filename(for_file = model.source.file)
+  #super.chomp(File.extname(super)) + '.shp'
+  #end
 
-  end
+  #end
 
 
 
   def convert_to_shp(uploaded_file)
 
+
     current_format = File.extname(self.file.file)
     if self.version_name
 
 
-      #source_format find content type and set source_format to gpx or json
-      target_layer = self.version_name.to_s.partition("_").last
+      content_type =  self.file.content_type.match(/gpx|json|kml/)[0]
+      puts content_type
+
+
+      puts "Breakpoint ********* 76"
+      puts current_format
+      puts self.file.file
+      puts self.file
+
+
       src = self.file.file
+
       directory = File.dirname(self.file.file)
 
-      tmpfile = File.join(directory, 'tmpfile.gpx')
+      tmpfile_name = "tempfile.#{content_type}"
+      tmpfile = File.join(directory, tmpfile_name)
       sf = self.file.copy_to(tmpfile)
 
 
@@ -66,17 +77,33 @@ class TrailGeometryUploader < CarrierWave::Uploader::Base
 
       dst = "#{tmpdir}/#{basename}.shp"
       parameters = []
-      parameters << "--config"
-      parameters << "GPX_SHORT_NAMES YES"
-      parameters << "-fieldTypeToString Datetime"
-      parameters << "-overwrite"
-      parameters << "-f"
-      parameters << '"ESRI Shapefile"'
-      parameters << "#{dst}"
-      parameters << "#{tmpfile}"
-      parameters << "#{target_layer}"
-      parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
-      puts      `ogr2ogr #{parameters}`
+
+      case content_type
+      when "gpx"
+        parameters << "--config"
+        parameters << "GPX_SHORT_NAMES YES"
+        parameters << "-fieldTypeToString Datetime"
+        parameters << "-overwrite"
+        parameters << "-f"
+        parameters << '"ESRI Shapefile"'
+        parameters << "#{dst}"
+        parameters << "#{tmpfile}"
+        parameters << "tracks"
+        parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
+        puts      `ogr2ogr #{parameters}`
+      when "kml"
+      when "json"
+
+        parameters << "-f"
+        parameters << '"ESRI Shapefile"'
+        parameters << "#{dst}"
+        parameters << "#{tmpfile}"
+        parameters << "OGRGeoJSON"
+        parameters = parameters.flatten.compact.join(" ").strip.squeeze(" ")
+
+        puts      `ogr2ogr #{parameters}`
+
+      end
 
       Dir.glob("#{tmpdir}/shp*") do |filename|
         if filename.match("^*.shp$")

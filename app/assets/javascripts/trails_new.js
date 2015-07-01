@@ -117,7 +117,6 @@ $( document ).on("ready, page:change", function() {
          $(".fileupload-buttonbar :button").removeAttr('disabled');
 
         var fileExtension = selectedFile.name.split('.').pop();
-        if(fileExtension =="gpx"){
           var reader = new FileReader();
         reader.onload = function(e){
           var parser = new DOMParser();
@@ -131,10 +130,6 @@ $( document ).on("ready, page:change", function() {
         }
         reader.readAsText(selectedFile);
 
-
-        }else {
-          alert('pls select a gpx file');
-        }
 
       });
 

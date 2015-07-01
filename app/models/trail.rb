@@ -16,10 +16,10 @@ class Trail < ActiveRecord::Base
   ratyrate_rateable
   mount_uploader :trailgeometry , TrailGeometryUploader
 
-  validates :name , :start_point , :travel_by , presence: true
-  validate :trail_file_size_validation
-  validates :trailgeometry,
-            :presence => true
+  #validates :name , :start_point , :travel_by , presence: true
+  #validate :trail_file_size_validation
+  #validates :trailgeometry,
+            #:presence => true
   after_create :store_trailgeometry! , :process_geometry_files
 
   def trail_file_size_validation
@@ -162,7 +162,7 @@ class Trail < ActiveRecord::Base
 
   def parse_tracks_shp_file
 
-    f = trailgeometry.shp_tracks.path
+    f = trailgeometry.shp_trail.path
     srid = find_srid_from_prj(f)
 
     factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'line_string');

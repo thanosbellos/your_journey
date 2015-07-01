@@ -41,9 +41,10 @@ class TrailsController < ApplicationController
 
     else
 
-      @user = current_user
-      @trail = @user.trails.new(trail_params)
 
+      @user = current_user
+      @trail = @user.trails.create(trail_params)
+      puts @trail.inspect
 
       respond_to do |format|
         if @trail.save
