@@ -11,37 +11,59 @@
       <h5> Preview Trail </h5>
       <ul style="display:none">
         <li class= "mapbox-directions-route mapbox-directions-route-active">
-          <%#<div class="mapbox-directions-route-heading">%>
-            <%#Trail Name:%>
+        <%#<div class="mapbox-directions-route-heading">%>
+          <%#Trail Name:%>
           <%#</div>%>
-          <%#<div class="mapbox-directions-route-summary">%>
+        <%#<div class="mapbox-directions-route-summary">%>
           <%#</div>%>
-          <div class="mapbox-directions-route-heading">
-            First Point:
-          </div>
-          <div class="mapbox-directions-route-details">
-          </div>
-          <div class="mapbox-directions-route-heading">
-            Finish Point
-          </div>
-          <div class= "mapbox-directions-route-details">
-          </div>
-          <div class="mapbox-directions-route-heading">
-            Length:
-          </div>
-          <div class="mapbox-directions-route-details">
-          </div>
+        <div class="mapbox-directions-route-heading">
+          First Point:
+        </div>
+        <div class="mapbox-directions-route-details">
+        </div>
+        <div class="mapbox-directions-route-heading">
+          Finish Point
+        </div>
+        <div class= "mapbox-directions-route-details">
+        </div>
+        <div class="mapbox-directions-route-heading">
+          Length:
+        </div>
+        <div class="mapbox-directions-route-details">
+        </div>
         </li>
       </ul>
     </div>
-   </div>
+  </div>
 </div>
 
 <div class="container">
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12">
       <h2>Add a new trail </h2>
       <%= render 'form' %>
+    </div>
+    <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
+      <h3> How to add a trail </h3>
+      <div>
+        <p>
+        <ul>
+          <li>You can drag and drop or select add file using the add trail button and selecting your file</li>
+          <li> Your trail file must be either in .geojson or  .gpx format </li>
+          <li>
+               if you don't have a file but you remember the places you visited you can create one using our tool
+               on <%= link_to 'Get a json file of your route' , export_path %>
+
+          </li>
+          <li> The trail will be rendered on the map and some info will be calculated </li>
+          <li> After that you are free to choose some photos to upload too </li>
+          <li> you can only choose 6 photos per trail </li>
+          <li> Fill out the rest of the form </li>
+          <li> Click the upload button </li>
+          <li> If everything goes smoothly you will be redirected to your new trail page </li>
+        </ul>
+        </p>
+      </div>
     </div>
   </div>
 </div>
