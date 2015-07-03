@@ -63,7 +63,6 @@
     "commit": "07b1448f4eba33982f662398988f0337ee55cc02"
   },
   "_source": "git://github.com/Leaflet/Leaflet.draw.git",
-  "_target": "~0.2.4",
-  "_originalSource": "leaflet-draw",
-  "_direct": true
+  "_target": "0.2.4",
+  "_originalSource": "leaflet-draw"
 }

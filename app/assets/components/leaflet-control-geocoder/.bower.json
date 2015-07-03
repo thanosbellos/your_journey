@@ -34,7 +34,6 @@
     "commit": "ab3cea8beff00584f212e1869d10c32790f12b0f"
   },
   "_source": "git://github.com/perliedman/leaflet-control-geocoder.git",
-  "_target": "~1.1.0",
-  "_originalSource": "leaflet-control-geocoder",
-  "_direct": true
+  "_target": "1.1.0",
+  "_originalSource": "leaflet-control-geocoder"
 }

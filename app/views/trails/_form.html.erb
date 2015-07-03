@@ -4,7 +4,7 @@
   <span class="btn btn-success fileinput-button">
     <i class="glyphicon glyphicon-plus"></i>
     <span>Add Gpx File...</span>
-    <%= f.input_field :trailgeometry,  label: 'Trail gpx file'  %>
+    <%= f.input_field :trailgeometry,  label: 'Trail gpx file'%>
   </span>
 
 
@@ -39,7 +39,7 @@
             <% end %>
 
           </button>
-          <button type="button" class="btn btn-primary" id ="submit-button">
+          <button type="button" class="btn btn-primary start" id ="submit-button">
             <i class="glyphicon glyphicon-upload"></i>
             <span>Start upload</span>
           </button>
@@ -71,6 +71,10 @@
 
 <% end %>
 
+<div id="test">
+  <h5> Testing img </h5>
+  <img id="testImg" height="60"> </img>
+</div>
 
 
 <script>

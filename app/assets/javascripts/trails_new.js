@@ -4,56 +4,6 @@ $( document ).on("ready, page:change", function() {
   if(path.search(/trails\/new/)!=-1 || path.search(/users\/[0-9]+\/trails$/) !=-1){
     var fileList = [];
     $(".fileupload-buttonbar :button").attr("disabled", true);
-
-    var trail_id = undefined;
-    var fileList = []
-    var photos_data =[]
-    var e_table = [];
-    var filesRemaining =0;
-    var redirect_url= undefined;
-    $(function(){
-      $('#fileupload').fileupload({
-        downloadTemplateId: null,
-        singleFileUploads: false,
-        autoUpload: false,
-        sequentialUploads: true
-      }).bind('fileuploadadd',function(e,data){
-
-        filesRemaining++;
-
-        if(data.paramName[0] !== "trail[trailgeometry]"){
-
-          fileList.push(this);
-          photos_data.push(data);
-          e_table.push(e);
-        }
-
-        data.context = $("#submit-button")
-
-        .click(function(){
-          //
-          if(data.paramName[0] =="trail[trailgeometry]"){
-            data.submit();
-          }
-        })
-      }).bind('fileuploaddone', function(e,data){
-        console.log(filesRemaining);
-        console.log(data.result);
-        filesRemaining--;
-        if(data.result.type !== undefined && filesRemaining !==0){
-          for(var i=0, length=photos_data.length; i<length; i++){
-            photos_data[i].formData = {hidden_trail_id: data.result.id};
-            photos_data[i].submit();
-          }
-        }else if (data.result.redirect_url !== undefined && filesRemaining ==0) {
-          $(location).attr('href',data.result.redirect_url);
-        }
-      })
-    })
-
-
-
-
     $("#raty").raty();
 
     L.mapbox.accessToken =
@@ -61,8 +11,24 @@ $( document ).on("ready, page:change", function() {
     map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
     var drawnLayers = undefined;
     drawnLayers = L.featureGroup().addTo(map);
+    var imagesLayer =  L.mapbox.featureLayer().addTo(map);
+
+    imagesLayer.on('layeradd', function(e) {
+    var marker = e.layer,
+        feature = marker.feature;
+
+    // Create custom popup content
+    var popupContent =  '<a target="_blank" class="popup" href="#">' +
+                            '<img src="' + feature.properties.url + '" />' +
+                        '</a>'+
+                        '<h5>' + feature.properties.name + '</h5>';
 
 
+    marker.bindPopup(popupContent,{
+        closeButton: false,
+        minWidth: 320,
+    });
+});
     if(sessionStorage.length>0){
       var geoJsonLayer = L.geoJson(undefined , {
         pointToLayer: function (feature , latlng){
@@ -102,45 +68,217 @@ $( document ).on("ready, page:change", function() {
     var geocoder =  L.Control.Geocoder.nominatim();
 
 
-    $("#trail_trailgeometry").on('change',function(e){
-      var selectedFile = this.files[0];
 
-      $(".fileupload-buttonbar :button").removeAttr('disabled');
+    var trail_id = undefined;
+    var unsubmittedPhotos =[]
+    var filesRemaining =0;
+    var redirect_url= undefined;
+    var trailUploaded = false;
 
-      var fileExtension = selectedFile.name.split('.').pop();
-      var reader = new FileReader();
-      reader.onload = function(e){
-        if(fileExtension.match(/gpx|kml/)){
+    $.blueimp.fileupload.prototype.options.processQueue.push(
+      {
+        action: 'customValidate',
+        acceptFileTypes: '@'
+      },
 
-          var parser = new DOMParser();
-          var content_type = "application/xml"
-          doc = parser.parseFromString(e.target.result, content_type);
+      {
+        action: 'previewGeometryFile'
+      },
 
-          if (fileExtension == "gpx"){
-            trackPath = toGeoJSON.gpx(doc);
-          }else{
-            trackPath = toGeoJSON.kml(doc);
+      {
+        action: 'getImagePosition'
+      },
+      {
+        action: 'previewImageOnMap'
+      }
+
+
+
+    );
+    $.widget('blueimp.fileupload', $.blueimp.fileupload, {
+      processActions: {
+
+
+        getImagePosition: function(data,options){
+          if(typeof data.exif !== 'undefined'){
+            var lon = degreesToDecimal(data.exif.get("GPSLongitude"), data.exif.get("GPSLongitudeRef"));
+            var lat = degreesToDecimal(data.exif.get("GPSLatitude"), data.exif.get("GPSLatitudeRef"));
+            data.lonLat = [lon,lat];
           }
-          var routes = [];
+          return data;
+        },
 
-          for(var i=0, length= trackPath.features.length; i<length; i++){
-            if (trackPath.features[i].geometry.type =="LineString"){
-              routes.push(trackPath.features[i]);
+        previewImageOnMap: function(data,options){
+          if(typeof data.lonLat !== 'undefined'){
+            console.log(data);
+            imgUrl = window.URL.createObjectURL(data.files[data.index]);
+
+            imgGeoJson = [{
+              type: 'Feature',
+              "geometry": {
+                type: "Point" , "coordinates": data.lonLat
+              },
+              "properties": {
+                "image" : data.files[data.index].name,
+                "url" : imgUrl,
+                "marker-color": "#ff8888",
+                "marker-size" : "small",
+                "marker-symbol" : "camera",
+                "name" : data.files[data.index].name
+
+              }
+            }]
+
+
+            imagesLayer.setGeoJSON(imgGeoJson);
+
+
+
+
+          }
+          return data;
+        },
+
+
+        customValidate: function(data, options){
+
+          if (options.disabled) {
+            return data;
+          }
+          var dfd = $.Deferred(),
+            file = data.files[data.index];
+
+          if(data.paramName[0] == "trail[trailgeometry]"){
+
+            if(!file.type.match(/(\.|\/)(json|gpx)$/i) && !file.name.match(/(.|\/)(gpx)$/i)){
+              file.error = 'Invalid geometry file type. Only gpx and geojson files are supported';
+              dfd.rejectWith(this, [data]);
+
+            }else{
+              dfd.resolveWith(this, [data]);
             }
-          }
-          trackPath.features = routes;
 
-        }else{
-          trackPath = JSON.parse(e.target.result);
+          }else if(data.paramName[0] !== "trail[trailgeometry]"){
+            if(!file.type.match(/(\.|\/)(gif|jpe?g|png)$/i)){
+              file.error = 'Invalid file type '+file.name +
+                'is not a supported image file. Only gif,jpeg/jpg,png are supported';
+              dfd.rejectWith(this, [data]);
+
+            }else{
+              dfd.resolveWith(this, [data]);
+            }
+
+
+          }
+
+          return dfd.promise();
+        },
+        previewGeometryFile: function(data,options){
+
+          var dfd = $.Deferred(),
+            file = data.files[data.index];
+
+
+          if(data.paramName[0] == "trail[trailgeometry]"){
+
+            $(".fileupload-buttonbar :button").removeAttr('disabled');
+            var reader = new FileReader();
+            reader.onload = function(e){
+              if(file.name.match(/(.|\/)(gpx|kml)$/i)){
+                var parser = new DOMParser();
+                var content_type = "application/xml"
+                var doc = parser.parseFromString(e.target.result, content_type);
+                if(file.name.match(/.gpx/)){
+
+                  trackPath = toGeoJSON.gpx(doc);
+
+                }else{
+                  trackPath = toGeoJSON.kml(doc);
+                }
+              }else{
+                trackPath = JSON.parse(e.target.result);
+              }
+
+              previewTrackPath(trackPath, drawnLayers, geocoder);
+
+            }
+            reader.readAsText(file);
+          }
+          dfd.resolveWith(this, [data]);
+
+          return dfd.promise();
         }
 
-
-        previewTrackPath(trackPath, drawnLayers, geocoder);
-
-
       }
-      reader.readAsText(selectedFile);
+    })
+
+    $('#fileupload')
+    .on('fileuploadprocess', function (e, data) {
+    })
+    .on('fileuploadprocessfail', function (e, data) {
+      console.log(data);
+      data.context.each(function (index){
+        var error = data.files[index].error;
+        if(error){
+          $(this).find('.error').text(error);
+        }
+      })
+    })
+
+
+
+    $('#fileupload').fileupload({
+      uploadTemplateId:"template-upload",
+      downloadTemplateId: null,
+      singleFileUploads: false,
+      autoUpload: false,
+      sequentialUploads: true,
+      maxNumberOfFiles:7,
+      maxFileSize: 50000000,
+      disableImageReferencesDeletion: true
+    })
+
+    .bind('fileuploadchange', function(e,data){
+      console.log(e);
     });
+
+
+
+    $('#fileupload').bind('fileuploadadd', function(e,data){
+    })
+
+
+    $('#fileupload').bind('fileuploadsubmit' , function(e,data){
+      console.log(data);
+
+      if(!trailUploaded && data.paramName[0] !=="trail[trailgeometry]"){
+        unsubmittedPhotos.push(data);
+        filesRemaining++;
+        return false;
+      } else if (trailUploaded && data.paramName[0] !=="trail[trailgeometry]") {
+        filesRemaining--
+      }
+
+    }).bind('fileuploaddone',function(e,data){
+      if(data.result.type !== undefined){
+        if(filesRemaining >0){
+          trailUploaded = true;
+          for(var i=0;  filesRemaining>0; i++){
+            unsubmittedPhotos[i].formData = {hidden_trail_id: data.result.id};
+            unsubmittedPhotos[i].submit();
+          }
+        } else {
+          unsubmittedPhotos.push();
+        }
+
+      }else if (data.result.redirect_url !== undefined &&  filesRemaining==0) {
+        $(location).attr('href',data.result.redirect_url);
+      }
+    })
+
+
+
+
 
 
   }
@@ -239,7 +377,7 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
     origin = r.slice(0,3) + r.pop();
 
     var $div =$( "#routes ul li .mapbox-directions-route-details" ).eq(0);
-    $div.text($div.text()+ origin);
+    $div.text("End Point" + origin);
     $("#trail_start_point:hidden").val(origin);
   })
 
@@ -252,11 +390,11 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
     var r = results[0].name.split(",");
     destination =  r.slice(0,3) + r.pop();
     var $div =$( "#routes ul li .mapbox-directions-route-details" ).eq(1);
-    $div.text($div.text() + destination);
+    $div.text("Start Point" + destination);
     $("#trail_end_point:hidden").val(destination);
 
     $div = $("#routes ul li .mapbox-directions-route-details").eq(2);
-    $div.text($div.text() + length + ' Kilometers');
+    $div.text("Length" + length + ' Kilometers');
     $("#routes ul").show();
 
     $("#trail_length:hidden").val(length);
@@ -266,8 +404,20 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
 
 
 
-  // console.log(destination);
-  //  $("#trail-info ul li").get(2).text(destination);
+
+}
+
+
+function degreesToDecimal( GpsCoordinateInDegrees , GpsCoordinateRef){
+
+  var dd = GpsCoordinateInDegrees.reduce(function( previousValue , currentValue,index,array){
+    return previousValue + currentValue/Math.pow(60,index);
+  }, 0);
+
+  dd =  (GpsCoordinateRef == 'S' || GpsCoordinateRef == 'W') ? dd * -1 : dd;
+  return dd;
+
+
 
 }
 
@@ -286,6 +436,7 @@ L.Polyline.prototype.length_in_meters = function(){
   return ((total_length_in_meters)/1000.0).toFixed(2);
 
 }
+
 
 
 
