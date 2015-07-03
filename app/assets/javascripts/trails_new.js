@@ -9,7 +9,7 @@ $( document ).on("ready, page:change", function() {
     L.mapbox.accessToken =
       'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A';
     map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
-     drawnLayers = undefined;
+    drawnLayers = undefined;
     drawnLayers = L.featureGroup().addTo(map);
     imagesLayer =  L.mapbox.featureLayer().addTo(map);
 
@@ -75,7 +75,8 @@ $( document ).on("ready, page:change", function() {
     var redirect_url= undefined;
     var trailUploaded = false;
 
-    photosMarkers ={}
+    var trailGeometriesFiles = 0;
+
 
     $.blueimp.fileupload.prototype.options.processQueue.push(
       {
@@ -183,7 +184,6 @@ $( document ).on("ready, page:change", function() {
 
           if(data.paramName[0] == "trail[trailgeometry]"){
 
-            $(".fileupload-buttonbar :button").removeAttr('disabled');
             var reader = new FileReader();
             reader.onload = function(e){
               if(file.name.match(/(.|\/)(gpx|kml)$/i)){
@@ -207,6 +207,8 @@ $( document ).on("ready, page:change", function() {
             }
             reader.readAsText(file);
           }
+          $(".fileupload-buttonbar :button").removeAttr('disabled');
+
           dfd.resolveWith(this, [data]);
 
           return dfd.promise();
@@ -216,10 +218,7 @@ $( document ).on("ready, page:change", function() {
     })
 
     $('#fileupload')
-    .on('fileuploadprocess', function (e, data) {
-    })
     .on('fileuploadprocessfail', function (e, data) {
-      console.log(data);
       data.context.each(function (index){
         var error = data.files[index].error;
         if(error){
@@ -239,17 +238,35 @@ $( document ).on("ready, page:change", function() {
       maxNumberOfFiles:7,
       maxFileSize: 50000000,
       disableImageReferencesDeletion: true
+    });
+
+
+    $('#fileupload').bind('fileuploadadd' , function(e,data){
+      if(data.paramName[0] == "trail[trailgeometry]"){
+        trailGeometriesFiles++;
+        if(trailGeometriesFiles>1){
+          $("#fileupload .files .cancel")[0].click();
+          trailGeometriesFiles--;
+        }
+      }
     })
 
 
 
 
     $('#fileupload').bind('fileuploadfail', function(e,data){
-      console.log(data);
+      x = (data.files);
       if(data.paramName[0] == "trail[trailgeometry]"){
+        $(".fileupload-buttonbar :button").attr("disabled", true);
         drawnLayers.clearLayers();
+        trailGeometriesFiles = trailGeometriesFiles >0 ? trailGeometriesFiles-1 : 0
+
       }else{
-        imagesLayer.removeLayer(data.files[data.index].layerId);
+        for(var i =0 , length= data.files.length; i<length; i++){
+          if(typeof data.files[i].layerId !== 'undefined'){
+            imagesLayer.removeLayer(data.files[i].layerId);
+          }
+        }
       }
     })
 
@@ -265,6 +282,8 @@ $( document ).on("ready, page:change", function() {
       }
 
     }).bind('fileuploaddone',function(e,data){
+      console.log(data)
+      console.log(filesRemaining);
       if(data.result.type !== undefined){
         if(filesRemaining >0){
           trailUploaded = true;
@@ -276,16 +295,11 @@ $( document ).on("ready, page:change", function() {
           unsubmittedPhotos.push();
         }
 
-      }else if (data.result.redirect_url !== undefined &&  filesRemaining==0) {
+      }
+      if (data.result.redirect_url !== undefined &&  filesRemaining==0) {
         $(location).attr('href',data.result.redirect_url);
       }
     })
-
-
-
-
-
-
   }
 });
 
