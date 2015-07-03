@@ -9,26 +9,26 @@ $( document ).on("ready, page:change", function() {
     L.mapbox.accessToken =
       'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A';
     map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
-    var drawnLayers = undefined;
+     drawnLayers = undefined;
     drawnLayers = L.featureGroup().addTo(map);
-    var imagesLayer =  L.mapbox.featureLayer().addTo(map);
+    imagesLayer =  L.mapbox.featureLayer().addTo(map);
 
     imagesLayer.on('layeradd', function(e) {
-    var marker = e.layer,
+      var marker = e.layer,
         feature = marker.feature;
 
-    // Create custom popup content
-    var popupContent =  '<a target="_blank" class="popup" href="#">' +
-                            '<img src="' + feature.properties.url + '" />' +
-                        '</a>'+
-                        '<h5>' + feature.properties.name + '</h5>';
+      // Create custom popup content
+      var popupContent =  '<a target="_blank" class="popup" href="#">' +
+        '<img src="' + feature.properties.url + '" />' +
+        '</a>'+
+        '<h5>' + feature.properties.name + '</h5>';
 
 
-    marker.bindPopup(popupContent,{
+      marker.bindPopup(popupContent,{
         closeButton: false,
         minWidth: 320,
+      });
     });
-});
     if(sessionStorage.length>0){
       var geoJsonLayer = L.geoJson(undefined , {
         pointToLayer: function (feature , latlng){
@@ -75,6 +75,8 @@ $( document ).on("ready, page:change", function() {
     var redirect_url= undefined;
     var trailUploaded = false;
 
+    photosMarkers ={}
+
     $.blueimp.fileupload.prototype.options.processQueue.push(
       {
         action: 'customValidate',
@@ -111,9 +113,9 @@ $( document ).on("ready, page:change", function() {
         previewImageOnMap: function(data,options){
           if(typeof data.lonLat !== 'undefined'){
             console.log(data);
-            imgUrl = window.URL.createObjectURL(data.files[data.index]);
+            var imgUrl = window.URL.createObjectURL(data.files[data.index]);
 
-            imgGeoJson = [{
+            var imgGeoJson = [{
               type: 'Feature',
               "geometry": {
                 type: "Point" , "coordinates": data.lonLat
@@ -132,9 +134,9 @@ $( document ).on("ready, page:change", function() {
 
             imagesLayer.setGeoJSON(imgGeoJson);
 
-
-
-
+            data.files[data.index].layerId =
+              imagesLayer.getLayers()[imagesLayer.getLayers().length-1]._leaflet_id;
+            console.log(data);
           }
           return data;
         },
@@ -199,7 +201,8 @@ $( document ).on("ready, page:change", function() {
                 trackPath = JSON.parse(e.target.result);
               }
 
-              previewTrackPath(trackPath, drawnLayers, geocoder);
+              var trailPathId = previewTrackPath(trackPath, drawnLayers, geocoder);
+              data.files[data.index].layerId = trailPathId;
 
             }
             reader.readAsText(file);
@@ -238,18 +241,20 @@ $( document ).on("ready, page:change", function() {
       disableImageReferencesDeletion: true
     })
 
-    .bind('fileuploadchange', function(e,data){
-      console.log(e);
-    });
 
 
 
-    $('#fileupload').bind('fileuploadadd', function(e,data){
+    $('#fileupload').bind('fileuploadfail', function(e,data){
+      console.log(data);
+      if(data.paramName[0] == "trail[trailgeometry]"){
+        drawnLayers.clearLayers();
+      }else{
+        imagesLayer.removeLayer(data.files[data.index].layerId);
+      }
     })
 
 
     $('#fileupload').bind('fileuploadsubmit' , function(e,data){
-      console.log(data);
 
       if(!trailUploaded && data.paramName[0] !=="trail[trailgeometry]"){
         unsubmittedPhotos.push(data);
@@ -318,6 +323,9 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
   sessionStorage.trailPath = JSON.stringify(trailPath.toGeoJSON());
 
   drawnLayers.addLayer(trailPath);
+
+  var trailPathId = trailPath._leaflet_id;
+
 
   var originMarker =  L.marker( coordinates[0], {
     draggable:false,
@@ -402,7 +410,7 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
   });
 
 
-
+  return trailPathId ;
 
 
 }
