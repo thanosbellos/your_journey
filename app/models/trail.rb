@@ -13,7 +13,7 @@ class Trail < ActiveRecord::Base
   ratyrate_rateable
   mount_uploader :trailgeometry , TrailGeometryUploader
 
-  #validates :name , :start_point , :travel_by , presence: true
+  validates :name , :start_point , :travel_by , presence: true
   validate :trail_file_size_validation
   validates :trailgeometry,
             :presence => true

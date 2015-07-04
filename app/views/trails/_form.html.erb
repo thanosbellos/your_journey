@@ -36,9 +36,11 @@
             <i class="glyphicon glyphicon-plus"></i>
             <span>Add Photos...</span>
             <%= photos_form.input_field :image , :multiple => true, name: "trail[photos_attributes][][image]" , :id => "trail_photos"%>
-            <% end %>
 
           </button>
+
+           <% end %>
+
           <button type="button" class="btn btn-primary start" id ="submit-button">
             <i class="glyphicon glyphicon-upload"></i>
             <span>Start upload</span>

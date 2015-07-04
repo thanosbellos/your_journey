@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150703230623) do
+ActiveRecord::Schema.define(version: 20150704141907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,9 +51,10 @@ ActiveRecord::Schema.define(version: 20150703230623) do
   create_table "photos", force: :cascade do |t|
     t.string   "image"
     t.integer  "trail_id"
-    t.datetime "created_at",                                       null: false
-    t.datetime "updated_at",                                       null: false
-    t.geometry "geotag",     limit: {:srid=>3857, :type=>"point"}
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
+    t.geometry "geotag",      limit: {:srid=>3857, :type=>"point"}
+    t.string   "coordinates"
   end
 
   add_index "photos", ["trail_id"], name: "index_photos_on_trail_id", using: :btree

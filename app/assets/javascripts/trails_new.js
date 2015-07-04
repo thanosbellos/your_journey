@@ -103,10 +103,13 @@ $( document ).on("ready, page:change", function() {
 
 
         getImagePosition: function(data,options){
-          if(typeof data.exif !== 'undefined'){
-            var lon = degreesToDecimal(data.exif.get("GPSLongitude"), data.exif.get("GPSLongitudeRef"));
-            var lat = degreesToDecimal(data.exif.get("GPSLatitude"), data.exif.get("GPSLatitudeRef"));
-            data.lonLat = [lon,lat];
+          if(data.exif !== undefined){
+            if(data.exif.get("GPSLongitude")  !==  undefined){
+
+              var lon = degreesToDecimal(data.exif.get("GPSLongitude"), data.exif.get("GPSLongitudeRef"));
+              var lat = degreesToDecimal(data.exif.get("GPSLatitude"), data.exif.get("GPSLatitudeRef"));
+              data.lonLat = [lon,lat];
+            }
           }
           return data;
         },
@@ -133,7 +136,7 @@ $( document ).on("ready, page:change", function() {
 
 
             imagesLayer.setGeoJSON(imgGeoJson);
-
+            data.files[data.index].lonLat = data.lonLat;
             data.files[data.index].layerId =
               imagesLayer.getLayers()[imagesLayer.getLayers().length-1]._leaflet_id;
           }
@@ -281,25 +284,42 @@ $( document ).on("ready, page:change", function() {
         console.log(filesRemaining);
         return false;
       } else if (trailUploaded && data.paramName[0] !=="trail[trailgeometry]") {
-        filesRemaining--
       }
 
 
     }).bind('fileuploaddone',function(e,data){
+      console.log(filesRemaining);
+      console.log(data.result);
+
 
       if( filesRemaining >0 ){
-        if(data.result.type == "trail"){
-          //submit the rest of the photos
+        if(data.result.type !== undefined){
+          console.log(unsubmittedPhotos);
+
+
           trailUploaded = true;
-          for(var i= 0; i<filesRemaining ; i++){
+          for(var i= 0; i<unsubmittedPhotos.length ; i++){
+
+            var locations = [];
+
 
             unsubmittedPhotos[i].formData = {hidden_trail_id: data.result.id}
+            for(var j=0; j< unsubmittedPhotos[i].files.length; j++){
+
+              locations.push(unsubmittedPhotos[i].files[j].lonLat);
+
+            }
+            unsubmittedPhotos[i].formData = {hidden_trail_id: data.result.id, locations: JSON.stringify(locations)}
             unsubmittedPhotos[i].submit();
 
 
           }
+        }else {
+          filesRemaining--;
         }
-      }else {
+      }
+      console.log(filesRemaining);
+      if (filesRemaining == 0){
 
         if(data.result.redirect_url !== undefined){
 
