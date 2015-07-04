@@ -4,7 +4,7 @@ $( document ).on("ready, page:change", function() {
   if(path.search(/trails\/new/)!=-1 || path.search(/users\/[0-9]+\/trails$/) !=-1){
     var fileList = [];
     $(".fileupload-buttonbar :button").attr("disabled", true);
-    $("#raty").raty();
+    $("#raty").raty({score: 1});
 
     L.mapbox.accessToken =
       'pk.eyJ1IjoidGhhbm9zYmVsIiwiYSI6IjRmMGU0NWNjZmM0ZTNiYzY2ZjE5ZDc2MDQ3ZTg4ZWQwIn0.oLX-8wI3088OqyhYC-c4_A';
@@ -113,7 +113,6 @@ $( document ).on("ready, page:change", function() {
 
         previewImageOnMap: function(data,options){
           if(typeof data.lonLat !== 'undefined'){
-            console.log(data);
             var imgUrl = window.URL.createObjectURL(data.files[data.index]);
 
             var imgGeoJson = [{
@@ -137,7 +136,6 @@ $( document ).on("ready, page:change", function() {
 
             data.files[data.index].layerId =
               imagesLayer.getLayers()[imagesLayer.getLayers().length-1]._leaflet_id;
-            console.log(data);
           }
           return data;
         },
@@ -181,6 +179,11 @@ $( document ).on("ready, page:change", function() {
           var dfd = $.Deferred(),
             file = data.files[data.index];
 
+          if($("#trail_name").val() ==''){
+            $("#trail_name").val(file.name);
+          }
+
+
 
           if(data.paramName[0] == "trail[trailgeometry]"){
 
@@ -219,6 +222,7 @@ $( document ).on("ready, page:change", function() {
 
     $('#fileupload')
     .on('fileuploadprocessfail', function (e, data) {
+      //if there is a validation error fill out error form
       data.context.each(function (index){
         var error = data.files[index].error;
         if(error){
@@ -246,7 +250,6 @@ $( document ).on("ready, page:change", function() {
         trailGeometriesFiles++;
         if(trailGeometriesFiles>1){
           $("#fileupload .files .cancel")[0].click();
-          trailGeometriesFiles--;
         }
       }
     })
@@ -255,12 +258,11 @@ $( document ).on("ready, page:change", function() {
 
 
     $('#fileupload').bind('fileuploadfail', function(e,data){
-      x = (data.files);
       if(data.paramName[0] == "trail[trailgeometry]"){
         $(".fileupload-buttonbar :button").attr("disabled", true);
         drawnLayers.clearLayers();
-        trailGeometriesFiles = trailGeometriesFiles >0 ? trailGeometriesFiles-1 : 0
-
+        trailGeometriesFiles--;
+        $("#trail_name").val('');
       }else{
         for(var i =0 , length= data.files.length; i<length; i++){
           if(typeof data.files[i].layerId !== 'undefined'){
@@ -276,29 +278,37 @@ $( document ).on("ready, page:change", function() {
       if(!trailUploaded && data.paramName[0] !=="trail[trailgeometry]"){
         unsubmittedPhotos.push(data);
         filesRemaining++;
+        console.log(filesRemaining);
         return false;
       } else if (trailUploaded && data.paramName[0] !=="trail[trailgeometry]") {
         filesRemaining--
       }
 
+
     }).bind('fileuploaddone',function(e,data){
-      console.log(data)
-      console.log(filesRemaining);
-      if(data.result.type !== undefined){
-        if(filesRemaining >0){
+
+      if( filesRemaining >0 ){
+        if(data.result.type == "trail"){
+          //submit the rest of the photos
           trailUploaded = true;
-          for(var i=0;  filesRemaining>0; i++){
-            unsubmittedPhotos[i].formData = {hidden_trail_id: data.result.id};
+          for(var i= 0; i<filesRemaining ; i++){
+
+            unsubmittedPhotos[i].formData = {hidden_trail_id: data.result.id}
             unsubmittedPhotos[i].submit();
+
+
           }
-        } else {
-          unsubmittedPhotos.push();
+        }
+      }else {
+
+        if(data.result.redirect_url !== undefined){
+
+          $(location).attr('href',data.result.redirect_url);
+
         }
 
       }
-      if (data.result.redirect_url !== undefined &&  filesRemaining==0) {
-        $(location).attr('href',data.result.redirect_url);
-      }
+
     })
   }
 });

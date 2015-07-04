@@ -1,8 +1,5 @@
 class Trail < ActiveRecord::Base
 
-  #has_many :trailsegments , :dependent => :destroy
-  #has_many :points ,
-
 
   has_and_belongs_to_many :users
   has_many :photos, :inverse_of => :trail , :dependent => :destroy
@@ -17,9 +14,9 @@ class Trail < ActiveRecord::Base
   mount_uploader :trailgeometry , TrailGeometryUploader
 
   #validates :name , :start_point , :travel_by , presence: true
-  #validate :trail_file_size_validation
-  #validates :trailgeometry,
-            #:presence => true
+  validate :trail_file_size_validation
+  validates :trailgeometry,
+            :presence => true
   after_create :store_trailgeometry! , :process_geometry_files
 
   def trail_file_size_validation

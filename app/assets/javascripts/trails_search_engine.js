@@ -109,7 +109,8 @@ $(document).on('ready, page:change', function(){
           $("#radius").data('search-with-destination-radius', radius);
           var sampleRoute = $("#sample_route");
           var simplifiedSampleRoute = createSimplifiedRoute();
-          createTurfBuffer(simplifiedSampleRoute);
+          var buffer = createTurfBuffer(simplifiedSampleRoute);
+
 
 
           var encodedPolyline = polyline.encode(simplifiedSampleRoute.toGeoJSON().geometry.coordinates);
@@ -137,11 +138,9 @@ $(document).on('ready, page:change', function(){
         var  route = e.routes[0];
         var sampleRoute = $("#sample_route");
         var simplifiedSampleRoute = createSimplifiedRoute();
-        createTurfBuffer(simplifiedSampleRoute);
 
-
+        var buffer = createTurfBuffer(simplifiedSampleRoute);
         var encodedPolyline = polyline.encode(simplifiedSampleRoute.toGeoJSON().geometry.coordinates);
-
 
         sampleRoute.val(encodedPolyline);
         sampleRoute.data("prev-sample-route-with-destination" , sampleRoute.val());

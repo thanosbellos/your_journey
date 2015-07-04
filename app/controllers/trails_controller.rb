@@ -26,8 +26,6 @@ class TrailsController < ApplicationController
 
     if(trail_params[:photos_attributes])
 
-      puts "Breakpoint"
-      puts params[:hidden_trail_id]
       @trail = Trail.find(params[:hidden_trail_id])
       @trail.photos.build(trail_params[:photos_attributes])
 
@@ -43,8 +41,11 @@ class TrailsController < ApplicationController
 
 
       @user = current_user
+
+      params[:trail][:name] =  File.basename(trail_params[:trailgeometry].original_filename, ".*") if trail_params[:name].blank?
+
+
       @trail = @user.trails.create(trail_params)
-      puts @trail.inspect
 
       respond_to do |format|
         if @trail.save
