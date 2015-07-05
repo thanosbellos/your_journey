@@ -30,8 +30,8 @@ class Trail < ActiveRecord::Base
     attr_accessor :point_factory
   end
 
-  self.trail_path_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'line_string')
-  self.point_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'point')
+  self.trail_path_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => "LineString", srid: 3857 , sql_type:"geometry(LineString,3857)")
+  self.point_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => "Point", srid: 3857 , sql_type:"geometry(Point,3857)")
   CODER = RGeo::GeoJSON.coder(geo_factory: self.trail_path_factory)
 
  def to_geojson
@@ -65,7 +65,7 @@ class Trail < ActiveRecord::Base
                                               }
                                              )
 
-
+    puts features
     collection = CODER.entity_factory.feature_collection(features)
 
     CODER.encode(collection)

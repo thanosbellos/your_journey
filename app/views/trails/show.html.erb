@@ -8,41 +8,48 @@
   </div>
   <div id="directions">
     <div id="routes" class="mapbox-directions-routes">
-      <h5> Trail Info </h5>
       <ul>
+      <h5> Trail Info </h5>
+
         <li class= "mapbox-directions-route mapbox-directions-route-active">
-          <div class="mapbox-directions-route-heading">
-            Trail Name:
-          </div>
-          <div class="mapbox-directions-route-summary">
-            <%= @trail.name %>
-          </div>
-          <div class="mapbox-directions-route-heading">
-            First Point:
-          </div>
-          <div class="mapbox-directions-route-details">
-            <%= @trail.start_point %>
-          </div>
-          <div class="mapbox-directions-route-heading">
-            Finish Point
-          </div>
-          <div class= "mapbox-directions-route-details">
-            <%= @trail.end_point %>
-          </div>
-          <div class="mapbox-directions-route-heading">
-            Length:
-          </div>
-          <div class="mapbox-directions-route-details">
-            <%= @trail.length %>
-          </div>
+        <div class="mapbox-directions-route-heading">
+          Trail Name:
+        </div>
+        <div class="mapbox-directions-route-summary">
+          <%= @trail.name %>
+        </div>
+        <div class="mapbox-directions-route-heading">
+          First Point:
+        </div>
+        <div class="mapbox-directions-route-details">
+          <%= @trail.start_point %>
+        </div>
+        <div class="mapbox-directions-route-heading">
+          Finish Point
+        </div>
+        <div class= "mapbox-directions-route-details">
+          <%= @trail.end_point %>
+        </div>
+        <div class="mapbox-directions-route-heading">
+          Length:
+        </div>
+        <div class="mapbox-directions-route-details">
+          <%= @trail.length %>
+        </div>
         </li>
       </ul>
-    </div>
-    <div id="instructions">
-      <div class="imdb-star-avg">
-        <div>
-          <h5 style="text-align: center"> Average Rating </h5>
-        </div>
+      <ul>
+          <h5 style="">Rate it </h5>
+
+          <li>
+        <% if current_user %>
+          <%= rating_for @trail, nil  ,readonly:false, disable_after_rate: false %>
+        <% else %>
+          You must login in order to rate
+        <% end %></li>
+      </ul>
+      <ul>
+          <h5> Average Rating </h5>
         <div class="col-md-offset-5 col-sm-offset-5 col-xs-offset-5">
           <% if @trail.rate_average_without_dimension.avg.nil? %>
             :( Noone has rated this trail yet
@@ -51,7 +58,13 @@
           <% end %>
         </div>
         <div>
-          <h5 style="text-align: center"> From <%= @trail.raters_without_dimension_ids.length %> <%= "user".pluralize(@trail.raters_without_dimension_ids.length) %></h5>
+          <h5 > From <%= @trail.raters_without_dimension_ids.length %> <%= "user".pluralize(@trail.raters_without_dimension_ids.length) %></h5>
+        </div>
+      </ul>
+      <div id="instruction">
+        <h5> Edit Your Trail </h5>
+        <div class="col-md-2 col-md-offset-4">
+          <%= link_to 'Edit Trail', edit_user_trail_path(@trail.id , @trail.users.first.id), class: "btn btn-primary", id: "edit-trail" %>
         </div>
       </div>
     </div>
@@ -59,32 +72,25 @@
 </div>
 <div class="container">
   <div class="row">
-  <h3> <%= @trail.name %> </h3>
-  <label>Rate it </label>
-  <% if current_user %>
-    <%= rating_for @trail, nil  ,readonly:false, disable_after_rate: false %>
-<% else %>
-  You must login in order to rate
-<% end %>
-</div>
-<br>
-<br>
-<div class= "row">
-  <h5> Trail Photos </h5>
-  <% @trail.photos.each_slice(3) do |photo_row| %>
-    <div class="row">
-      <div class="push"> </div>
-      <% photo_row.each do |photo| %>
-        <div class="col-md-4 col-sm-4 col-xs-6 col-lg-4">
-          <a href="<%=image_url photo.image.url%>" class="fancybox" data-fancybox-group="gallery"><%=image_tag photo.image.thumb.url, class: "img-responsive" %></a>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
-</div>
+  </div>
+  <br>
+  <br>
+  <div class= "row">
+    <h5> Trail Photos </h5>
+    <% @trail.photos.each_slice(3) do |photo_row| %>
+      <div class="row">
+        <div class="push"> </div>
+        <% photo_row.each do |photo| %>
+          <div class="col-md-4 col-sm-4 col-xs-6 col-lg-4">
+            <a href="<%=image_url photo.image.url%>" class="fancybox" data-fancybox-group="gallery"><%=image_tag photo.image.thumb.url, class: "img-responsive" %></a>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 
-<div class="push">
-</div>
+  <div class="push">
+  </div>
 
 </div>
 

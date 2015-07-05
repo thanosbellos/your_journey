@@ -17,10 +17,11 @@
   top:auto;
 }
 
-#instructions .imdb-star-avg{
+.imdb-star-avg{
   position:relative;
-  top:135px;
+  top:75%;
 }
+
 
 .imdb-star-avg p{
 
@@ -51,6 +52,13 @@
     overflow: auto;
 }
 
+#directions  h5{
+  text-align: center;
+  color: #96997F;
+
+}
+
+
 #errors {
     z-index: 8;
     opacity: 0;
@@ -63,7 +71,6 @@
 
 h5{
   /*text-align: center;*/
-color: #96997F;
 }
 
 .leaflet-popup-content img {

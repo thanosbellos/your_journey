@@ -5,12 +5,13 @@ class TrailsController < ApplicationController
 
   def show
     @trail = Trail.find(params[:id])
-    @geojson = Array.new
-    @geojson = @trail.to_geojson
+    @trail_geojson = @trail.to_geojson
+    @photos_geojson = Trail::CODER.entity_factory.feature_collection(@trail.photos.map(&:geotag_feature))
+    @photos_geojson = Trail::CODER.encode(@photos_geojson)
     @method_name = "trails/show"
     respond_to do |format|
       format.html
-      format.json { render json: @geojson}
+      format.json { render json: {trail: @trail_geojson , photos: @photos_geojson} }
     end
   end
 
@@ -41,12 +42,12 @@ class TrailsController < ApplicationController
       end
 
 
-      puts params
-      puts trail_params
 
 
+      puts current_user.trails.length
 
-      @trail.photos.build(trail_params[:photos_attributes])
+      @photos = @trail.photos.build(trail_params[:photos_attributes])
+      puts current_user.trails.length
 
      respond_to do |format|
        if @trail.save
@@ -67,7 +68,7 @@ class TrailsController < ApplicationController
       params[:trail][:name] =  File.basename(trail_params[:trailgeometry].original_filename, ".*") if trail_params[:name].blank?
 
 
-      @trail = @user.trails.create(trail_params)
+      @trail = @user.trails.build(trail_params)
 
       respond_to do |format|
         if @trail.save
