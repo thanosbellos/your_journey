@@ -1,4 +1,4 @@
-$( document ).on("ready, page:change",function() {
+$( document ).on("ready",function() {
   var path = window.location.pathname;
 
   if(path.search(/export$/)!=-1){

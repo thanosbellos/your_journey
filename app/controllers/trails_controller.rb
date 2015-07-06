@@ -1,6 +1,11 @@
 class TrailsController < ApplicationController
-  def index
+  before_action :set_trail, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user! , only: [:new ]
+  before_action :authorize_user , only: [ :edit , :update, :destroy]
 
+
+  def index
+    @trails = Trail.best_rated.limit(5)
   end
 
   def show
@@ -124,5 +129,14 @@ class TrailsController < ApplicationController
     params.require(:trail).permit(:name, :start_point, :end_point, :length, :duration, :travel_by,
                                   :difficulty,:trailgeometry,:trailgeometry_cache, :photos_attributes => [:id , :trail_id , :image, :geotag])
 
+  end
+
+  def set_trail
+    @trail = Trail.find(params[:id])
+  end
+
+  def authorize_user
+    flash[:error] = "You can only edit your own trails"
+    redirect_to(current_user) unless current_user == @user
   end
 end

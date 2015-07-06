@@ -111,9 +111,6 @@ $(document).on('ready', function(){
           var sampleRoute = $("#sample_route");
           var simplifiedSampleRoute = createSimplifiedRoute();
           var buffer = createTurfBuffer(simplifiedSampleRoute);
-
-
-
           var encodedPolyline = polyline.encode(simplifiedSampleRoute.toGeoJSON().geometry.coordinates);
 
 
@@ -123,12 +120,6 @@ $(document).on('ready', function(){
         }
 
        }
-
-
-
-
-
-
     });
 
 
@@ -145,9 +136,6 @@ $(document).on('ready', function(){
 
         sampleRoute.val(encodedPolyline);
         sampleRoute.data("prev-sample-route-with-destination" , sampleRoute.val());
-
-
-
 
         $("#search-button").click();
       });
@@ -281,7 +269,6 @@ $(document).on('ready', function(){
     //
     //
     $suggestions = $("#suggestions");
-
     $suggestions.html('');
     $suggestions.html($suggestions.data('prev-suggestions-search-with-destination'));
     setEventsOnSuggestions();

@@ -32,6 +32,8 @@
         <%else %>
           <%= rating_for trail , nil,disable_after_rate:false ,  imdb_avg: true,readonly: true%>
         <% end %>
+        <%= link_to "See Route" , user_trail_path(trail.users.first, trail), :class=> "btn btn-primary"%>
+
       </div>
       </div>
 

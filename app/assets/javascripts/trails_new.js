@@ -434,7 +434,8 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
 
     var r = results[0].name.split(",");
 
-    origin = r.slice(0,3) + r.pop();
+    origin = r.slice(0,3)
+    if(r.suburb !== undefined){}
 
     var $div =$( "#routes ul li .mapbox-directions-route-details" ).eq(0);
     $div.text(origin);
@@ -448,7 +449,7 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
   geocoder.reverse(destinationMarker.getLatLng(), map.options.crs.scale(map.getZoom()), function(results) {
 
     var r = results[0].name.split(",");
-    destination =  r.slice(0,3) + r.pop();
+    destination =  r.slice(0,3)
     var $div =$( "#routes ul li .mapbox-directions-route-details" ).eq(1);
     $div.text( destination);
     $("#trail_end_point:hidden").val(destination);
