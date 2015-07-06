@@ -6,7 +6,7 @@ $( document ).on("ready", function() {
       '/photos';
     drawnLayers = undefined;
     markersGroup =  L.featureGroup();
-
+    var formChanged = false;
     trailShow();
 
 
@@ -169,11 +169,11 @@ $( document ).on("ready", function() {
 
     .bind('fileuploadfail', function(e,data){
 
-        for(var i =0 , length= data.files.length; i<length; i++){
-          if(typeof data.files[i].layerId !== 'undefined'){
-            markersGroup.removeLayer(data.files[i].layerId);
-          }
+      for(var i =0 , length= data.files.length; i<length; i++){
+        if(typeof data.files[i].layerId !== 'undefined'){
+          markersGroup.removeLayer(data.files[i].layerId);
         }
+      }
     }).bind('fileuploaddestroy', function(e,data){
 
       var photoId = parseInt(data.url.split(/\/photos\//)[1]);
@@ -189,9 +189,9 @@ $( document ).on("ready", function() {
       console.log("Breakpoint from processfinish");
 
     }).bind('fileuploadadded', function(e,data){
-        }).bind('fileuploadsubmit',function(e,data){
+    }).bind('fileuploadsubmit',function(e,data){
       console.log("Breakpoint from submit");
-        var locations = [];
+      var locations = [];
       for(var i=0; i<data.files.length; i++){
         console.log(data.files[i]);
         locations.push(data.files[i].lonLat);
@@ -207,6 +207,19 @@ $( document ).on("ready", function() {
         $(location).attr('href',data.result.redirect_url);
       }
     });
+
+    $("#submit-button").click(function(e){
+      if(filesToBeUploaded == 0 && formChanged){
+        console.log(formChanged);
+        $('#fileupload').submit();
+      }
+    })
+
+    $("#trail_name , .trail_travel_by, .trail_difficulty" ).change(function(){
+      console.log(formChanged);
+      formChanged = true;
+
+    })
   }
 
 

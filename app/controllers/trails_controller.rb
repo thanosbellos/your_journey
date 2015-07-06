@@ -100,18 +100,21 @@ class TrailsController < ApplicationController
   def update
     @trail = Trail.find(params[:id])
     @user = @trail.users.first
-    locations = JSON.parse(params[:geolocations])
-    factory= RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => "Point", srid: 3857 , sql_type: "geometry(Point,3857)")
+    if(trail_params[:photos_attributes])
+      locations = JSON.parse(params[:geolocations])
+      factory= RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => "Point", srid: 3857 , sql_type: "geometry(Point,3857)")
 
-    locations.each_with_index do |coordinates, index|
-      if coordinates
-        params[:trail][:photos_attributes][index][:geotag] = "SRID=3857;Point(#{coordinates[0]} #{coordinates[1]})"
+      locations.each_with_index do |coordinates, index|
+        if coordinates
+          params[:trail][:photos_attributes][index][:geotag] = "SRID=3857;Point(#{coordinates[0]} #{coordinates[1]})"
+        end
       end
     end
 
     respond_to do |format|
       if @trail.update(trail_params)
         format.json {render json: {redirect_url: user_trail_path(@user, @trail)}}
+        format.html {redirect_to user_trail_path(@user,@trail)}
       end
     end
   end
