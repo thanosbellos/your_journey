@@ -1,4 +1,4 @@
-$( document ).on("ready, page:change", function() {
+$( document ).on("ready", function() {
   var path = window.location.pathname;
   if(path.search(/trails\/new/) !=-1) {sessionStorage.clear()}
   if(path.search(/trails\/new/)!=-1 || path.search(/users\/[0-9]+\/trails$/) !=-1){
@@ -11,24 +11,8 @@ $( document ).on("ready, page:change", function() {
     map = L.mapbox.map('map', 'thanosbel.lmm46d4d');
     drawnLayers = undefined;
     drawnLayers = L.featureGroup().addTo(map);
-    imagesLayer =  L.mapbox.featureLayer().addTo(map);
+    markersGroup =  L.featureGroup().addTo(map);
 
-    imagesLayer.on('layeradd', function(e) {
-      var marker = e.layer,
-        feature = marker.feature;
-
-      // Create custom popup content
-      var popupContent =  '<a target="_blank" class="popup" href="#">' +
-        '<img src="' + feature.properties.url + '" />' +
-        '</a>'+
-        '<h5>' + feature.properties.name + '</h5>';
-
-
-      marker.bindPopup(popupContent,{
-        closeButton: false,
-        minWidth: 320,
-      });
-    });
     if(sessionStorage.length>0){
       var geoJsonLayer = L.geoJson(undefined , {
         pointToLayer: function (feature , latlng){
@@ -100,8 +84,6 @@ $( document ).on("ready, page:change", function() {
     );
     $.widget('blueimp.fileupload', $.blueimp.fileupload, {
       processActions: {
-
-
         getImagePosition: function(data,options){
           if(data.exif !== undefined){
             if(data.exif.get("GPSLongitude")  !==  undefined){
@@ -134,11 +116,36 @@ $( document ).on("ready, page:change", function() {
               }
             }]
 
+            var imageLayer = L.mapbox.featureLayer();
+            imageLayer.on('layeradd', function(e) {
+              var marker = e.layer,
+                feature = marker.feature;
 
-            imagesLayer.setGeoJSON(imgGeoJson);
+              // Create custom popup content
+              var popupContent =  '<a target="_blank" class="popup" href="#">' +
+                '<img src="' + feature.properties.url + '" />' +
+                '</a>'+
+                '<h5>' + feature.properties.name + '</h5>';
+
+
+              marker.bindPopup(popupContent,{
+                closeButton: false,
+                minWidth: 320,
+              });
+              markersGroup.addLayer(imageLayer);
+
+
+            });
+
+
+
+            imageLayer.setGeoJSON(imgGeoJson);
+
             data.files[data.index].lonLat = data.lonLat;
             data.files[data.index].layerId =
-              imagesLayer.getLayers()[imagesLayer.getLayers().length-1]._leaflet_id;
+              markersGroup.getLayers()[markersGroup.getLayers().length-1]._leaflet_id;
+
+            console.log(data.files[data.index].layerId);
           }
           return data;
         },
@@ -224,7 +231,7 @@ $( document ).on("ready, page:change", function() {
     })
 
     $('#fileupload')
-    .on('fileuploadprocessfail', function (e, data) {
+    .bind('fileuploadprocessfail', function (e, data) {
       //if there is a validation error fill out error form
       data.context.each(function (index){
         var error = data.files[index].error;
@@ -269,7 +276,8 @@ $( document ).on("ready, page:change", function() {
       }else{
         for(var i =0 , length= data.files.length; i<length; i++){
           if(typeof data.files[i].layerId !== 'undefined'){
-            imagesLayer.removeLayer(data.files[i].layerId);
+            console.log(data.files[i].layerId);
+            markersGroup.removeLayer(data.files[i].layerId);
           }
         }
       }
@@ -429,7 +437,7 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
     origin = r.slice(0,3) + r.pop();
 
     var $div =$( "#routes ul li .mapbox-directions-route-details" ).eq(0);
-    $div.text("End Point" + origin);
+    $div.text(origin);
     $("#trail_start_point:hidden").val(origin);
   })
 
@@ -442,11 +450,11 @@ function previewTrackPath(trackPath , drawnLayers , geocoder){
     var r = results[0].name.split(",");
     destination =  r.slice(0,3) + r.pop();
     var $div =$( "#routes ul li .mapbox-directions-route-details" ).eq(1);
-    $div.text("Start Point" + destination);
+    $div.text( destination);
     $("#trail_end_point:hidden").val(destination);
 
     $div = $("#routes ul li .mapbox-directions-route-details").eq(2);
-    $div.text("Length" + length + ' Kilometers');
+    $div.text(length + ' Kilometers');
     $("#routes ul").show();
 
     $("#trail_length:hidden").val(length);

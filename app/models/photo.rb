@@ -1,7 +1,23 @@
 class Photo < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
+
   belongs_to :trail
   mount_uploader :image, ImageUploader
 
+
+  def to_jq_upload
+    trail = self.trail
+
+    {
+      "name" => read_attribute(:image),
+      "size" => image.size,
+      "url" => image.url,
+      "thumbnail_url" => image.thumb.url,
+      "delete_url" => trail_photo_path(trail.id , self.id),
+      "delete_type" => "DELETE",
+      "delete_method" => "delete"
+    }
+  end
 
 
   class << self;
@@ -24,8 +40,9 @@ class Photo < ActiveRecord::Base
                                                                      sql_type:"geometry(Point,3857)")
 
   if self.geotag
-    feature = self.class.geojson_coder.entity_factory.feature( self.geotag,nil, {"marker-size": "small",
-                                                                           "marker-coloer": "#ff8888",
+    feature = self.class.geojson_coder.entity_factory.feature( self.geotag,self.id, {"marker-size": "small",
+                                                                                     "zIndexOffset": "100",
+                                                                           "marker-color": "#ff8888",
                                                                            "marker-symbol": "camera",
                                                                            "url": self.image.url })
 

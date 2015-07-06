@@ -1,34 +1,39 @@
 <%= simple_form_for [@user , @trail], html: {id: "fileupload"} do |f| %>
   <%= f.input :name %>
-  <%= f.input :trailgeometry_cache , as: :hidden %>
+  <%if @trail.new_record? %>
   <span class="btn btn-success fileinput-button">
     <i class="glyphicon glyphicon-plus"></i>
     <span>Choose trail's file</span>
     <%= f.input_field :trailgeometry,  label: 'Trail gpx file'%>
   </span>
+  <%end %>
 
 
 
   <%= f.input :start_point , as: :hidden  %>
   <%= f.input :end_point , as: :hidden %>
   <%= f.input :length , as: :hidden %>
+  <%= f.input :travel_by , collection:['Car' , 'Bike' , 'On Feet'],  selected: f.object.travel_by || 'Car' %>
 
-  <%= f.input :travel_by , collection:['Car' , 'Bike' , 'On Feet'],:selected =>'Car' %>
+
   <%= f.input :difficulty,
     :collection => [[1 , 'Easy'] , [2, 'Moderate'], [3,'Extreme']],
     :label_method=>:last ,
     :value_method=>:first ,
     :as=> :radio_buttons,
     :item_wrapper_class=>'inline' ,
-    :checked => 1 %>
+    :checked => f.object.difficulty || 2 %>
   <div id="raty">
 
     <label>How would you rate this trail? </label>
+  <% unless @trail.new_record? %>
+          <%= rating_for @trail, nil  ,readonly:false, disable_after_rate: false %>
+  <% end %>
 
-  </div>
-  <%= hidden_field_tag 'hidden_trail_id'  , 'nil' %>
-
-    <%= f.simple_fields_for :photos do |photos_form|%>
+</div><br>
+  <%= hidden_field_tag 'hidden_trail_id'  , nil %>
+  <%= hidden_field_tag 'geolocations' , 'nil' %>
+    <%= f.simple_fields_for Photo.new  do |photos_form|%>
       <div class="row fileupload-buttonbar disabled">
         <div class="col-lg-12">
           <!-- The fileinput-button span is used to style the file input field as button -->
