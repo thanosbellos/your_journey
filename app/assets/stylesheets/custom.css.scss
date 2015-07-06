@@ -1,9 +1,25 @@
 html {
   overflow-y: scroll;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  height:100%;
+
 }
 
+
 body {
-  background-color:inherit;
+  height: 100%;
+  width:100%;
+  margin:0;
+}
+
+.fullscreen-container{
+  margin: 0 auto;
+  width: 100%;
+  position:relative
 }
 
 section {
@@ -26,7 +42,9 @@ p {
             min-height: 100%;
             height: auto !important;
             height: 100%;
-            margin: 0 auto -4em;
+            margin: 0 auto -4.5em;
+  background-color: #F8F8F8;
+
 }
 .push {
             height:63.5px;

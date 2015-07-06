@@ -9,7 +9,7 @@
   <div id="directions">
     <div id="routes" class="mapbox-directions-routes">
       <ul>
-      <h5> Trail Info </h5>
+        <h5> Trail Info </h5>
 
         <li class= "mapbox-directions-route mapbox-directions-route-active">
         <div class="mapbox-directions-route-heading">
@@ -39,9 +39,9 @@
         </li>
       </ul>
       <ul>
-          <h5 style="">Rate it </h5>
+        <h5 style="">Rate it </h5>
 
-          <li>
+        <li>
         <% if current_user %>
           <%= rating_for @trail, nil  ,readonly:false, disable_after_rate: false %>
         <% else %>
@@ -49,7 +49,7 @@
         <% end %></li>
       </ul>
       <ul>
-          <h5> Average Rating </h5>
+        <h5> Average Rating </h5>
         <div class="col-md-offset-5 col-sm-offset-5 col-xs-offset-5">
           <% if @trail.rate_average_without_dimension.avg.nil? %>
             :( Noone has rated this trail yet
@@ -69,28 +69,35 @@
       </div>
     </div>
   </div>
-</div>
-<div class="container">
-  <div class="row">
-  </div>
-  <br>
-  <br>
-  <div class= "row">
-    <h5> Trail Photos </h5>
-    <% @trail.photos.each_slice(3) do |photo_row| %>
-      <div class="row">
-        <div class="push"> </div>
-        <% photo_row.each do |photo| %>
-          <div class="col-md-4 col-sm-4 col-xs-6 col-lg-4">
-            <a href="<%=image_url photo.image.url%>" class="fancybox" data-fancybox-group="gallery"><%=image_tag photo.image.thumb.url, class: "img-responsive" %></a>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
 
   <div class="push">
   </div>
 
+  <div class="container">
+    <h5>Trail Name: 
+    <div class="row">
+
+      <div class="col-md-8" id="comments-section">
+
+      </div>
+
+      <div class="col-md-4 col-sm-4 trail-sidebar-photos">
+        <h5> Trail Photos </h5>
+        <div id="photos">
+          <% @trail.photos.each_slice(3) do |photos_row| %>
+            <% photos_row.each do |photo| %>
+              <div class="col-md-4 col-sm-4 col-xs-6 col-lg-4">
+                <a href="<%= image_url photo.image.url%>" rel="fancybox-thumb" class="fancybox-thumb" data-fancybox-group="gallery">
+                  <%=image_tag photo.image.thumb.url,class: "",  alt: "" %>
+                </a>
+              </div>
+            <% end %>
+          <%end%>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+
 

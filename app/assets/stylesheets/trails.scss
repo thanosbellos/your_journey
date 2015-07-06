@@ -1,11 +1,6 @@
 // Place all the styles related to the Trails controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-.fullscreen-container{
-  margin: 0 auto;
-  width: 100%;
-  position:relative
-}
 
 #map{
     height:550px;
@@ -77,3 +72,8 @@ h5{
   height:320px;
   width:100%;
  }
+
+ .trail-sidebar-photos{
+  height:auto !important;
+  background: #fff;
+  padding-left: 10px; }
