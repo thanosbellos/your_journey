@@ -3,51 +3,43 @@
   <tr class="template-upload fade in">
     <td class="col-md-1">
       <span class="preview">
-        <%= image_tag trail.photos.first.image.thumb.url unless trail.photos.empty? %>
+        <% if trail.photos.empty? %>
+          <%= image_tag 'default_route_thumb.jpg' %>
+        <%else %>
+          <%= image_tag trail.photos.first.image.thumb.url %>
+        <%end %>
       </span>
     </td>
-    <td class="col-md-2">
+    <td class="col-md-3">
       <h5>Trail Info </h5>
       <ul>
-        <li>
-          Trail Name: <%= trail.name %>
-      </li>
-      <li>
-        Starting Point: <%= trail.start_point %>
-    </li>
-    <li>
-      Finish Point: <%= trail.end_point %>
-  </li>
-  <li>
-    Length: <%= trail.length %>
-</li>
-<li>
-  <h6> Your Rating <h6>
-      <%= rating_for trail, nil,readonly:true, disable_fater_rate:false %>
-</li>
-<li>
-  <%= button_to "See Route", user_trail_path(trail.users.first , trail), :class =>"button" , :method =>:get %>
-</li>
-
+        <li> Trail Name: <%= trail.name %> </li>
+        <li>Starting Point: <%= trail.start_point %></li>
+        <li>Finish Point: <%= trail.end_point %></li>
+        <li>Length: <%= trail.length %></li>
       </ul>
-
-    </td>
+    </td>.
 
 
     <td class="col-md-2">
-      <div>
-        <h5 style="text-align: center"> Average Rating </h5>
-      </div>
-        <div class="col-md-offset-5 col-sm-offset-5 col-xs-offset-5 imdb-star-avg">
-          <% if trail.rate_average_without_dimension.avg.nil? %>
-            :( Noone has rated this trail yet
-          <%else %>
-            <%= rating_for trail , nil,disable_after_rate:false ,  imdb_avg: true,readonly: true%>
-          <% end %>
+      <div  class='row'>
+        <div class="class-col-md-2 col-md-offset-4">
+          <h5> Average Rating </h5>
         </div>
+        <div class="col-md-offset-4 imdb-avg">
+        <% if trail.rate_average_without_dimension.avg.nil? %>
+          :( Noone has rated this trail yet
+        <%else %>
+          <%= rating_for trail , nil,disable_after_rate:false ,  imdb_avg: true,readonly: true%>
+        <% end %>
+      </div>
+      </div>
 
-    </td>
-  </tr>
+    </div>
+  </td>
+</tr>
 
 </table>
+
+
 

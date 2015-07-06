@@ -1,5 +1,6 @@
-$(document).on('ready, page:change', function(){
+$(document).on('ready', function(){
   var path = window.location.pathname;
+  console.log(path);
 
   if((path.search(/\/trail_searches\/new$/)!==-1)){
 
