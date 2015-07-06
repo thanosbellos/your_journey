@@ -64,7 +64,7 @@
       <div id="instruction">
         <h5> Edit Your Trail </h5>
         <div class="col-md-2 col-md-offset-4">
-          <%= link_to 'Edit Trail', edit_user_trail_path(@trail.id , @trail.users.first.id), class: "btn btn-primary", id: "edit-trail" %>
+          <%= link_to 'Edit Trail', edit_user_trail_path(@trail.users.first.id, @trail.id), class: "btn btn-primary", id: "edit-trail" %>
         </div>
       </div>
     </div>

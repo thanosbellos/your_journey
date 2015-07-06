@@ -1,4 +1,4 @@
-$( document ).on("ready, page:change",function() {
+$( document ).on("ready",function() {
   var path = window.location.pathname;
 
   if(path.search(/trails\/[0-9]+$/)!=-1){
@@ -30,7 +30,7 @@ function trailShow(){
 
 
   function processGeoJsonData(data){
-    console.log(data);
+
     trailGeoJson = data.trail;
     photosGeoJson = data.photos;
     points = initiateMyMap();

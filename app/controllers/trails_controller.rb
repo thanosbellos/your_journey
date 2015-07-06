@@ -44,20 +44,19 @@ class TrailsController < ApplicationController
 
 
 
-      puts current_user.trails.length
 
       @photos = @trail.photos.build(trail_params[:photos_attributes])
       puts current_user.trails.length
 
-     respond_to do |format|
-       if @trail.save
-         format.html
-         format.json {render json: {redirect_url: user_trail_path(current_user , @trail)}}
-       else
-         format.json {render json: [{error:"Photos Cound not be saved"}], :status => 304 }
-       end
+      respond_to do |format|
+        if @trail.save
+          format.html
+          format.json {render json: {redirect_url: user_trail_path(current_user , @trail)}}
+        else
+          format.json {render json: [{error:"Photos Cound not be saved"}], :status => 304 }
+        end
 
-     end
+      end
 
 
     else
@@ -78,7 +77,7 @@ class TrailsController < ApplicationController
           format.html
           format.json { render json: {id: @trail.id , :type => :trail, redirect_url: user_trail_path(current_user , @trail)}}
         else
-         format.json {render json: [{error: "Trail could not be saved"}], :status => 304 }
+          format.json {render json: [{error: "Trail could not be saved"}], :status => 304 }
 
         end
 
@@ -89,12 +88,38 @@ class TrailsController < ApplicationController
 
   end
 
+  def edit
 
+    @trail = Trail.find(params[:id])
+    @user = @trail.users.first
+    @trail.photos.build
+
+
+  end
+
+  def update
+    @trail = Trail.find(params[:id])
+    @user = @trail.users.first
+    locations = JSON.parse(params[:geolocations])
+    factory= RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => "Point", srid: 3857 , sql_type: "geometry(Point,3857)")
+
+    locations.each_with_index do |coordinates, index|
+      if coordinates
+        params[:trail][:photos_attributes][index][:geotag] = "SRID=3857;Point(#{coordinates[0]} #{coordinates[1]})"
+      end
+    end
+
+    respond_to do |format|
+      if @trail.update(trail_params)
+        format.json {render json: {redirect_url: user_trail_path(@user, @trail)}}
+      end
+    end
+  end
 
   private
-    def trail_params
-      params.require(:trail).permit(:name, :start_point, :end_point, :length, :duration, :travel_by,
-                                    :difficulty,:trailgeometry,:trailgeometry_cache, :photos_attributes => [:id , :trail_id , :image, :geotag])
+  def trail_params
+    params.require(:trail).permit(:name, :start_point, :end_point, :length, :duration, :travel_by,
+                                  :difficulty,:trailgeometry,:trailgeometry_cache, :photos_attributes => [:id , :trail_id , :image, :geotag])
 
-    end
+  end
 end

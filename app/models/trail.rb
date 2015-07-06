@@ -155,14 +155,13 @@ class Trail < ActiveRecord::Base
     data = JSON.load(r)
 
     srid = data["codes"][0]["code"] if r.status[1] == "OK"
+
   end
 
   def parse_tracks_shp_file
 
     f = trailgeometry.shp_trail.path
-    puts "Breakpoint 166"
-    puts f.inspect
-    srid = find_srid_from_prj(f)
+    #srid = find_srid_from_prj(f)
 
     factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'line_string');
 

@@ -25,5 +25,4 @@
 //= require polyline
 //= require turf/turf
 //= require turf/turf-buffer
-//= require turbolinks
 //= require_tree .
