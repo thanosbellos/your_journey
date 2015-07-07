@@ -1,0 +1,9 @@
+<%= simple_form_for [@trail, (@new_comment || @trail.comments.new)], remote: true do  |f| %>
+  <%= puts f.object.errors.full_messages %>
+  <%= f.error_notification %>
+
+  <%= f.input :body,label: false%>
+  <%= f.submit class: "btn btn-default pull-right" %>
+
+<%end%>
+

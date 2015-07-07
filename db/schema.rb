@@ -41,14 +41,15 @@ ActiveRecord::Schema.define(version: 20150706221129) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.string   "commenter"
     t.text     "body"
     t.integer  "trail_id"
+    t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   add_index "comments", ["trail_id"], name: "index_comments_on_trail_id", using: :btree
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "overall_averages", force: :cascade do |t|
     t.integer  "rateable_id"
@@ -112,7 +113,6 @@ ActiveRecord::Schema.define(version: 20150706221129) do
     t.integer  "gpx_file_size"
     t.datetime "gpx_updated_at"
     t.string   "trailgeometry"
-    t.string   "picture"
   end
 
   create_table "trails_users", id: false, force: :cascade do |t|
@@ -146,5 +146,6 @@ ActiveRecord::Schema.define(version: 20150706221129) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   add_foreign_key "comments", "trails"
+  add_foreign_key "comments", "users"
   add_foreign_key "photos", "trails"
 end

@@ -1,0 +1,25 @@
+
+
+<div class="row">
+<div class="col-md-1">
+  <%= link_to(comment.user) do %>
+    <%= image_tag(comment.user.avatar.thumb.url , class: 'img-circle', title: "#{comment.user.name}") %>
+  <%end%>
+</div>
+<div class="col-md-11">
+  <%= link_to((comment.user.name unless comment.user.name.blank?) || comment.user.email) %>
+  <p>
+  <%= comment.body %>
+  </p>
+  <span class="date sub-text">
+    On
+    <%=l comment.created_at %>
+    <%= link_to 'Delete',  trail_comment_path(comment.trail, comment),                 method: :delete,
+      data: {confirm: 'Are you sure?'},
+       remote: true
+ %>
+  </span>
+</div>
+</div>
+<br>
+

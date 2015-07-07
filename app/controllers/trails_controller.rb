@@ -11,6 +11,8 @@ class TrailsController < ApplicationController
   def show
     @trail = Trail.find(params[:id])
     @trail_geojson = @trail.to_geojson
+    @comments = @trail.comments
+
     @photos_geojson = Trail::CODER.entity_factory.feature_collection(@trail.photos.map(&:geotag_feature))
     @photos_geojson = Trail::CODER.encode(@photos_geojson)
     @method_name = "trails/show"

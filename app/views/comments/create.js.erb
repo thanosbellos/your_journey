@@ -1,0 +1,7 @@
+var comments_list = $('#comments-list')
+
+comments_list.append('<%= escape_javascript(render partial: @comment) %>');
+
+$('#comment-form').html('<%= escape_javascript(render partial: 'comments/comment_form') %>');
+
+$('#comment_body').val('');
