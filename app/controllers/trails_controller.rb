@@ -11,6 +11,8 @@ class TrailsController < ApplicationController
   def show
     @trail = Trail.find(params[:id])
     @trail_geojson = @trail.to_geojson
+    @comments = @trail.comments
+
     @photos_geojson = Trail::CODER.entity_factory.feature_collection(@trail.photos.map(&:geotag_feature))
     @photos_geojson = Trail::CODER.encode(@photos_geojson)
     @method_name = "trails/show"
@@ -133,10 +135,13 @@ class TrailsController < ApplicationController
 
   def set_trail
     @trail = Trail.find(params[:id])
+    @user = @trail.users.first
   end
 
   def authorize_user
-    flash[:error] = "You can only edit your own trails"
-    redirect_to(current_user) unless current_user == @user
+    unless( current_user == @user)
+   flash[:error] = "You can only edit your own trails"
+   redirect_to :back
+    end
   end
 end

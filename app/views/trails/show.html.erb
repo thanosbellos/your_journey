@@ -9,7 +9,7 @@
   <div id="directions">
     <div id="routes" class="mapbox-directions-routes">
       <ul>
-      <h5> Trail Info </h5>
+        <h5> Trail Info </h5>
 
         <li class= "mapbox-directions-route mapbox-directions-route-active">
         <div class="mapbox-directions-route-heading">
@@ -39,9 +39,9 @@
         </li>
       </ul>
       <ul>
-          <h5 style="">Rate it </h5>
+        <h5 style="">Rate it </h5>
 
-          <li>
+        <li>
         <% if current_user %>
           <%= rating_for @trail, nil  ,readonly:false, disable_after_rate: false %>
         <% else %>
@@ -49,7 +49,7 @@
         <% end %></li>
       </ul>
       <ul>
-          <h5> Average Rating </h5>
+        <h5> Average Rating </h5>
         <div class="col-md-offset-5 col-sm-offset-5 col-xs-offset-5">
           <% if @trail.rate_average_without_dimension.avg.nil? %>
             :( Noone has rated this trail yet
@@ -61,36 +61,81 @@
           <h5 > From <%= @trail.raters_without_dimension_ids.length %> <%= "user".pluralize(@trail.raters_without_dimension_ids.length) %></h5>
         </div>
       </ul>
+            <% if current_user == @trail.users.first %>
+
       <div id="instruction">
         <h5> Edit Your Trail </h5>
         <div class="col-md-2 col-md-offset-4 col-sm-2 col-sm-offset-4 col-xs-2 col-xs-offset-4">
           <%= link_to 'Edit Trail', edit_user_trail_path(@trail.users.first.id, @trail.id), class: "btn btn-primary", id: "edit-trail" %>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-<div class="container">
-  <div class="row">
-  </div>
-  <br>
-  <br>
-  <div class= "row">
-    <h5> Trail Photos </h5>
-    <% @trail.photos.each_slice(3) do |photo_row| %>
-      <div class="row">
-        <div class="push"> </div>
-        <% photo_row.each do |photo| %>
-          <div class="col-md-4 col-sm-4 col-xs-6 col-lg-4">
-            <a href="<%=image_url photo.image.url%>" class="fancybox" data-fancybox-group="gallery"><%=image_tag photo.image.thumb.url, class: "img-responsive" %></a>
-          </div>
-        <% end %>
-      </div>
     <% end %>
+    </div>
   </div>
 
   <div class="push">
   </div>
 
+  <div class="container">
+    <h5>Trail Name:</h5>
+    <div class="row">
+      <div class="col-md-7 trail-sidebar-photos" id="comments-section">
+        <h3> What users said: </h3>
+
+        <div class="row">
+          <div class="col-md-12" id='comments-list'>
+            <%= render @comments %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-1">
+                <% if user_signed_in? %>
+                  <%= link_to(current_user) do %>
+                    <%= image_tag(current_user.avatar.thumb.url , class: 'img-circle', title: "#{current_user.email}") %>
+                  <%end%>
+                <% end %>
+              </div>
+
+              <div class="col-md-11" id="comment-form">
+
+                <%= render 'comments/comment_form' %>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="col-md-4 col-md-offset-1 col-sm-4 trail-sidebar-photos">
+        <h5> Trail Photos </h5>
+        <div id="photos">
+          <%if @trail.photos.blank? %>
+
+            <h5>You have not added any photos for this trail yet. Edit your trail and add some photos!!!!</h5>
+            <% if current_user == @trail.users.first %>
+              <%= link_to 'Edit Trail', edit_user_trail_path(@trail.users.first.id, @trail.id), class: "btn btn-primary pull-right", id: "edit-trail" %>
+            <% end %>
+          <%end%>
+          <% @trail.photos.each_slice(3) do |photos_row| %>
+            <% photos_row.each do |photo| %>
+              <div class="col-md-4 col-sm-4 col-xs-6 col-lg-4">
+                <a href="<%= image_url photo.image.url%>" rel="fancybox-thumb" class="fancybox-thumb" data-fancybox-group="gallery">
+                  <%=image_tag photo.image.thumb.url,class: "img-responsive",  alt: "" %>
+                </a>
+              </div>
+            <% end %>
+          <%end%>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+<div class="push"></div>
+
+
 

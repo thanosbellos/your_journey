@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   ratyrate_rater
   has_and_belongs_to_many :trails
   has_and_belongs_to_many :activities
+  has_many :comments
 
   def self.from_omniauth(auth)
      where(provider: auth.provider, uid: auth.uid).first_or_create do |user|

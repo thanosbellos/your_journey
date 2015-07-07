@@ -2,8 +2,20 @@ $( document ).on("ready",function() {
   var path = window.location.pathname;
 
   if(path.search(/trails\/[0-9]+$/)!=-1){
-    $("a.fancybox").fancybox();
-    trailShow();
+    $(".fancybox-thumb").fancybox({
+      padding : 0,
+		prevEffect	: 'none',
+		nextEffect	: 'none',
+		helpers	: {
+			title	: {
+				type: 'outside'
+			},
+			thumbs	: {
+				width	: 50,
+				height	: 50
+			}
+		}
+	});    trailShow();
 
   }
 
