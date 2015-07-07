@@ -141,7 +141,7 @@ class TrailsController < ApplicationController
   def authorize_user
     unless( current_user == @user)
    flash[:error] = "You can only edit your own trails"
-    redirect_to(current_user) unless current_user == @user
+   redirect_to :back
     end
   end
 end

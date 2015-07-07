@@ -61,12 +61,15 @@
           <h5 > From <%= @trail.raters_without_dimension_ids.length %> <%= "user".pluralize(@trail.raters_without_dimension_ids.length) %></h5>
         </div>
       </ul>
+            <% if current_user == @trail.users.first %>
+
       <div id="instruction">
         <h5> Edit Your Trail </h5>
         <div class="col-md-2 col-md-offset-4 col-sm-2 col-sm-offset-4 col-xs-2 col-xs-offset-4">
           <%= link_to 'Edit Trail', edit_user_trail_path(@trail.users.first.id, @trail.id), class: "btn btn-primary", id: "edit-trail" %>
         </div>
       </div>
+    <% end %>
     </div>
   </div>
 
@@ -77,29 +80,31 @@
     <h5>Trail Name:</h5>
     <div class="row">
       <div class="col-md-7 trail-sidebar-photos" id="comments-section">
-      <h3> What users said: </h3>
+        <h3> What users said: </h3>
 
         <div class="row">
           <div class="col-md-12" id='comments-list'>
-              <%= render @comments %>
+            <%= render @comments %>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
             <div class="row">
-            <div class="col-md-1">
-              <%= link_to(current_user) do %>
-                <%= image_tag(current_user.avatar.thumb.url , class: 'img-circle', title: "#{current_user.email}") %>
-              <%end%>
+              <div class="col-md-1">
+                <% if user_signed_in? %>
+                  <%= link_to(current_user) do %>
+                    <%= image_tag(current_user.avatar.thumb.url , class: 'img-circle', title: "#{current_user.email}") %>
+                  <%end%>
+                <% end %>
+              </div>
+
+              <div class="col-md-11" id="comment-form">
+
+                <%= render 'comments/comment_form' %>
+
+              </div>
+
             </div>
-
-            <div class="col-md-11" id="comment-form">
-
-              <%= render 'comments/comment_form' %>
-
-            </div>
-
-          </div>
           </div>
         </div>
 
@@ -110,8 +115,12 @@
         <h5> Trail Photos </h5>
         <div id="photos">
           <%if @trail.photos.blank? %>
-          <h5>You have not added any photos for this trail yet </h5>
-        <%end%>
+
+            <h5>You have not added any photos for this trail yet. Edit your trail and add some photos!!!!</h5>
+            <% if current_user == @trail.users.first %>
+              <%= link_to 'Edit Trail', edit_user_trail_path(@trail.users.first.id, @trail.id), class: "btn btn-primary pull-right", id: "edit-trail" %>
+            <% end %>
+          <%end%>
           <% @trail.photos.each_slice(3) do |photos_row| %>
             <% photos_row.each do |photo| %>
               <div class="col-md-4 col-sm-4 col-xs-6 col-lg-4">

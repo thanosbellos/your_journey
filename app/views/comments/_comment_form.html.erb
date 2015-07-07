@@ -1,9 +1,11 @@
 <%= simple_form_for [@trail, (@new_comment || @trail.comments.new)], remote: true do  |f| %>
-  <%= puts f.object.errors.full_messages %>
   <%= f.error_notification %>
-
-  <%= f.input :body,label: false%>
-  <%= f.submit class: "btn btn-default pull-right" %>
+  <% if user_signed_in? %>
+    <%= f.input :body,label: false, placeholder: ((current_user.name.to_s unless current_user.name.blank?)||current_user.email.to_s) + " tell us what you think" %>
+    <%= f.submit class: "btn btn-default pull-right" %>
+  <% else %>
+    <%= f.input :body, label: false, readonly:true , placeholder: "you must sign in in order to comment" %>
+  <% end %>
 
 <%end%>
 
