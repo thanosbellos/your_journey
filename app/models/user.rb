@@ -20,5 +20,14 @@ class User < ActiveRecord::Base
     user.remote_avatar_url = auth.info.image
    end
 
+
+  end
+
+  def total_trails_length
+    self.trails.sum(:length)
+  end
+
+  def total_trails
+    self.trails.count
   end
 end

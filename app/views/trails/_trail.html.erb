@@ -3,19 +3,19 @@
     <td class="col-md-1">
       <span class="preview">
         <% if trail.photos.empty? %>
-          <%= image_tag 'default_route_thumb.jpg' %>
+          <%= image_tag 'default_route_thumb' %>
         <%else %>
           <%= image_tag trail.photos.first.image.thumb.url %>
         <%end %>
       </span>
     </td>
     <td class="col-md-8">
-      <h5>Trail Info </h5>
-      <ul>
-        <li> Trail Name: <%= trail.name %> </li>
-        <li>Starting Point: <%= trail.start_point %></li>
-        <li>Finish Point: <%= trail.end_point %></li>
-        <li>Length: <%= trail.length %></li>
+      <h5>Γενικά στοιχεία</h5>
+      <ul class="ul-no-style">
+        <li>Όνομα διαδρομής:  <%= trail.name %> </li>
+        <li>Σημείο Αναχώρησης: <%= trail.start_point %></li>
+        <li>Τερματισμός: <%= trail.end_point %></li>
+        <li>Μήκος διαδρομής: <%= trail.length %></li>
       </ul>
     </td>
 
@@ -24,10 +24,10 @@
 
       <div>
 
-          <h5> Average Rating </h5>
+          <h5> Βαθμολογία </h5>
           <% if trail.rate_average_without_dimension.avg.nil? %>
-            :( Noone has rated this trail yet
-          <%else %>
+            :( Κανείς δέν έχει βαθμολογήσει αυτή τη διαδρομή ακόμα
+        <%else %>
             <%= rating_for trail , nil,disable_after_rate:false ,  imdb_avg: true,readonly: true%>
           <% end %>
           <%= link_to "See Route" , user_trail_path(trail.users.first, trail), :class=> "btn btn-primary"%>
