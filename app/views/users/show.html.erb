@@ -5,40 +5,58 @@
   <div class="push"> </div>
   <div class="row">
 
-    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 img-circle">
+    <div class="col-xs-3 col-sm-2 col-md-1 col-lg-1 img-circle">
       <%= image_tag @user.avatar.rounded.url , :class=> "img-circle" %>
     </div>
 
-    <div class="cols-xs-12 col-sm-12 col-md-3 col-lg-3">
-      <h2><%= @user.name %> </h2>
-      <h4> Preffered activities </h4>
-      <p>
-      <% @user.activities.each do |activity| %>
-        <%= activity.name %>
-      <% end %>
-      </p>
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+      <h3><%= @user.name %> </h3>
+      <%#<h4> Preffered activities </h4>%>
+      <%#<p>%>
+      <%#<% @user.activities.each do |activity| %>
+        <%#<%= activity.name %>
+        <%#<% end %>
+      <%#</p>%>
     </div>
-      <% if current_user == @user %>
+    <% if current_user == @user %>
 
-    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-3 pull-right">
-      <%= link_to "Edit your profile", edit_user_registration_path %>
-      <br>
-      <%= link_to "Add Trail" , new_user_trail_path(@user) %>
-      <br>
-      <%= link_to "Search New Trails" , trail_searches_new_path %>
-    </div>
+      <div class="col-xs-4 col-sm-4 col-md-3 col-lg-3 pull-right">
+        <ul class="ul-no-style">
+          <li><%= link_to "Επεξεργασία Προφίλ", edit_user_registration_path %></li>
+          <li>        <%= link_to "Πρόσθεσε μια διαδρομή" , new_user_trail_path(@user) %> </li>
+          <li>        <%= link_to "Αναζήτησε νέες διαδρομές" , trail_searches_new_path %></li>
+        </ul>
+      </div>
     <%end %>
 
 
-
   </div>
+  <div class="push"></div>
   <div class="row">
-    <h3> <%= @user.name %> best rated trails </h3>
+    <div class="col-md-8">
+      <% if current_user == @user %>
+        <h4> Οι καλύτερες διαδρομές σου </h4>
+      <% else %>
+        <h4>Οι καλύτερες διαδρομές του/τής : <%= @user.name || @user.email %>  </h4>
+      <% end %>
+    <%= render partial: 'trails/index', locals:{trails: @trails} %>
 
-    <%= render @trails %>
+    </div>
+    <div class="col-md-offset-1 col-md-3">
+      <h4> Στατιστικά Χρηστη </h4>
+          <table role="presentation" class="table table-striped">
+      <tr>
+        <td>Συνολικές διαδρομές: <%=@user.total_trails %></td>
+
+      </tr>
+      <tr>
+        <td>Συνολική απόσταση: <%= @user.total_trails_length %> </td>
+      </tr>
+    </table>
+
+    </div>
   </div>
 
-</div>
 
 </div>
 

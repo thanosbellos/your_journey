@@ -108,7 +108,12 @@ p {
   border-bottom: 0px  !important;
 }
 
-.imdb-avg p{
-  font-size: 1.0em !important;
 
+.leaflet-control-locate.active a {
+  color: #2074B6;
 }
+.leaflet-control-locate.active.following a {
+  color: #FC8428;
+}
+
+
