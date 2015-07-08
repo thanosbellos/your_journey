@@ -1,5 +1,6 @@
 class Trail < ActiveRecord::Base
 
+  include Rails.application.routes.url_helpers
   has_many :comments
   has_and_belongs_to_many :users
 
@@ -46,8 +47,7 @@ class Trail < ActiveRecord::Base
                                                "Name": "#{self.name}",
                                                "Length": "#{self.length}",
                                                "Rating": "#{self.rate_average_without_dimension.avg}",
-                                               "totalRaters": "#{self.raters_without_dimension_ids.length} #{'user'.pluralize(self.raters_without_dimension_ids.length)}"
-
+                                               "totalRaters": "#{self.raters_without_dimension_ids.length} #{'user'.pluralize(self.raters_without_dimension_ids.length)}",
                                               })
     features << CODER.entity_factory.feature(self.origin_point_geographic,
                                              "Start Point" ,

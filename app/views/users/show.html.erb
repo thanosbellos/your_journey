@@ -18,15 +18,15 @@
       <% end %>
       </p>
     </div>
-      <% if current_user == @user %>
+    <% if current_user == @user %>
 
-    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-3 pull-right">
-      <%= link_to "Edit your profile", edit_user_registration_path %>
-      <br>
-      <%= link_to "Add Trail" , new_user_trail_path(@user) %>
-      <br>
-      <%= link_to "Search New Trails" , trail_searches_new_path %>
-    </div>
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-3 pull-right">
+        <%= link_to "Edit your profile", edit_user_registration_path %>
+        <br>
+        <%= link_to "Add Trail" , new_user_trail_path(@user) %>
+        <br>
+        <%= link_to "Search New Trails" , trail_searches_new_path %>
+      </div>
     <%end %>
 
 
@@ -35,10 +35,9 @@
   <div class="row">
     <h3> <%= @user.name %> best rated trails </h3>
 
-    <%= render @trails %>
+    <%= render partial: 'trails/index', locals:{trails: @trails} %>
   </div>
 
-</div>
 
 </div>
 

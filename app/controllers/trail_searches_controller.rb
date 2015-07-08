@@ -54,8 +54,11 @@ class TrailSearchesController < ApplicationController
 
 
 
+
     respond_to do |format|
-        format.json { render json:@geojson}
+      html = render_to_string partial: 'trails/index', locals: { :trails => tracks}
+      puts html
+        format.json { render json: {geojson: @geojson ,html: html }}
     end
 
 

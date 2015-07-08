@@ -163,7 +163,6 @@ function _setOrigin(latlng ,map , name){
   if(!name){
     geocodeControl.options.geocoder.reverse(latlng , 12 , function(results){
       console.log(results);
-      x = results[0].name;
         var r = results[0];
         name = r.name
         originName.val(name);

@@ -1,99 +1,98 @@
 $(document).on('ready', function(){
   var path = window.location.pathname;
-  console.log(path);
 
   if((path.search(/\/trail_searches\/new$/)!==-1)){
 
-   map = initializeMap();
+    map = initializeMap();
 
-   drawnFeatureGroup = L.featureGroup().addTo(map);
-   userMarker = L.featureGroup().addTo(map);
-   sampleBuffer = L.geoJson(null);
+    drawnFeatureGroup = L.featureGroup().addTo(map);
+    userMarker = L.featureGroup().addTo(map);
+    sampleBuffer = L.geoJson(null);
 
 
     //initialize map and add contols
     //
 
 
-   geolocationControl = L.control.accurateLocateControl({position: 'topleft',
-                                                          strings: {title: "Show me where I am"},
-                                                          featureGroup: drawnFeatureGroup,
-                                                          userMarker: userMarker
-                                                        });
-   geolocationControl.addTo(map);
-   geocodeControl = L.Control.geocoder({position: 'topleft'}).addTo(map);
-   geocodeControl.markGeocode = markerFromGeocode;
-   if($(window).width() >1050){
+    geolocationControl = L.control.accurateLocateControl({position: 'topleft',
+                                                         strings: {title: "Show me where I am"},
+    featureGroup: drawnFeatureGroup,
+    userMarker: userMarker
+    });
+    geolocationControl.addTo(map);
+    geocodeControl = L.Control.geocoder({position: 'topleft'}).addTo(map);
+    geocodeControl.markGeocode = markerFromGeocode;
+    if($(window).width() >1050){
 
-     var drawControl = addDrawControl(map , drawnFeatureGroup , userMarker);
+      var drawControl = addDrawControl(map , drawnFeatureGroup , userMarker);
 
-   }
+    }
 
-   directions = L.mapbox.directions({units: 'metric'});
-   directionsLayer = L.mapbox.directions.layer(directions );
-   var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(map);
-   var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions).addTo(map);
-   var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);
+    directions = L.mapbox.directions({units: 'metric'});
+    directionsLayer = L.mapbox.directions.layer(directions );
+    var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(map);
+    var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions).addTo(map);
+    var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);
 
-   var tracksNearPoint =  L.geoJson(undefined , {pointToLayer: L.mapbox.marker.style});
-   var tracksLikeSampleRoute = L.geoJson(undefined , {pointToLayer: L.mapbox.marker.style});
+    var tracksNearPoint =  L.geoJson(undefined , {pointToLayer: L.mapbox.marker.style});
+    var tracksLikeSampleRoute = L.geoJson(undefined , {pointToLayer: L.mapbox.marker.style});
 
-   var suggestionsNearPoint=[];
-   var suggestionsForDestination=[];
+    var suggestionsNearPoint=[];
+    var suggestionsForDestination=[];
 
 
-   setUpEventsHandlers(directions);
-   setUpSearchDirectionsAjaxCall();
+    setUpEventsHandlers(directions);
+    setUpSearchDirectionsAjaxCall();
 
-   setUpTabsState();
+    setUpTabsState();
 
 
 
   }
 
 
-   function markerFromGeocode (result){
+  function markerFromGeocode (result){
 
-      geolocationControl.stopGeolocate();
-      if(this._geocodeMarker){
-          this._map.removeLayer(this._geocodeMarker);
-          this._map.removeLayer(this._geocodeCircle);
-      }
-      addCustomCircleMarker([result.center.lat, result.center.lng], userMarker);
-
-
-      var marker = undefined;
-      var  circle = undefined;
-      userMarker.eachLayer(function(layer){
-        if((typeof layer._mRadius) == 'undefined'){
-          marker = layer;
-        }else{
-          circle = layer;
-        }
-
-      });
-
-      this._geocodeMarker = marker;
-      this._geocodeCircle = circle;
-
-
-     drawnFeatureGroup.addLayer(this._geocodeMarker);
-     drawnFeatureGroup.addLayer(this._geocodeCircle);
-
-
-     _setOrigin(result.center,result.name|| result.html);
-
-     return this;
+    geolocationControl.stopGeolocate();
+    if(this._geocodeMarker){
+      this._map.removeLayer(this._geocodeMarker);
+      this._map.removeLayer(this._geocodeCircle);
     }
+    addCustomCircleMarker([result.center.lat, result.center.lng], userMarker);
 
 
-    function setUpEventsHandlers(directions){
-     $("#radius").change(function(){
-       var radius = $("#radius").val();
-       var activeTabId = $("div.tab-pane.active").attr("id");
-       console.log(activeTabId);
-       if(activeTabId == 'search-near-point'){
-       userMarker.eachLayer(function(layer){
+    var marker = undefined;
+    var  circle = undefined;
+    userMarker.eachLayer(function(layer){
+      if((typeof layer._mRadius) == 'undefined'){
+        marker = layer;
+      }else{
+        circle = layer;
+      }
+
+    });
+
+    this._geocodeMarker = marker;
+    this._geocodeCircle = circle;
+
+
+    drawnFeatureGroup.addLayer(this._geocodeMarker);
+    drawnFeatureGroup.addLayer(this._geocodeCircle);
+
+
+    _setOrigin(result.center,result.name|| result.html);
+
+    return this;
+  }
+
+
+  function setUpEventsHandlers(directions){
+    $("#radius").change(function(){
+      var radius = $("#radius").val();
+      var activeTabId = $("div.tab-pane.active").attr("id");
+      console.log(activeTabId);
+      if(activeTabId == 'search-near-point'){
+        userMarker.eachLayer(function(layer){
           if(typeof layer._mRadius !== 'undefined'){
             layer.setRadius(radius);
           }
@@ -102,8 +101,8 @@ $(document).on('ready', function(){
         $("#radius").data('search-near-point-radius', radius);
 
 
-       }
-       else {
+      }
+      else {
 
         if(typeof directions.directions !== 'undefined'){
 
@@ -119,41 +118,41 @@ $(document).on('ready', function(){
 
         }
 
-       }
+      }
     });
 
 
-      directions.on('load' , function(e){
+    directions.on('load' , function(e){
 
-        var origin = e.origin;
-        var destination = e.destination;
-        var  route = e.routes[0];
-        var sampleRoute = $("#sample_route");
-        var simplifiedSampleRoute = createSimplifiedRoute();
+      var origin = e.origin;
+      var destination = e.destination;
+      var  route = e.routes[0];
+      var sampleRoute = $("#sample_route");
+      var simplifiedSampleRoute = createSimplifiedRoute();
 
-        var buffer = createTurfBuffer(simplifiedSampleRoute);
-        var encodedPolyline = polyline.encode(simplifiedSampleRoute.toGeoJSON().geometry.coordinates);
+      var buffer = createTurfBuffer(simplifiedSampleRoute);
+      var encodedPolyline = polyline.encode(simplifiedSampleRoute.toGeoJSON().geometry.coordinates);
 
-        sampleRoute.val(encodedPolyline);
-        sampleRoute.data("prev-sample-route-with-destination" , sampleRoute.val());
+      sampleRoute.val(encodedPolyline);
+      sampleRoute.data("prev-sample-route-with-destination" , sampleRoute.val());
 
-        $("#search-button").click();
-      });
+      $("#search-button").click();
+    });
 
 
-      directions.on('origin', function(e){
-       var originLonLat = $("#origin_lnglat:hidden");
-        if(typeof e.origin !=='undefined'){
-          originLonLat.val([e.origin.geometry.coordinates[0] ,e.origin.geometry.coordinates[1]]);
-        } else{
-          sampleBuffer.clearLayers();
-          originLonLat.val('');
-        }
+    directions.on('origin', function(e){
+      var originLonLat = $("#origin_lnglat:hidden");
+      if(typeof e.origin !=='undefined'){
+        originLonLat.val([e.origin.geometry.coordinates[0] ,e.origin.geometry.coordinates[1]]);
+      } else{
+        sampleBuffer.clearLayers();
+        originLonLat.val('');
+      }
       originLonLat.data("prev-origin-lnglat-with-destination" , originLonLat.val());
-     });
+    });
 
-     directions.on('destination', function(e){
-       var destinationLonLat = $("#destination_lnglat:hidden");
+    directions.on('destination', function(e){
+      var destinationLonLat = $("#destination_lnglat:hidden");
 
       if(typeof e.destination !=='undefined'){
         destinationLonLat.val([e.destination.geometry.coordinates[0] ,e.destination.geometry.coordinates[1]]);
@@ -166,34 +165,34 @@ $(document).on('ready', function(){
       }
       destinationLonLat.data("prev-destination-lnglat-with-destination" , destinationLonLat.val());
 
-     });
+    });
 
-    }
+  }
 
-    function setUpSearchDirectionsAjaxCall(){
+  function setUpSearchDirectionsAjaxCall(){
 
-       $("#trail-search-form").on("ajax:beforeSend", function(e,xhr){
-        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+    $("#trail-search-form").on("ajax:beforeSend", function(e,xhr){
+      xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
 
-        var activeTabId = $("div.tab-pane.active").attr("id");
-        var originLngLat = $("#origin_lnglat:hidden");
-        var destinationLngLat = $("#destination_lnglat:hidden");
-        var route = $("#sample_route:hidden");
+      var activeTabId = $("div.tab-pane.active").attr("id");
+      var originLngLat = $("#origin_lnglat:hidden");
+      var destinationLngLat = $("#destination_lnglat:hidden");
+      var route = $("#sample_route:hidden");
 
 
-        var results = (activeTabId =="search-near-point") ? tracksNearPoint : tracksLikeSampleRoute
-        results.eachLayer(function(layer){
-          drawnFeatureGroup.removeLayer(layer);
-        });
-        results.clearLayers();
-
-        if((originLngLat.val()=='') || ((activeTabId == 'search-with-destination') &&
-                                        ((destinationLngLat.val()=='' || route.val()=='')))){
-          return false;
-        }
+      var results = (activeTabId =="search-near-point") ? tracksNearPoint : tracksLikeSampleRoute
+      results.eachLayer(function(layer){
+        drawnFeatureGroup.removeLayer(layer);
       });
+      results.clearLayers();
 
-     $("#trail-search-form").on("ajax:success" , function(e,data,status, xhr){
+      if((originLngLat.val()=='') || ((activeTabId == 'search-with-destination') &&
+                                      ((destinationLngLat.val()=='' || route.val()=='')))){
+        return false;
+      }
+    });
+
+    $("#trail-search-form").on("ajax:success" , function(e,data,status, xhr){
 
       if(typeof data.message == 'undefined'){
 
@@ -201,9 +200,9 @@ $(document).on('ready', function(){
         var results = (activeTabId =="search-near-point") ? tracksNearPoint : tracksLikeSampleRoute;
 
 
-        results.addData(data);
+        results.addData(data.geojson);
         results.eachLayer(function(layer){
-           drawnFeatureGroup.addLayer(layer);
+          drawnFeatureGroup.addLayer(layer);
         });
 
         //function to add info on our suggestions div
@@ -211,10 +210,10 @@ $(document).on('ready', function(){
         addSuggestionsInfo(data,activeTabId);
 
 
-        $("#results").append(xhr.responseText);
+       // $("#results").append(xhr.responseText);
       } else {
         $("#suggestions").html('');
-        $("#results").append(data.message)
+        //$("#results").append(data.message)
         //append to error section of mapbox-dir pane
       }
     });
@@ -222,7 +221,7 @@ $(document).on('ready', function(){
 
   function setUpTabsState(){
     var directionsDivs = ["#inputs","#mapbox-routes-h5",
-       "#routes",  'label[for=destination] , input#destination'];
+      "#routes",  'label[for=destination] , input#destination'];
     directionsDivs.forEach( function(value){
       $(value).hide();
     });
@@ -230,18 +229,18 @@ $(document).on('ready', function(){
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 
-       newTabId = ($(e.target).attr("aria-controls"));
-       oldTabId = ($(e.relatedTarget).attr("aria-controls"));
-       drawnFeatureGroup.clearLayers();
-       clearFields();
+      newTabId = ($(e.target).attr("aria-controls"));
+      oldTabId = ($(e.relatedTarget).attr("aria-controls"));
+      drawnFeatureGroup.clearLayers();
+      clearFields();
 
-       if(newTabId == 'search-with-destination'){
+      if(newTabId == 'search-with-destination'){
 
-         restoreSearchDestinationTab(directionsDivs);
+        restoreSearchDestinationTab(directionsDivs);
 
-       }else{
-         restoreSearchNearUserTab(directionsDivs);
-       }
+      }else{
+        restoreSearchNearUserTab(directionsDivs);
+      }
 
 
 
@@ -250,7 +249,8 @@ $(document).on('ready', function(){
   }
 
   function restoreSearchDestinationTab(directionsDivs){
-
+    $("#search-near-point-results").hide();
+    $("#search-with-destination-results").show();
     directionsLayer.addTo(map);
     var originLonLat = $("#origin_lnglat:hidden");
     var destinationLonLat =$("#destination_lnglat:hidden");
@@ -286,6 +286,9 @@ $(document).on('ready', function(){
 
   function restoreSearchNearUserTab(directionsDivs){
 
+    $("#search-with-destination-results").hide();
+    $("#search-near-point-results").show();
+
     var originName = $("#origin");
     var originLngLat = $("#origin_lnglat:hidden");
     originName.val(originName.data("prev-origin-name"));
@@ -305,7 +308,7 @@ $(document).on('ready', function(){
     setEventsOnSuggestions();
 
     directionsDivs.forEach( function(value){
-     $(value).hide();
+      $(value).hide();
     });
 
     map.removeLayer(directionsLayer);
@@ -323,130 +326,133 @@ $(document).on('ready', function(){
 
 
   function addSuggestionsInfo(suggestions,activeTabId){
-  //array of routes
-   var routes = [];
-   var suggestionsState = activeTabId == 'search-near-point'? suggestionsNearPoint : suggestionsForDestination;
+    //array of routes
+    var routes = [];
+    var suggestionsState = activeTabId == 'search-near-point'? suggestionsNearPoint : suggestionsForDestination;
+    var results = activeTabId =='search-near-point'? $("#search-near-point-results") : $("#search-with-destination-results");
+    var userInstructions = activeTabId == 'search-near-point'? $("#user-instructions-search-near-point") : $("#user-instructions-search-with-destination");
 
-    suggestions.features.forEach(function(i) {if (i.id== 'Polyline') {routes.push(i)}});
+    suggestions.geojson.features.forEach(function(i) {if (i.id== 'Polyline') {routes.push(i)}});
     var $container = $("#suggestions");
+
+    results.html('');
+    results.append("<h3>Αποτελέσματα</h3>");
+
+    results.append(suggestions.html);
+    results.show();
     $container.html('');
+
+    userInstructions.hide();
 
 
     for(var i=0, length = routes.length; i<length ; i++){
-    ul = '<ul>';
+
+
+    var    ul = '<ul>';
     ul +=  '<li class="mapbox-directions-route">'
 
-    var routeIndex = "<div class='mapbox-directions-route-heading'>"+ 'Trail ' + (i+1) +  '</div>'
-    ul += routeIndex;
 
-    var routeName = "<div class='mapbox-directions-route-summary'>" + routes[i].properties.Name + '</div>'
-    ul += routeName;
+      raty_id = "raty"+i;
+      raty_class = "."+raty_id;
 
-    var routeInfo = "<div class='mapbox-directions-route-details'>" + routes[i].properties.Length + ' km'+ '</div>'
-    ul += routeInfo;
+      var routeIndex = "<div class='mapbox-directions-route-heading'>"+ 'Trail ' + (i+1) +  '</div>'
+      ul += routeIndex;
 
-    raty_id = "raty"+i;
-    var rating = "<div id= " +raty_id+ " class='mapbox-directions-route-details'>" + "<label>Avg Rating: </label>"+ '</div>'
-    ul += rating;
+      var routeName = "<div class='mapbox-directions-route-summary'>" + routes[i].properties.Name + '</div>'
+      ul += routeName;
 
-    ul += '</li>'
-    ul += '</ul>';
+      var routeInfo = "<div class='mapbox-directions-route-details'>" + routes[i].properties.Length + ' km'+ '</div>'
+      ul += routeInfo;
 
-    $container.append(ul);
-    var totalRaters= 'Rated by:' + routes[i].properties.totalRaters;
+      var rating = "<div class= " +raty_id+ " mapbox-directions-route-details'>" + "<label>Avg Rating: </label>"+ '</div>'
+      ul += rating;
 
-    raty_id = "#"+raty_id;
-    $(raty_id).raty({
-                      hints: [totalRaters, totalRaters, totalRaters, totalRaters, totalRaters],
-                      halfShow:true,
-                      readOnly: true,
-                      score:routes[i].properties.Rating,
-                      starOn: 'star-on-small.png',
-                      starOff: 'star-off-small.png',
-                      starHalf: 'star-half-small.png'
-                   });
+      ul += '</li>'
+      ul += '</ul>';
+
+      $container.append(ul);
+      var totalRaters= 'Rated by:' + routes[i].properties.totalRaters;
+
+      $(raty_class).raty({
+        hints: [totalRaters, totalRaters, totalRaters, totalRaters, totalRaters],
+        halfShow:true,
+        readOnly: true,
+        score:routes[i].properties.Rating,
+        starOn: 'star-on-small.png',
+        starOff: 'star-off-small.png',
+        starHalf: 'star-half-small.png'
+      });
 
 
-    $container.find('ul').data('route-id' , i);
+      $container.find('ul').data('route-id' , i);
 
     }
     $container.data('prev-suggestions-'+ activeTabId , $container.html());
 
-    //
     setEventsOnSuggestions();
-
-
-
-
-
-
-
-    //
-
-
-}
+  }
 
   function setEventsOnSuggestions(){
     var $container = $("#suggestions");
     if($container.find('ul').length !==0){
-        $container.find('ul').on('click' , function(e){
-       route = e.delegateTarget;
-       $('#routes ul li.mapbox-directions-route-active').removeClass('mapbox-directions-route-active');
+      $container.find('ul').on('click' , function(e){
+        route = e.delegateTarget;
+        $('#routes ul li.mapbox-directions-route-active').removeClass('mapbox-directions-route-active');
 
-       $('#suggestions ul li.mapbox-directions-route-active').removeClass('mapbox-directions-route-active');
-       $(route).find('li').addClass('mapbox-directions-route-active')
-    });
+        $('#suggestions ul li.mapbox-directions-route-active').removeClass('mapbox-directions-route-active');
+        $(route).find('li').addClass('mapbox-directions-route-active')
+      });
 
 
-    $('#routes').on('click' , function(e){
-      $('#suggestions ul li.mapbox-directions-route-active').removeClass('mapbox-directions-route-active');
-    });
-    $container.find('ul').get(0).click();
+      $('#routes').on('click' , function(e){
+        $('#suggestions ul li.mapbox-directions-route-active').removeClass('mapbox-directions-route-active');
+      });
+      $container.find('ul').get(0).click();
     }
 
   }
 
 
-function createTurfBuffer(simplifiedRoute){
+  function createTurfBuffer(simplifiedRoute){
 
 
 
-  //var coordinates = linestring
+    //var coordinates = linestring
 
 
 
-   var bufferSize = $("#radius").val();
-   var buffer = turf.merge(turfBuffer(simplifiedRoute.toGeoJSON(), bufferSize/1000 , 'kilometers',16));
-   var activeTabId = $("div.tab-pane.active").attr("id");
+    var bufferSize = $("#radius").val();
+    var buffer = turf.merge(turfBuffer(simplifiedRoute.toGeoJSON(), bufferSize/1000 , 'kilometers',16));
+    var activeTabId = $("div.tab-pane.active").attr("id");
 
-   drawnFeatureGroup.removeLayer(sampleBuffer);
-   sampleBuffer.clearLayers();
-   sampleBuffer.addData(buffer);
-   sampleBuffer.setStyle({stroke: 'red', fillColor: '#0033ff', fillOpacity: 0.2 });
+    drawnFeatureGroup.removeLayer(sampleBuffer);
+    sampleBuffer.clearLayers();
+    sampleBuffer.addData(buffer);
+    sampleBuffer.setStyle({stroke: 'red', fillColor: '#0033ff', fillOpacity: 0.2 });
 
-  if(activeTabId =='search-with-destination'){
-    drawnFeatureGroup.addLayer(sampleBuffer);
+    if(activeTabId =='search-with-destination'){
+      drawnFeatureGroup.addLayer(sampleBuffer);
+    }
+    return sampleBuffer.toGeoJSON();
+
   }
-  return sampleBuffer.toGeoJSON();
 
-}
+  function createSimplifiedRoute(route){
 
-function createSimplifiedRoute(route){
-
- var zoomLevel = map.getBoundsZoom(directionsLayer.routeLayer.getBounds());
- var coordinates = directionsLayer.routeLayer.getLayers()[0]._latlngs
-                .map(function(latLng){
-                  return map.project(latLng , zoomLevel);
-                });
+    var zoomLevel = map.getBoundsZoom(directionsLayer.routeLayer.getBounds());
+    var coordinates = directionsLayer.routeLayer.getLayers()[0]._latlngs
+    .map(function(latLng){
+      return map.project(latLng , zoomLevel);
+    });
 
 
-  coordinates = L.LineUtil.simplify(coordinates, 0.4);
-  coordinates = coordinates.map(function(latLng){ return map.unproject(latLng, zoomLevel)});
+    coordinates = L.LineUtil.simplify(coordinates, 0.4);
+    coordinates = coordinates.map(function(latLng){ return map.unproject(latLng, zoomLevel)});
 
-  var simplifiedRoute = L.polyline(coordinates);
-  return simplifiedRoute
+    var simplifiedRoute = L.polyline(coordinates);
+    return simplifiedRoute
 
 
-}
+  }
 });
 
