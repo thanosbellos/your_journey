@@ -5,7 +5,17 @@ class TrailsController < ApplicationController
 
 
   def index
-    @trails = Trail.best_rated.limit(5)
+    @trails = Trail.best_rated
+  end
+
+  def most_difficult
+    @trails = Trail.where(:difficult == 'extreme').page(params[:page])
+  end
+
+  def best_trails
+    @trails = Trail.best_rated.page(params[:page])
+    puts "Breakpoint ********************"
+    puts @trails.inspect
   end
 
   def show

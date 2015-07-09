@@ -1,27 +1,54 @@
 <% provide(:title , "Home") %>
-<div class="push"></div>
 
-<div class= "container">
-  <div class="row">
-    <div class="col-md-6 col-md-offset-1">
-      <h1>Welcome</h1>
-      <p> A simple app to help you find stunning routes near you </p>
-    </div>
-    <div class="center  col-md-3  col-md-offset-1">
-      <%= link_to "Sign in with facebook" ,user_omniauth_authorize_path(:facebook) %>
-      <%= render template: "devise/sessions/new" %>
+
+<div class="fullscreen-container">
+  <div class="push"> </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 intro-message">
+            <h2> Εξευρευνήστε καινούργια συναρπαστικά μέρη </h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-offset-2 col-sm-9 col-md-offset-2 col-md-5 intro-message">
+            <h4>Γιατι σημασία έχει η διαδρομή</h4>
+          </div>
+        </div>
+        <div class="push"></div>
+        <% unless user_signed_in? %>
+          <div class="row">
+            <div class="col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-6">
+              <%= link_to user_omniauth_authorize_path(:facebook) , class: "btn btn-social btn-facebook" do %>
+                <i class="fa fa-facebook"> </i>   Είσοδος με facebook
+              <% end %>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-6">
+              <%= link_to "Εγγραφή με το email σας" ,new_user_registration_path , class:"btn btn-default" %>
+            </div>
+          </div>
+        <% else %>
+          <div class="row">
+
+            <div class="col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-6">
+
+              <%= link_to trail_searches_new_path , class: "btn btn-default" do%>
+
+                <i class="fa fa-search"></i> Βρές νέα μονοπάτια
+
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        </div>
+
+        <div class="push"></div>
+        <div class="col-xs-12">
+        </div>
+      </div>
     </div>
   </div>
-
-  <div class="row">
-    <div class="center col-md-3 col-md-offset-8 ">
-      <%= link_to "Register with facebook" ,user_omniauth_authorize_path(:facebook) %>
-      <%= render template: 'devise/registrations/new.html.erb' %>
-    </div>
-  </div>
-</div>
-
-
-
-
-

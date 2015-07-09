@@ -470,6 +470,7 @@ $(document).on('ready', function(){
     $(results+" tr:not(.active-row)").hide();
 
     var total = Math.ceil(totalResults/5);
+    console.log(total);
 
     pageSelection.bootpag({
       total: total

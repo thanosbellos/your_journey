@@ -40,7 +40,7 @@
         <h4>Οι καλύτερες διαδρομές του/τής : <%= @user.name || @user.email %>  </h4>
       <% end %>
 
-      <%= render partial: 'trails/index', locals:{trails: @trails} %>
+      <%= render partial: 'trails/index', locals:{trails: @trails, difficulty: false} %>
       <div id="paginator">
         <%= paginate @trails, :remote => true %>
       </div>
@@ -54,11 +54,43 @@
       <h4> Στατιστικά Χρηστη </h4>
       <table role="presentation" class="table table-striped">
         <tr>
-          <td>Συνολικές διαδρομές: <%=@user.total_trails %></td>
+          <td><i class="fa fa-star"></i> &nbsp; Συνολικές διαδρομές: <%=@user.total_trails %></td>
 
         </tr>
         <tr>
-          <td>Συνολική απόσταση: <%= @user.total_trails_length %> </td>
+          <td><i class="fa fa-globe"></i> &nbsp;  Συνολική απόσταση: <%= @user.total_trails_length %> χλμ. </td>
+        </tr>
+        <tr>
+          <td> <i class="fa fa-thumbs-up"></i> &nbsp; Καλύτερη αξιολόγηση: <%= @user.trails.best_rated.first.average.avg%> </td>
+        </tr>
+        <tr>
+          <td> <i class="fa fa-camera"></i> &nbsp; Συνολικές φωτογραφίες: <%= @user.total_photos%> </td>
+        </tr>
+
+      </table>
+      <h5> Προτεινόμενες διαδρομές </h5>
+      <table role="presentation" class="table table-striped">
+        <tr>
+          <td>
+
+          <i class="fa fa-star"></i>&nbsp;
+
+            <%= link_to trails_best_path do %>
+
+             Οι πιο όμορφες διαδρομές
+
+              <% end %>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+          <i class="fa fa-bolt"> </i>&nbsp; &nbsp;
+
+            <%= link_to  trails_difficult_path do  %>
+             Οι πιο δύσκολες διαδρομές
+          <% end %>
+          </td>
         </tr>
       </table>
 

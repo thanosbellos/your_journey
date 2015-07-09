@@ -23,6 +23,9 @@ class User < ActiveRecord::Base
 
   end
 
+  def total_photos
+    self.trails.includes(:photos).count(:photos)
+  end
   def total_trails_length
     self.trails.sum(:length)
   end

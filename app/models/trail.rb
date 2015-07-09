@@ -1,6 +1,7 @@
 class Trail < ActiveRecord::Base
-
   include Rails.application.routes.url_helpers
+
+
   has_many :comments
   has_and_belongs_to_many :users
   has_many :photos, :inverse_of => :trail , :dependent => :destroy
@@ -11,7 +12,6 @@ class Trail < ActiveRecord::Base
 
   scope :best_rated, -> {includes(:rate_average_without_dimension).order("rating_caches.avg DESC")}
 
-  paginates_per 2
   ratyrate_rateable
   mount_uploader :trailgeometry , TrailGeometryUploader
 
@@ -35,6 +35,7 @@ class Trail < ActiveRecord::Base
   self.trail_path_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => "LineString", srid: 3857 , sql_type:"geometry(LineString,3857)")
   self.point_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => "Point", srid: 3857 , sql_type:"geometry(Point,3857)")
   CODER = RGeo::GeoJSON.coder(geo_factory: self.trail_path_factory)
+
 
  def to_geojson
     features = []

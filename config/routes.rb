@@ -8,8 +8,9 @@ Rails.application.routes.draw do
 
   get 'trail_searches/index'
 
+  get 'trails/difficult' => 'trails#most_difficult'
 
-
+  get 'trails/best' => 'trails#best_trails'
   devise_for :users, :controllers => { :omniauth_callbacks => 'users/omniauth_callbacks' ,
                                        :registrations=> 'users/registrations' }
   resources :users , only: [:show] do

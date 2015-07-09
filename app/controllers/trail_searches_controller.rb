@@ -6,6 +6,7 @@ class TrailSearchesController < ApplicationController
   def index
   end
 
+
   def search
 
     origin_lonlat = params[:origin_lnglat].split(",").map do |coordinate|
@@ -56,7 +57,7 @@ class TrailSearchesController < ApplicationController
 
 
     respond_to do |format|
-      html = render_to_string partial: 'trails/index', locals: { :trails => @tracks}
+      html = render_to_string partial: 'trails/index', locals: { :trails => @tracks, :difficulty => false}
       format.json { render json: {geojson: @geojson ,html: html, message: @message }}
     end
 

@@ -1,9 +1,15 @@
 // Place all the styles related to the staticPages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-h1{
-  text-align: center;
+
+.static_pages{
+
+  background-image: image-url('sample/hikers.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+
 }
+
 .form_box {
   background-clip:border-box;
   background-color:#fff;
