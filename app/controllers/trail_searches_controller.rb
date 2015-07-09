@@ -28,6 +28,7 @@ class TrailSearchesController < ApplicationController
                               finish_loc: destination_lonlat,
                               sample_route: sample_route)
     @tracks = matcher.search
+    @message = nil
     if(@tracks.length>0)
 
       json = @tracks.map do |track|
@@ -49,14 +50,14 @@ class TrailSearchesController < ApplicationController
 
       end
     else
-      @geojson = {"message": "Unfortunately there are no trails in that radius"}
+      @message = {"message": "Unfortunately there are no trails in that radius"}
     end
 
 
 
     respond_to do |format|
       html = render_to_string partial: 'trails/index', locals: { :trails => @tracks}
-      format.json { render json: {geojson: @geojson ,html: html }}
+      format.json { render json: {geojson: @geojson ,html: html, message: @message }}
     end
 
 

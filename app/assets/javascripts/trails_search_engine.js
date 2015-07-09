@@ -193,8 +193,9 @@ $(document).on('ready', function(){
     });
 
     $("#trail-search-form").on("ajax:success" , function(e,data,status, xhr){
+      console.log(data);
 
-      if(typeof data.message == 'undefined'){
+      if(typeof data.message !== null){
 
         var activeTabId = $("div.tab-pane.active").attr("id");
         var results = (activeTabId =="search-near-point") ? tracksNearPoint : tracksLikeSampleRoute;
@@ -213,7 +214,8 @@ $(document).on('ready', function(){
        // $("#results").append(xhr.responseText);
       } else {
         $("#suggestions").html('');
-        //$("#results").append(data.message)
+        $("#results").html('');
+        $("#results").append(data.message)
         //append to error section of mapbox-dir pane
       }
     });
