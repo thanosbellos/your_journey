@@ -1,10 +1,12 @@
 class Trail < ActiveRecord::Base
   include Rails.application.routes.url_helpers
 
+  paginates_per 5
 
   has_many :comments
-  has_and_belongs_to_many :users
+  #has_and_belongs_to_many :users
   has_many :photos, :inverse_of => :trail , :dependent => :destroy
+  belongs_to :user
 
   accepts_nested_attributes_for :photos,
     :allow_destroy => true,

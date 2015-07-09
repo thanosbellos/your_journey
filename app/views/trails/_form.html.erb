@@ -1,10 +1,10 @@
 <%= simple_form_for [@user , @trail], html: {id: "fileupload"} do |f| %>
-  <%= f.input :name %>
+  <%= f.input :name, label: "Όνομα" %>
   <%if @trail.new_record? %>
   <span class="btn btn-success fileinput-button">
     <i class="glyphicon glyphicon-plus"></i>
-    <span>Choose trail's file</span>
-    <%= f.input_field :trailgeometry,  label: 'Trail gpx file'%>
+    <span>Αρχείο διαδρομής</span>
+    <%= f.input_field :trailgeometry,  label: 'Αρχείο διαδρομής'%>
   </span>
   <%end %>
 
@@ -13,11 +13,11 @@
   <%= f.input :start_point , as: :hidden  %>
   <%= f.input :end_point , as: :hidden %>
   <%= f.input :length , as: :hidden %>
-  <%= f.input :travel_by , collection:['Car' , 'Bike' , 'On Feet'],  selected: f.object.travel_by || 'Car' %>
+  <%= f.input :travel_by , collection:['Αμάξι' , 'Ποδηλατοδρομία' , 'Πεζοπορία'],  selected: f.object.travel_by || 'Αμάξι' %>
 
 
   <%= f.input :difficulty,
-    :collection => [[1 , 'Easy'] , [2, 'Moderate'], [3,'Extreme']],
+    :collection => [[1 , 'Εύκολη'] , [2, 'Μέτριας δυσκολίας'], [3,'Δύσκολη']],
     :label_method=>:last ,
     :value_method=>:first ,
     :as=> :radio_buttons,
@@ -25,7 +25,7 @@
     :checked => f.object.difficulty || 2 %>
   <div id="raty">
 
-    <label>How would you rate this trail? </label>
+    <label>Πώς θα βαθμολογούσατε τη διαδρομή? </label>
   <% unless @trail.new_record? %>
           <%= rating_for @trail, nil  ,readonly:false, disable_after_rate: false %>
   <% end %>
@@ -39,7 +39,7 @@
           <!-- The fileinput-button span is used to style the file input field as button -->
           <button class="btn btn-success fileinput-button">
             <i class="glyphicon glyphicon-plus"></i>
-            <span>Add Photos...</span>
+            <span>Πρόσθεσε φωτογραφίες...</span>
             <%= photos_form.input_field :image , :multiple => true, name: "trail[photos_attributes][][image]" , :id => "trail_photos"%>
 
           </button>
@@ -48,11 +48,11 @@
 
           <button type="button" class="btn btn-primary start" id ="submit-button">
             <i class="glyphicon glyphicon-upload"></i>
-            <span>Upload and Save</span>
+            <span>Αποθήκευση</span>
           </button>
           <button type="reset" class="btn btn-warning cancel">
             <i class="glyphicon glyphicon-ban-circle"></i>
-            <span>Cancel upload</span>
+            <span>Ακύρωση αρχείων</span>
           </button>
         </div>
         <!-- The global progress state -->
@@ -102,13 +102,13 @@
             {% if (!i && !o.options.autoUpload) { %}
                 <button class="btn btn-primary start" style="display:none" disabled>
                     <i class="glyphicon glyphicon-upload"></i>
-                    <span>Start</span>
+                    <span>Ανέβασμα</span>
                 </button>
             {% } %}
             {% if (!i) { %}
                 <button class="btn btn-warning cancel">
                     <i class="glyphicon glyphicon-ban-circle"></i>
-                    <span>Cancel</span>
+                    <span>Ακύρωση</span>
                 </button>
             {% } %}
         </td>

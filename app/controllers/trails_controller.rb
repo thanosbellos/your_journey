@@ -89,7 +89,6 @@ class TrailsController < ApplicationController
       respond_to do |format|
         if @trail.save
           @trail.rate(params[:score], @user)
-          @trail.users << @user
 
           format.html
           format.json { render json: {id: @trail.id , :type => :trail, redirect_url: user_trail_path(current_user , @trail)}}
@@ -108,7 +107,7 @@ class TrailsController < ApplicationController
   def edit
 
     @trail = Trail.find(params[:id])
-    @user = @trail.users.first
+    @user = @trail.user
     @trail.photos.build
 
 
@@ -116,7 +115,7 @@ class TrailsController < ApplicationController
 
   def update
     @trail = Trail.find(params[:id])
-    @user = @trail.users.first
+    @user = @trail.user
     if(trail_params[:photos_attributes])
       locations = JSON.parse(params[:geolocations])
       factory= RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => "Point", srid: 3857 , sql_type: "geometry(Point,3857)")
@@ -145,7 +144,7 @@ class TrailsController < ApplicationController
 
   def set_trail
     @trail = Trail.find(params[:id])
-    @user = @trail.users.first
+    @user = @trail.user
   end
 
   def authorize_user

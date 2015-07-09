@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   def index
 
-    @users =  User.all.include(:trails)
+    @users =  User.most_active
+    puts @users.inspect
 
   end
 

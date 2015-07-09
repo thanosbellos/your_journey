@@ -7,9 +7,11 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :omniauth_providers => [:facebook]
 
   ratyrate_rater
-  has_and_belongs_to_many :trails
+  has_many :trails
   has_and_belongs_to_many :activities
   has_many :comments
+
+  scope :most_active, -> { joins(:trails).group("users.id").order("count(users.id) DESC")}
 
   def self.from_omniauth(auth)
      where(provider: auth.provider, uid: auth.uid).first_or_create do |user|

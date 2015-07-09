@@ -17,17 +17,17 @@
         <%#<div class="mapbox-directions-route-summary">%>
           <%#</div>%>
         <div class="mapbox-directions-route-heading">
-          First Point:
+          Αφετηρία:
         </div>
         <div class="mapbox-directions-route-details">
         </div>
         <div class="mapbox-directions-route-heading">
-          Finish Point
+          Προορισμός
         </div>
         <div class= "mapbox-directions-route-details">
         </div>
         <div class="mapbox-directions-route-heading">
-          Length:
+          Μήκος διαδρομής
         </div>
         <div class="mapbox-directions-route-details">
         </div>
@@ -40,27 +40,28 @@
 <div class="container">
   <div class="row">
     <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12">
-      <h2>Add a new trail </h2>
+      <h2> Πρόσθεσε μια διαδρομή </h2>
       <%= render 'form' %>
     </div>
     <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
-      <h3> How to add a trail </h3>
+      <h3> Οδηγίες </h3>
       <div>
         <p>
         <ul>
-          <li>You can drag and drop or select add file using the add trail button and selecting your file</li>
-          <li> Your trail file must be either in .geojson or  .gpx format </li>
+          <li>Μπορείτε να σύρετε η να εισάγετε το αρχείο της διαδρομής στην φόρμα</li>
+          <li> Αποδεκτές μορφές αρχείου : ".gpx" ".json" </li>
           <li>
-               if you don't have a file but you remember the places you visited you can create one using our tool
-               on <%= link_to 'Get a json file of your route' , export_path %>
+                'Αν δέν έχετε κάποιο αρχείο απο το gps σας , μπορείτε να δημιουργήσετε ένα μέσω του εργαλείου στην σελίδα
+
+                <%= link_to 'Φτιάξτε το geojson αρχείο της διαδρομής σας' , export_path %>
 
           </li>
-          <li> The trail will be rendered on the map and some info will be calculated </li>
-          <li> After that you are free to choose some photos to upload too </li>
-          <li> you can only choose 6 photos per trail </li>
-          <li> Fill out the rest of the form </li>
-          <li> Click the upload button </li>
-          <li> If everything goes smoothly you will be redirected to your new trail page </li>
+          <li>Αφού επιλέξετε το αρχείο , η διαδρομή θα εμφανιστεί πάνω στο χάρτη </li>
+          <li> Μπορείτε επίσης να σύρετε η να εισάγετε και φωτογραφίες απο τη διαδρομή </li>
+          <li> Μόνο 6 φωτογραφίες επιτρέπονται </li>
+          <li> Άν η φωτογραφία έχει και γεωγραφικά δεδομένα (exif gps data) οι φωτογραφίες θα εμφανιστούν στον χάρτη </li>
+          <li> Συμπληρώστε τα υπόλοιπα στοιχεία της φόρμας </li>
+          <li> 'Αν όλα πάνε καλά μόλις ολοκληρωθεί η επεξεργασία της διαδρομής, αυτόματα θα μεταφερθείτε στην αντίστοιχη σελίδα </li>
         </ul>
         </p>
       </div>

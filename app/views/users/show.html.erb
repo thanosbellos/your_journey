@@ -1,5 +1,5 @@
 
-<%= provide(:title, @user.name) %>
+<%= provide(:title, @user.name || @user.email) %>
 
 <div class="container">
   <div class="push"> </div>
@@ -10,7 +10,7 @@
     </div>
 
     <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-      <h3><%= @user.name %> </h3>
+      <h3><%= @user.name || @user.email %> </h3>
       <%#<h4> Preffered activities </h4>%>
       <%#<p>%>
       <%#<% @user.activities.each do |activity| %>
@@ -61,7 +61,7 @@
           <td><i class="fa fa-globe"></i> &nbsp;  Συνολική απόσταση: <%= @user.total_trails_length %> χλμ. </td>
         </tr>
         <tr>
-          <td> <i class="fa fa-thumbs-up"></i> &nbsp; Καλύτερη αξιολόγηση: <%= @user.trails.best_rated.first.average.avg%> </td>
+          <td> <i class="fa fa-thumbs-up"></i> &nbsp; Καλύτερη αξιολόγηση: <%= @user.trails.best_rated.first.average.avg if @user.trails.first %> </td>
         </tr>
         <tr>
           <td> <i class="fa fa-camera"></i> &nbsp; Συνολικές φωτογραφίες: <%= @user.total_photos%> </td>

@@ -1,42 +1,57 @@
-<% provide(:title , "Sign Up") %>
-<div class="form_box" id="sign_up_form">
-  <h2><strong>New here</strong> ? Sign up now!! </h2>
+<% provide(:title , "Εγγραφή") %>
+<div class= "full-container">
+  <div class="container">
+    <h3  style="text-align:center">Γίνε μέλος της μεγάλης μας παρέας και ανακάλυψε καινούργιες περιπέτειες </h3>
 
-  <%= simple_form_for(resource,
-                    as: resource_name,
-                    url: registration_path(resource_name)) do |f| %>
+    <div class="push"></div>
+    <div class="row">
+      <div class="col-sm-offset-2 col-sm-10 col-md-offset-2 col-md-5">
+        <h4> Μπορείτε να εγγραφείτε μέσω facebook </h4>
+        <div class="push"></div>
+        <div class ="col-md-offset-1">
+          <%= link_to user_omniauth_authorize_path(:facebook) , class: "btn btn-social btn-facebook" do %>
+            <i class="fa fa-facebook"> </i>   Είσοδος με facebook
+          <% end %>
+        </div>
+      </div>
 
+      <div class="form_box col-sm-12 col-md-3", id="sign_up_form">
+        <h2><strong>Δέν είστε ακόμα μέλος</strong> ? Εγγραφείτε τώρα!! </h2>
+        <%= simple_form_for(resource,as: resource_name, url: registration_path(resource_name)) do |f| %>
+          <%= f.error_notification %>
 
-    <%= f.error_notification %>
+          <div class="form-inputs">
+            <%= f.input :email, required: true, autofocus: true, label:false , wrapper: :vertical_input_group do %>
+              <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+              <%= f.input_field :email, placeholder: '* Email', autofocus:true, class: "form-control" %>
+            <%end%>
+            <%= f.input :password ,
+              required: true ,
+              label:false ,
+              wrapper: :vertical_input_group do %>
 
-    <div class="form-inputs">
-      <%= f.input :email, required: true, autofocus: true, label:false , wrapper: :vertical_input_group do %>
-        <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-        <%= f.input_field :email, placeholder: '* Email', autofocus:true, class: "form-control" %>
-      <%end%>
-      <%= f.input :password ,
-                required: true ,
-                label:false ,
-                wrapper: :vertical_input_group do %>
+              <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+              <%= f.input_field :password ,placeholder:'* Κωδικός(8 χαρακτηρες τουλ)' , class: "form-control" %>
+            <% end %>
 
-                  <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-                  <%= f.input_field :password ,placeholder:'* Password' , class: "form-control" %>
-              <% end %>
+            <%= f.input :password_confirmation ,
+              required: true ,
+              label:false ,
+              wrapper: :vertical_input_group do%>
+              <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+              <%= f.input_field :password ,placeholder:'* Επιβεβαίωση κωδικούς' , class: "form-control" %>
+            <%end%>
+            <%= f.input :avatar ,label: "Avatar", as: :image_preview , input_html: { preview_version: :thumb} %>
 
-      <%= f.input :password_confirmation ,
-                required: true ,
-                label:false ,
-                wrapper: :vertical_input_group do%>
-                    <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-                    <%= f.input_field :password ,placeholder:'* Password confirmation' , class: "form-control" %>
-                  <%end%>
-                  <%= f.input :avatar , as: :image_preview , input_html: { preview_version: :thumb} %>
+            <div class="create_button">
+              <%= f.button :submit , 'Ολοκλήρωση εγγραφής' , class: 'btn btn-warning pull-right ' %>
+              <div class= 'clearfix'> </div>
+            </div>
+          </div>
 
-    <div class="create_button">
-      <%= f.button :submit , 'Sign up' , class: 'btn btn-warning pull-right ' %>
-      <div class= 'clearfix'> </div>
+        <% end %>
+      </div>
+
     </div>
   </div>
-
-<% end %>
 </div>

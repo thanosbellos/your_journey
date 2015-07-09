@@ -12,7 +12,7 @@ class CommentsController < ApplicationController
       respond_to do |format|
         format.html do
           flash[:success] = 'Comment posted.'
-          redirect_to user_trail_path(@trail.id , @trail.users.first)
+          redirect_to user_trail_path(@trail.id , @trail.user.first)
         end
         format.js
       end
@@ -30,12 +30,12 @@ class CommentsController < ApplicationController
     @trail = Trail.find(params[:trail_id])
 
     respond_to do |format|
-      if current_user == @commenter  || current_user == @comment.trail.users.first
+      if current_user == @commenter  || current_user == @comment.trail.user
 
         puts "Breakpoint"
         @comment.destroy
 
-        format.html {redirect_to usert_trail_path(@trail.id , @trail.users.first)}
+        format.html {redirect_to usert_trail_path(@trail.id , @trail.user)}
         format.js
 
       else

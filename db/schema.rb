@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(version: 20150706221129) do
     t.float    "length"
     t.float    "duration"
     t.string   "travel_by"
+    t.integer  "user_id"
     t.datetime "created_at",                                                    null: false
     t.datetime "updated_at",                                                    null: false
     t.integer  "difficulty"
@@ -115,13 +116,7 @@ ActiveRecord::Schema.define(version: 20150706221129) do
     t.string   "trailgeometry"
   end
 
-  create_table "trails_users", id: false, force: :cascade do |t|
-    t.integer "trail_id", null: false
-    t.integer "user_id",  null: false
-  end
-
-  add_index "trails_users", ["trail_id", "user_id"], name: "index_trails_users_on_trail_id_and_user_id", using: :btree
-  add_index "trails_users", ["user_id", "trail_id"], name: "index_trails_users_on_user_id_and_trail_id", using: :btree
+  add_index "trails", ["user_id"], name: "index_trails_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
