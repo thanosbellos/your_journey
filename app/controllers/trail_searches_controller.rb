@@ -1,5 +1,6 @@
 class TrailSearchesController < ApplicationController
   def new
+    @trails = Trail.none
   end
 
   def index
@@ -26,10 +27,11 @@ class TrailSearchesController < ApplicationController
                               radius: params[:radius].to_f,
                               finish_loc: destination_lonlat,
                               sample_route: sample_route)
-    tracks = matcher.search
-    if(tracks.length>0)
+    @tracks = matcher.search
+    @message = nil
+    if(@tracks.length>0)
 
-      json = tracks.map do |track|
+      json = @tracks.map do |track|
        track.to_geojson
       end
       @geojson = json.first
@@ -48,17 +50,14 @@ class TrailSearchesController < ApplicationController
 
       end
     else
-      @geojson = {"message": "Unfortunately there are no trails in that radius"}
+      @message = {"message": "Unfortunately there are no trails in that radius"}
     end
 
 
 
-
-
     respond_to do |format|
-      html = render_to_string partial: 'trails/index', locals: { :trails => tracks}
-      puts html
-        format.json { render json: {geojson: @geojson ,html: html }}
+      html = render_to_string partial: 'trails/index', locals: { :trails => @tracks}
+      format.json { render json: {geojson: @geojson ,html: html, message: @message }}
     end
 
 

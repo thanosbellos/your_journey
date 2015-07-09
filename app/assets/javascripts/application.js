@@ -25,4 +25,5 @@
 //= require polyline
 //= require turf/turf
 //= require turf/turf-buffer
+//= require jquery.bootpag.min
 //= require_tree .

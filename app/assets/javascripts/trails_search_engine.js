@@ -193,8 +193,9 @@ $(document).on('ready', function(){
     });
 
     $("#trail-search-form").on("ajax:success" , function(e,data,status, xhr){
+      console.log(data);
 
-      if(typeof data.message == 'undefined'){
+      if(typeof data.message !== null){
 
         var activeTabId = $("div.tab-pane.active").attr("id");
         var results = (activeTabId =="search-near-point") ? tracksNearPoint : tracksLikeSampleRoute;
@@ -213,7 +214,8 @@ $(document).on('ready', function(){
        // $("#results").append(xhr.responseText);
       } else {
         $("#suggestions").html('');
-        //$("#results").append(data.message)
+        $("#results").html('');
+        $("#results").append(data.message)
         //append to error section of mapbox-dir pane
       }
     });
@@ -251,6 +253,9 @@ $(document).on('ready', function(){
   function restoreSearchDestinationTab(directionsDivs){
     $("#search-near-point-results").hide();
     $("#search-with-destination-results").show();
+    $("#page-selection-near-point").hide()
+    $("#page-selection-with-destination").show();
+
     directionsLayer.addTo(map);
     var originLonLat = $("#origin_lnglat:hidden");
     var destinationLonLat =$("#destination_lnglat:hidden");
@@ -288,6 +293,8 @@ $(document).on('ready', function(){
 
     $("#search-with-destination-results").hide();
     $("#search-near-point-results").show();
+    $("#page-selection-near-point").show();
+    $("#page-selection-with-destination").hide();
 
     var originName = $("#origin");
     var originLngLat = $("#origin_lnglat:hidden");
@@ -331,6 +338,7 @@ $(document).on('ready', function(){
     var suggestionsState = activeTabId == 'search-near-point'? suggestionsNearPoint : suggestionsForDestination;
     var results = activeTabId =='search-near-point'? $("#search-near-point-results") : $("#search-with-destination-results");
     var userInstructions = activeTabId == 'search-near-point'? $("#user-instructions-search-near-point") : $("#user-instructions-search-with-destination");
+    var pageSelection = activeTabId == 'search-near-point'? $("#page-selection-near-point") : $("#page-selection-with-destination");
 
     suggestions.geojson.features.forEach(function(i) {if (i.id== 'Polyline') {routes.push(i)}});
     var $container = $("#suggestions");
@@ -339,6 +347,8 @@ $(document).on('ready', function(){
     results.append("<h3>Αποτελέσματα</h3>");
 
     results.append(suggestions.html);
+    setUpPagination(pageSelection,activeTabId, routes.length);
+
     results.show();
     $container.html('');
 
@@ -453,6 +463,32 @@ $(document).on('ready', function(){
     return simplifiedRoute
 
 
+  }
+
+  function setUpPagination(pageSelection,activeTabId, totalResults){
+    var results = activeTabId =='search-near-point'? '#search-near-point-results' : '#search-with-destination-results';
+    $(results+" tr:not(.active-row)").hide();
+
+    var total = Math.ceil(totalResults/5);
+
+    pageSelection.bootpag({
+      total: total
+    }).on("page", function(event , num){
+
+      console.log(num);
+
+      //hide table rows with class active
+      var rowClass = results+" .tr_class"+ (num-1);
+      console.log(rowClass);
+      var prevRow  = $(results+ ' .active-row');
+      prevRow.removeClass('active-row')
+
+      prevRow.hide();
+      $(rowClass).addClass('active-row');
+      $(rowClass).show();
+
+      //show table rows with new class = num
+    })
   }
 });
 

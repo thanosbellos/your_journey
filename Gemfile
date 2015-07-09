@@ -71,6 +71,7 @@ group :test do
   gem 'selenium-webdriver', '~> 2.44.0'
 
 end
+gem 'kaminari'
 
 gem 'simple_form', '~> 3.1.0'
 gem 'devise','~> 3.4.1'

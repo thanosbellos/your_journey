@@ -1,0 +1,3 @@
+$("#trails").html('<%=escape_javascript render partial: 'trails/index', locals: {trails: @trails} %>');
+$("#paginator").html('<%= escape_javascript(paginate(@trails, :remote => true).to_s) %>');
+
