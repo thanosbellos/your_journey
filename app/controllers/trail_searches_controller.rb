@@ -27,7 +27,7 @@ class TrailSearchesController < ApplicationController
                               radius: params[:radius].to_f,
                               finish_loc: destination_lonlat,
                               sample_route: sample_route)
-    @tracks = matcher.search.page params[:page]
+    @tracks = matcher.search
     if(@tracks.length>0)
 
       json = @tracks.map do |track|

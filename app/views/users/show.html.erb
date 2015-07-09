@@ -39,6 +39,7 @@
       <% else %>
         <h4>Οι καλύτερες διαδρομές του/τής : <%= @user.name || @user.email %>  </h4>
       <% end %>
+
       <%= render partial: 'trails/index', locals:{trails: @trails} %>
       <div id="paginator">
         <%= paginate @trails, :remote => true %>

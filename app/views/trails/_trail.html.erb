@@ -1,5 +1,5 @@
 
-  <tr class="template-upload fade in">
+<tr class="template-upload fade in <%= "tr_class#{css_class/5} #{"active-row" if css_class/5==0}" %>">
     <td class="col-md-1">
       <span class="preview">
         <% if trail.photos.empty? %>

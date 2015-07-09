@@ -11,7 +11,7 @@ class Trail < ActiveRecord::Base
 
   scope :best_rated, -> {includes(:rate_average_without_dimension).order("rating_caches.avg DESC")}
 
-  paginates_per 1
+  paginates_per 2
   ratyrate_rateable
   mount_uploader :trailgeometry , TrailGeometryUploader
 
