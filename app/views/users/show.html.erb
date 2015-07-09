@@ -39,22 +39,30 @@
       <% else %>
         <h4>Οι καλύτερες διαδρομές του/τής : <%= @user.name || @user.email %>  </h4>
       <% end %>
-    <%= render partial: 'trails/index', locals:{trails: @trails} %>
+      <%= render partial: 'trails/index', locals:{trails: @trails} %>
+      <div id="paginator">
+        <%= paginate @trails, :remote => true %>
+      </div>
+
+      <div class="col-md-offset-5">
+      </div>
+
 
     </div>
     <div class="col-md-offset-1 col-md-3">
       <h4> Στατιστικά Χρηστη </h4>
-          <table role="presentation" class="table table-striped">
-      <tr>
-        <td>Συνολικές διαδρομές: <%=@user.total_trails %></td>
+      <table role="presentation" class="table table-striped">
+        <tr>
+          <td>Συνολικές διαδρομές: <%=@user.total_trails %></td>
 
-      </tr>
-      <tr>
-        <td>Συνολική απόσταση: <%= @user.total_trails_length %> </td>
-      </tr>
-    </table>
+        </tr>
+        <tr>
+          <td>Συνολική απόσταση: <%= @user.total_trails_length %> </td>
+        </tr>
+      </table>
 
     </div>
+
   </div>
 
 

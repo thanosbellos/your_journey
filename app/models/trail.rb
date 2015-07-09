@@ -3,8 +3,6 @@ class Trail < ActiveRecord::Base
   include Rails.application.routes.url_helpers
   has_many :comments
   has_and_belongs_to_many :users
-
-
   has_many :photos, :inverse_of => :trail , :dependent => :destroy
 
   accepts_nested_attributes_for :photos,
@@ -13,6 +11,7 @@ class Trail < ActiveRecord::Base
 
   scope :best_rated, -> {includes(:rate_average_without_dimension).order("rating_caches.avg DESC")}
 
+  paginates_per 1
   ratyrate_rateable
   mount_uploader :trailgeometry , TrailGeometryUploader
 
