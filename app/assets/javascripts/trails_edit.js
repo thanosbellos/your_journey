@@ -142,7 +142,7 @@ $( document ).on("ready", function() {
     });
     var filesToBeUploaded = 0;
     $.getJSON(photosIndexUrl , function (files) {
-      fu = $('#fileupload').data('blueimpFileupload')
+      fu = $('#fileupload').data('blueimp-fileupload')
       //template;
       //fu._adjustMaxNumberOfFiles(-files.length);
       //$('#fileupload').fileupload('option', 'maxNumberOfFiles');

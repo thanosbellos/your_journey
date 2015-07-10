@@ -48,7 +48,9 @@
           <% end %>
         </div>
         <div>
-          <h5 > Από <%= @trail.raters_without_dimension_ids.length %> Χρήστες      </ul>
+          <h5 > Από <%= @trail.raters_without_dimension_ids.length %> Χρήστες %></h5>
+        </div>
+      </ul>
     </div>
   </div>
 </div>
@@ -85,14 +87,14 @@
         </td>
         <td>
             {% if (file.delete_url) { %}
-            <button class="btn btn-danger delete" onclick="return confirm('Είστε σίγουρος οτι θέλετε να σβήσετε την φωτογραφία')" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+            <button class="btn btn-danger delete" onclick="return confirm('Are your sure you want to delete your account')" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                     <i class="glyphicon glyphicon-trash"></i>
-                    <span>Διαγραφή</span>
+                    <span>Delete</span>
                 </button>
             {% } else { %}
                 <button class="btn btn-warning cancel">
                     <i class="glyphicon glyphicon-ban-circle"></i>
-                    <span>Ακύρωση ανεβάσματος</span>
+                    <span>Cancel</span>
                 </button>
             {% } %}
         </td>
