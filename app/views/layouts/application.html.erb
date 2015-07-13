@@ -6,14 +6,21 @@
   <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet'>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <%= csrf_meta_tags %>
 </head>
-<body>
- <%= render 'layouts/header' %>
- <div class="container">
+<body <%= "class=#{controller_name}" if (controller_name =="static_pages" && action_name == "home")%>>
+  <div id="wrap">
+    <div class='push'>
+    </div>
+   <%= render 'layouts/header' %>
    <%= flash_messages %>
-    <%= yield %>
-  </div>
-    <%= render 'layouts/footer' %>
+   <%= yield %>
+ </div>
+ <div class='push'>
+ </div>
+ <%= render 'layouts/footer' %>
+
 </body>
 </html>

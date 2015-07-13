@@ -1,24 +1,117 @@
-  <%= simple_form_for [@user , @trail] do |f| %>
-    <%= f.input :name %>
-    <%= f.input :start_point , as: :hidden  %>
-    <%= f.input :end_point , as: :hidden %>
-    <%= f.input :length %>
-    <%= f.input :duration %>
-    <%= f.input :travel_by , collection:['Car' , 'Bike' , 'On Feet'],:selected =>'Car' %>
-    <%= f.input :rating , collection: 1..5 , as: :radio_buttons , :item_wrapper_class=>'inline', prompt: "Rate your trail" %>
-    <%= f.input :difficulty,
-                :collection => [[1 , 'Easy'] , [2, 'Moderate'], [3,'Extreme']],
-                :label_method=>:last ,
-                :value_method=>:first ,
-                :as=> :radio_buttons,
-                :item_wrapper_class=>'inline' ,
-                :checked => 1 %>
-
-    <%= f.input :trailgeometry %>
-    <%= f.input :remove_trailgeometry, :as => :boolean %>
-    <%= f.input :trailgeometry_cache , as: :hidden %>
-    <%= f.button :submit , 'Create route'%>
+<%= simple_form_for [@user , @trail], html: {id: "fileupload"} do |f| %>
+  <%= f.input :name, label: "Όνομα" %>
+  <%if @trail.new_record? %>
+  <span class="btn btn-success fileinput-button">
+    <i class="glyphicon glyphicon-plus"></i>
+    <span>Αρχείο διαδρομής</span>
+    <%= f.input_field :trailgeometry,  label: 'Αρχείο διαδρομής'%>
+  </span>
+  <%end %>
 
 
+
+  <%= f.input :start_point , as: :hidden  %>
+  <%= f.input :end_point , as: :hidden %>
+  <%= f.input :length , as: :hidden %>
+  <%= f.input :travel_by , collection:['Αμάξι' , 'Ποδηλατοδρομία' , 'Πεζοπορία'],  selected: f.object.travel_by || 'Αμάξι' %>
+
+
+  <%= f.input :difficulty,
+    :collection => [[1 , 'Εύκολη'] , [2, 'Μέτριας δυσκολίας'], [3,'Δύσκολη']],
+    :label_method=>:last ,
+    :value_method=>:first ,
+    :as=> :radio_buttons,
+    :item_wrapper_class=>'inline' ,
+    :checked => f.object.difficulty || 2 %>
+  <div id="raty">
+
+    <label>Πώς θα βαθμολογούσατε τη διαδρομή? </label>
+  <% unless @trail.new_record? %>
+          <%= rating_for @trail, nil  ,readonly:false, disable_after_rate: false %>
   <% end %>
 
+</div><br>
+  <%= hidden_field_tag 'hidden_trail_id'  , nil %>
+  <%= hidden_field_tag 'geolocations' , 'nil' %>
+    <%= f.simple_fields_for Photo.new  do |photos_form|%>
+      <div class="row fileupload-buttonbar disabled">
+        <div class="col-lg-12">
+          <!-- The fileinput-button span is used to style the file input field as button -->
+          <button class="btn btn-success fileinput-button">
+            <i class="glyphicon glyphicon-plus"></i>
+            <span>Πρόσθεσε φωτογραφίες...</span>
+            <%= photos_form.input_field :image , :multiple => true, name: "trail[photos_attributes][][image]" , :id => "trail_photos"%>
+
+          </button>
+
+           <% end %>
+
+          <button type="button" class="btn btn-primary start" id ="submit-button">
+            <i class="glyphicon glyphicon-upload"></i>
+            <span>Αποθήκευση</span>
+          </button>
+          <button type="reset" class="btn btn-warning cancel">
+            <i class="glyphicon glyphicon-ban-circle"></i>
+            <span>Ακύρωση αρχείων</span>
+          </button>
+        </div>
+        <!-- The global progress state -->
+        <div class="col-lg-12 fileupload-progress fade">
+          <!-- The global progress bar -->
+          <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+          </div>
+          <!-- The extended global progress state -->
+          <div class="progress-extended">&nbsp;</div>
+        </div>
+      </div>
+      <!-- The table listing the files available for upload/download -->
+      <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
+
+
+<% end %>
+
+
+
+<script>
+  var fileUploadErrors = {
+    maxFileSize: 'File is too big',
+    minFileSize: 'File is too small',
+    acceptFileTypes: 'Filetype not allowed',
+    maxNumberOfFiles: 'Max number of files exceeded',
+    uploadedBytes: 'Uploaded bytes exceed file size',
+    emptyResult: 'Empty file upload result'
+  };
+</script>
+
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td>
+            <span class="preview"></span>
+        </td>
+        <td>
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" style="display:none" disabled>
+                    <i class="glyphicon glyphicon-upload"></i>
+                    <span>Ανέβασμα</span>
+                </button>
+            {% } %}
+            {% if (!i) { %}
+                <button class="btn btn-warning cancel">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
+                    <span>Ακύρωση</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+    {% } %}
+</script>

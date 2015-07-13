@@ -1,35 +1,51 @@
-<div class="form_box" id="sign_in_form">
+<%= provide(:title , 'Είσοδος') %>
+<div class="full-container">
+  <div class="container">
+    <div class="push"></div>
 
-  <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), wrapper: :vertical_form) do |f| %>
-    <%= f.error_notification %>
-  <div class="form-inputs">
-    <%= f.input :email, label:false , wrapper: :vertical_input_group do %>
-      <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"> </i></span>
-    <%= f.input_field :email,placeholder:'Email',autofocus:true, class: "form-control" %>
-  <%end%>
-    <table class="table-no-border">
-      <tr>
-        <tbody>
-          <td id="form_table_input">
-            <%= f.input :password, label: false , wrapper: :vertical_input_group do %>
-              <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-            <%= f.input_field :password ,  placeholder: 'Password' , autofocus: true, class: "form-control"%>
+    <div class="form_box trail-photos-sidebar col-sm-12 col-md-offset-4 col-md-4" id="sign_in_form">
+    <h4 style="text-align:center"> Συνδέσου στο λογαριασμό σου </h4>
+
+      <div class ="col-md-offset-2">
+        <%= link_to user_omniauth_authorize_path(:facebook) , class: "btn btn-social btn-facebook" do %>
+          <i class="fa fa-facebook"> </i>   Είσοδος με facebook
+        <% end %>
+      </div>
+
+      <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), wrapper: :vertical_form) do |f| %>
+        <%= f.error_notification %>
+        <div class="form-inputs">
+          <hr>
+          <h5> Συμπλήρωσε τα στοιχεία σου </h5>
+
+          <%= f.input :email, label:false , wrapper: :vertical_input_group do %>
+            <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"> </i></span>
+            <%= f.input_field :email,placeholder:'Email',autofocus:true, class: "form-control" %>
           <%end%>
-          </td>
-          <td id="form_table_button">
-            <div class="form-group">
-              <%= f.button :submit, "Log in", class: "btn btn-info btn-block"%>
-            </div>
-          </td>
-        </tbody>
-      </tr>
-    </table>
-    <div class="remember-forgot">
-      <%= f.input_field :remember_me, :as => :boolean  %>
-      <span> Remember me </span>
-      <span > &#183 <%= link_to "Forgot Password?" , new_user_password_path %> </span>
+          <table class="table-no-border">
+            <tr>
+              <tbody>
+                <td id="form_table_input">
+                  <%= f.input :password, label: false , wrapper: :vertical_input_group do %>
+                    <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                    <%= f.input_field :password ,  placeholder: 'Κωδικός' , autofocus: true, class: "form-control"%>
+                  <%end%>
+                </td>
+                <td id="form_table_button">
+                  <div class="form-group">
+                    <%= f.button :submit, "Είσοδος", class: "btn btn-info btn-block"%>
+                  </div>
+                </td>
+              </tbody>
+            </tr>
+          </table>
+          <div class="remember-forgot">
+            <%= f.input_field :remember_me, :as => :boolean  %>
+            <span> Remember me </span>
+            <span > &#183 <%= link_to "Eγγραφή" , new_user_registration_path %> </span>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
-<% end %>
 </div>
-

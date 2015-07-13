@@ -71,12 +71,13 @@ group :test do
   gem 'selenium-webdriver', '~> 2.44.0'
 
 end
+gem 'kaminari'
 
 gem 'simple_form', '~> 3.1.0'
 gem 'devise','~> 3.4.1'
 gem 'font-awesome-rails', '~> 4.2.0.0'
 gem 'omniauth-facebook', '~> 2.0.0'
-
+gem 'ratyrate'
 gem 'carrierwave' , '~> 0.10.0'
 gem 'mini_magick' , '~> 4.2.0'
 gem 'simple_form_fancy_uploads', '~> 0.2.0'
@@ -86,3 +87,7 @@ gem 'activerecord-postgis-adapter', '~> 3.0.0'
 gem 'rgeo-geojson'
 gem 'rgeo-shapefile'
 gem 'polylines'
+
+
+gem 'jquery-fileupload-rails'
+gem 'fancybox2-rails', '~> 0.2.8'

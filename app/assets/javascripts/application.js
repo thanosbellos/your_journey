@@ -13,6 +13,8 @@
 //= require jquery
 //= require bootstrap-sprockets
 //= require jquery_ujs
+//= require jquery-fileupload
+//= require fancybox
 //= require leaflet.smoothmarkerbouncing
 //= require leaflet-control-geocoder/Control.Geocoder
 //= require Leaflet.AccuratePosition
@@ -21,5 +23,7 @@
 //= require mapbox-directions.js/dist/mapbox.directions
 //= require togeojson
 //= require polyline
-//= require turbolinks
+//= require turf/turf
+//= require turf/turf-buffer
+//= require jquery.bootpag.min
 //= require_tree .

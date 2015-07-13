@@ -1,0 +1,10 @@
+<%=  provide :title, "Ομορφότερες διαδρομές" %>
+<div class="full-container">
+  <div class="push"></div>
+  <div class="container">
+    <h3> Οι ομορφότερες διαδρομές </h3>
+    <%= render partial: 'trails/index', locals: {:trails => @trails, :difficulty => false} %>
+    <%=  paginate @trails %>
+  </div>
+</div>
+

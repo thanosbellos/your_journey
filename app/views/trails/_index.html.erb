@@ -1,0 +1,11 @@
+<div id="trails">
+<table role="presentation" class="table table-striped">
+
+  <% trails.each_with_index do |trail, index| %>
+    <%= render partial: 'trails/trail', locals: {trail: trail , css_class:index, difficulty: (trail.difficulty if difficulty)} %>
+  <% end %>
+
+</table>
+
+
+</div>

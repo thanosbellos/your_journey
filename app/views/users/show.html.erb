@@ -1,24 +1,104 @@
-<%= provide(:title, current_user.name) %>
-<div class="row">
-  <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 img-circle">
-    <%= image_tag current_user.avatar.rounded.url , :class=> "img-circle" %>
+
+<%= provide(:title, @user.name || @user.email) %>
+
+<div class="container">
+  <div class="push"> </div>
+  <div class="row">
+
+    <div class="col-xs-3 col-sm-2 col-md-1 col-lg-1 img-circle">
+      <%= image_tag @user.avatar.rounded.url , :class=> "img-circle" %>
+    </div>
+
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+      <h3><%= @user.name || @user.email %> </h3>
+      <%#<h4> Preffered activities </h4>%>
+      <%#<p>%>
+      <%#<% @user.activities.each do |activity| %>
+        <%#<%= activity.name %>
+        <%#<% end %>
+      <%#</p>%>
+    </div>
+    <% if current_user == @user %>
+
+      <div class="col-xs-4 col-sm-4 col-md-3 col-lg-3 pull-right">
+        <ul class="ul-no-style">
+          <li><%= link_to "Επεξεργασία Προφίλ", edit_user_registration_path %></li>
+          <li>        <%= link_to "Πρόσθεσε μια διαδρομή" , new_user_trail_path(@user) %> </li>
+          <li>        <%= link_to "Αναζήτησε νέες διαδρομές" , trail_searches_new_path %></li>
+        </ul>
+      </div>
+    <%end %>
+
+
   </div>
-  <div class="col-xs-12 col-sm-12 col-md- col-lg-6">
-    <h2><%= current_user.name %> </h2>
-    <h4> Preffered activities </h4>
-    <p>
-    <% current_user.activities.each do |activity| %>
-      <%= activity.name %>
-    <% end %>
-    </p>
+  <div class="push"></div>
+  <div class="row">
+    <div class="col-md-8">
+      <% if current_user == @user %>
+        <h4> Οι καλύτερες διαδρομές σου </h4>
+      <% else %>
+        <h4>Οι καλύτερες διαδρομές του/τής : <%= @user.name || @user.email %>  </h4>
+      <% end %>
+
+      <%= render partial: 'trails/index', locals:{trails: @trails, difficulty: false} %>
+      <div id="paginator">
+        <%= paginate @trails, :remote => true %>
+      </div>
+
+      <div class="col-md-offset-5">
+      </div>
+
+
+    </div>
+    <div class="col-md-offset-1 col-md-3">
+      <h4> Στατιστικά Χρηστη </h4>
+      <table role="presentation" class="table table-striped">
+        <tr>
+          <td><i class="fa fa-star"></i> &nbsp; Συνολικές διαδρομές: <%=@user.total_trails %></td>
+
+        </tr>
+        <tr>
+          <td><i class="fa fa-globe"></i> &nbsp;  Συνολική απόσταση: <%= @user.total_trails_length %> χλμ. </td>
+        </tr>
+        <tr>
+          <td> <i class="fa fa-thumbs-up"></i> &nbsp; Καλύτερη αξιολόγηση: <%= @user.trails.best_rated.first.average.avg if @user.trails.first %> </td>
+        </tr>
+        <tr>
+          <td> <i class="fa fa-camera"></i> &nbsp; Συνολικές φωτογραφίες: <%= @user.total_photos%> </td>
+        </tr>
+
+      </table>
+      <h5> Προτεινόμενες διαδρομές </h5>
+      <table role="presentation" class="table table-striped">
+        <tr>
+          <td>
+
+          <i class="fa fa-star"></i>&nbsp;
+
+            <%= link_to trails_best_path do %>
+
+             Οι πιο όμορφες διαδρομές
+
+              <% end %>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+          <i class="fa fa-bolt"> </i>&nbsp; &nbsp;
+
+            <%= link_to  trails_difficult_path do  %>
+             Οι πιο δύσκολες διαδρομές
+          <% end %>
+          </td>
+        </tr>
+      </table>
+
+    </div>
 
   </div>
 
-  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-    <%= link_to "Edit your profile", edit_user_registration_path %>
-  </div>
+
 </div>
-
-<%= link_to "Add Trail" , new_user_trail_path(current_user) %>
 
 

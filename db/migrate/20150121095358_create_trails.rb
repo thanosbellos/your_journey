@@ -9,6 +9,7 @@ class CreateTrails < ActiveRecord::Migration
       t.integer :rating
       t.string :travel_by
 
+      t.belongs_to :user , index: true
       t.timestamps null: false
     end
   end

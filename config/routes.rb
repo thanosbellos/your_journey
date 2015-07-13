@@ -2,18 +2,25 @@ Rails.application.routes.draw do
 
 
 
+
+  post '/rate' => 'rater#create', :as => 'rate'
   get 'trail_searches/new'
 
   get 'trail_searches/index'
 
+  get 'trails/difficult' => 'trails#most_difficult'
 
+  get 'trails/best' => 'trails#best_trails'
   devise_for :users, :controllers => { :omniauth_callbacks => 'users/omniauth_callbacks' ,
                                        :registrations=> 'users/registrations' }
-  resources :users , only: [:show] do
+  resources :users , only: [:show, :index] do
      resources :trails
 
   end
-  resources :trails , only: [:index]
+  resources :trails , only: [:index] do
+    resources :photos
+    resources :comments
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -21,6 +28,8 @@ Rails.application.routes.draw do
    get 'static_pages/home'
    root 'static_pages#home'
    get 'trail_searches/index'
+   get 'export' => 'static_pages#export'
+
    post 'search' => 'trail_searches#search'
     #get 'signup' => 'users#new'
   # Example of regular route:

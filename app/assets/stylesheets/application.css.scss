@@ -11,12 +11,16 @@
  * file per style scope.
  *
  *= require btstrap_imports
+ *= require jquery.fileupload
+*= require jquery.fileupload-ui
  *= require leaflet/dist/leaflet
  *= require leaflet-control-geocoder/Control.Geocoder
  *= require leaflet-draw/dist/leaflet.draw
  *= require mapbox-directions.js/dist/mapbox.directions
- *= require_tree .
  *= require_self
+ *= require fancybox
+ *= require bootstrap-social/bootstrap-social
+ *= require_tree .
  */
 
 

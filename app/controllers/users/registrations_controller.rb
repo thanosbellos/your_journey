@@ -1,6 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
-# before_filter :configure_sign_up_params, only: [:create]
-# before_filter :configure_account_update_params, only: [:update]
+  # before_filter :configure_sign_up_params, only: [:create]
+  # before_filter :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
   # def new
@@ -18,10 +18,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # PUT /resource
-  # def update
-  #   super
-  # end
-  #
+  def update
+    super
+  end
+
 
   # DELETE /resource
   # def destroy
@@ -50,23 +50,27 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # The path used after sign up.
-  # def after_sign_up_path_for(resource)
-  #   super(resource)
-  # end
+  def after_sign_up_path_for(resource)
+    super(resource)
+  end
+
+  def after_update_path_for(resource)
+      user_path(resource)
+  end
 
   # The path used after sign up for inactive accounts.
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
-#
-   def update_resource(resource , params)
+  #
+  def update_resource(resource , params)
     unless current_user.provider.blank?
       params.delete("current_password")
       resource.update_without_password(params)
     else
       resource.update_with_password(params)
     end
-   end
+  end
 
 
 end

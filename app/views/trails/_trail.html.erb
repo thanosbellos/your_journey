@@ -1,0 +1,49 @@
+
+<tr class="template-upload fade in <%= "tr_class#{css_class/5} #{"active-row" if css_class/5==0}" %>">
+  <td class="col-md-1">
+    <span class="preview">
+      <% if trail.photos.empty? %>
+        <%= image_tag 'default_route_thumb' %>
+      <%else %>
+        <%= image_tag trail.photos.first.image.thumb.url %>
+      <%end %>
+    </span>
+  </td>
+  <td class="col-md-8">
+    <h5>Γενικά στοιχεία</h5>
+    <ul class="ul-no-style">
+      <li>Όνομα διαδρομής:  <%= trail.name %> </li>
+      <li>Σημείο Αναχώρησης: <%= trail.start_point %></li>
+      <li>Τερματισμός: <%= trail.end_point %></li>
+      <li>Μήκος διαδρομής: <%= trail.length %></li>
+    </ul>
+  </td>
+
+
+  <td class="col-md-2 col-sm-2">
+
+    <div>
+
+      <h5> Βαθμολογία </h5>
+      <% if trail.rate_average_without_dimension.avg.nil? %>
+        :( Κανείς δέν έχει βαθμολογήσει αυτή τη διαδρομή ακόμα
+      <%else %>
+        <%= rating_for trail , nil,disable_after_rate:false ,  imdb_avg: true,readonly: true%>
+      <% end %>
+      <%= link_to "See Route" , user_trail_path(trail.user, trail), :class=> "btn btn-primary"%>
+    </div>
+  </td>
+  <% if difficulty %>
+    <td class="col-md-1 col-sm-1">
+
+      <h5> Βαθμός δυσκολίας </h5>
+      <strong><%= "#{ ["Εύκολο", "Μέτριας δυσκολίας", "Extreme"][difficulty-1]}" %> </strong>
+
+
+    </td>
+  <% end %>
+</tr>
+
+
+
+

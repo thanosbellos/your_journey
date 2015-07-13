@@ -1,0 +1,38 @@
+<div class="full-container">
+  <div class="push"> </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <h3> Οι χρήστες με τις περισσότερες διαδρομες </h3>
+        <table role="presentation" class="table table-striped">
+          <% @users.each do |user| %>
+            <tr class="template-upload fade in">
+
+              <td class="col-md-1 col-sm-1 col-xs-1">
+                <div class="push"></div>
+
+                <span class="preview">
+                  <%= image_tag user.avatar.rounded.url, class: "img-circle" %>
+                </span>
+              </td>
+              <td class="col-md-10">
+                <table role="presentation" class="table table-striped">
+                  <tr><th><%= user.name || user.email%></th></tr>
+                  <tr><td> Συνολικές Διαδρομές:  <%= user.total_trails %></td> </tr>
+                  <tr><td> Συνολικο μήκος διαδρομών: <%= user.total_trails_length %></td></tr>
+                  <tr><td> Καλύτερη αξιολόγηση: <%= user.trails.best_rated.first.average.avg if user.trails.first %></td></tr>
+                  <tr> <td>Συνολικές Φωτογραφίες: <%= user.total_photos %></td></tr>
+                </table>
+              </td>
+              <td class="col-md-1">
+                <div class="push"></div>
+                <%= link_to 'Δές το προφίλ', user_path(user), class: "btn btn-default" %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+<%=  provide :title, "Οι δέκα πιο δύσκολες διαδρομές " %>
+<div class="full-container">
+  <div class="push"></div>
+  <div class="container">
+    <h3> Οι 10 πιο δύσκολες διαδρομές </h3>
+    <%= render partial: 'trails/index', locals: {:trails => @trails, :difficulty => true} %>
+    <%=  paginate @trails %>
+  </div>
+</div>

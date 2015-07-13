@@ -8,4 +8,9 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:email,:avatar,  :password, :password_confirmation ,  :name , {activity_ids: []})}
     devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:email,:avatar,  :password, :password_confirmation , :current_password, :name , {activity_ids: []})}
   end
+def after_sign_in_path_for(resource)
+
+  user_path(resource)
+end
+
 end

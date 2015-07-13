@@ -1,15 +1,26 @@
 class Trail < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
 
-  #has_many :trailsegments , :dependent => :destroy
-  #has_many :points ,
-  #
-  has_and_belongs_to_many :users
+  paginates_per 5
+
+  has_many :comments
+  #has_and_belongs_to_many :users
+  has_many :photos, :inverse_of => :trail , :dependent => :destroy
+  belongs_to :user
+
+  accepts_nested_attributes_for :photos,
+    :allow_destroy => true,
+    :reject_if => :all_blank
+
+  scope :best_rated, -> {includes(:rate_average_without_dimension).order("rating_caches.avg DESC")}
+
+  ratyrate_rateable
   mount_uploader :trailgeometry , TrailGeometryUploader
 
   validates :name , :start_point , :travel_by , presence: true
-  validates :rating , numericality: {only_integer:true , greater_than_or_equal_to:1 , less_than_or_equal_to:5}
   validate :trail_file_size_validation
-  #store gpx file with carrierwave and create shp
+  validates :trailgeometry,
+            :presence => true
   after_create :store_trailgeometry! , :process_geometry_files
 
   def trail_file_size_validation
@@ -23,10 +34,10 @@ class Trail < ActiveRecord::Base
     attr_accessor :point_factory
   end
 
-  self.trail_path_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'line_string')
-  self.trail_path_projection_factory = trail_path_factory.projection_factory
-  self.point_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'point')
+  self.trail_path_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => "LineString", srid: 3857 , sql_type:"geometry(LineString,3857)")
+  self.point_factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(:geo_type => "Point", srid: 3857 , sql_type:"geometry(Point,3857)")
   CODER = RGeo::GeoJSON.coder(geo_factory: self.trail_path_factory)
+
 
  def to_geojson
     features = []
@@ -36,11 +47,13 @@ class Trail < ActiveRecord::Base
                                              {
                                                "stroke":"#fc4353",
                                                "Name": "#{self.name}",
-#                                               "Length": "#{self.length}"
+                                               "Length": "#{self.length}",
+                                               "Rating": "#{self.rate_average_without_dimension.avg}",
+                                               "totalRaters": "#{self.raters_without_dimension_ids.length} #{'user'.pluralize(self.raters_without_dimension_ids.length)}",
                                               })
     features << CODER.entity_factory.feature(self.origin_point_geographic,
                                              "Start Point" ,
-                                             {"marker-color": "#00ff00",
+                                             {"marker-color": "#007A00",
                                               "marker-symbol": 's',
                                               "marker-size": "medium",
                                               "title": "Start point of track: #{self.name}"}
@@ -49,14 +62,14 @@ class Trail < ActiveRecord::Base
 
     features  << CODER.entity_factory.feature(self.destination_point_geographic,
                                               "Finish Point",
-                                              {"marker-color": "#D63333",
+                                              {"marker-color": "#CC0000",
                                                "marker-symbol": "f",
                                                "marker-size": "medium",
                                                "title":"Finish point of trails #{self.name}"
                                               }
                                              )
 
-
+    puts features
     collection = CODER.entity_factory.feature_collection(features)
 
     CODER.encode(collection)
@@ -72,13 +85,14 @@ class Trail < ActiveRecord::Base
   end
 
   def trail_path_geographic
-    self.class.trail_path_factory.unproject(self.trail_path_projected)
+    FACTORY.unproject(self.trail_path_projected)
   end
 
   def trail_path_geographic=(value)
-    value = self.class.trail_path_factory.parse_wkt(value) if value.class == String
-    self.trail_path = self.class.trail_path_factory.project(value)
+    value = FACTORY.parse_wkt(value) if value.class == String
+    self.trail_path = FACTORY.project(value)
   end
+
 
   def origin_point_projected
     self.origin_point
@@ -89,12 +103,12 @@ class Trail < ActiveRecord::Base
   end
 
   def origin_point_geographic
-    self.class.point_factory.unproject(self.origin_point)
+    FACTORY.unproject(self.origin_point_projected)
   end
 
   def origin_point_geographic=(value)
-    value = self.class.point_factory.parse_wkt(value) if value.class == String
-    self.origin_point = self.class.point_factory.project(value)
+    value =  FACTORY.parse_wkt(value) if value.class == String
+    self.origin_point = FACTORY.project(value)
   end
 
 
@@ -107,12 +121,12 @@ class Trail < ActiveRecord::Base
   end
 
   def destination_point_geographic
-    self.class.point_factory.unproject(self.destination_point)
+    FACTORY.unproject(self.destination_point)
   end
 
   def destination_point_geographic=(value)
-    value = self.class.point_factory.parse_wkt(value) if value.class == String
-    self.destination_point = self.class.point_factory.project(value)
+    value = FACTORY.parse_wkt(value) if value.class == String
+    self.destination_point = FACTORY.project(value)
   end
 
   private
@@ -145,22 +159,24 @@ class Trail < ActiveRecord::Base
     data = JSON.load(r)
 
     srid = data["codes"][0]["code"] if r.status[1] == "OK"
+
   end
 
   def parse_tracks_shp_file
 
-    f = trailgeometry.shp_tracks.path
-    srid = find_srid_from_prj(f)
+    f = trailgeometry.shp_trail.path
+    #srid = find_srid_from_prj(f)
 
     factory = RGeo::ActiveRecord::SpatialFactoryStore.instance.factory(geo_type: 'line_string');
 
     multiline_path = nil
-    RGeo::Shapefile::Reader.open(f, factory: factory) do |file|
+    RGeo::Shapefile::Reader.open(f, factory: FACTORY) do |file|
+      puts file
       file.each do |record|
         multiline_path = record.geometry
       end
     end
-    make_linestring(multiline_path)#
+    make_linestring(multiline_path)
     self.save
 
   end
@@ -173,10 +189,15 @@ class Trail < ActiveRecord::Base
     str = str.join(',')
     ast = "SELECT (ST_AsEWKT(ST_MakeLine(ARRAY[#{str}])))"
     self.trail_path_geographic = self.class.connection.execute(ast).values.flatten.first
-
-
     self.origin_point = self.trail_path_projected.start_point
     self.destination_point = self.trail_path_projected.end_point
+    unless self.length
+
+      ast_sql_length = "SELECT ST_length(ST_GeographyFromText('#{self.trail_path_geographic.as_text}'))"
+      puts ast_sql_length
+      self.length = (self.class.connection.execute(ast_sql_length ).values.flatten.first.to_f/1000.0).round(3);
+
+    end
   end
 
 end

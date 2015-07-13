@@ -1,60 +1,103 @@
-
+<%= provide(:title, "Anazhthsh") %>
 <div class="fullscreen-container">
-   <div id="point-map">
+  <div id="map">
   </div>
   <div id='inputs'>
   </div>
   <div id='errors'>
   </div>
   <div id='directions'>
-    <h5> Mapbox Suggested routes </h5>
+    <h5 id="mapbox-routes-h5">Προτεινομενες διαδρομές απο το mapbox</h5>
 
     <div id='routes'>
 
     </div>
 
-    <h5> Our suggestions </h5>
+    <h5>Οι 10 καλύτερες προτάσεις μας</h5>
     <div id="suggestions" class="mapbox-directions-routes">
-      
+
     </div>
   </div>
 
   <div class="container">
     <div class="row">
-    <h3> Search Options </h3>
-    <ul class= "nav nav-pills">
-      <li class="active"><a href="#search-near-point" aria-controls="search-near-point" role="tab" data-toggle="tab">Search Trails Near You</a></li>
-      <li> <a href="#search-with-destination"aria-controls="search-with-destination" role="tab" data-toggle="tab"> Search your destination </a></li>
-    </ul>
-  </div>
+      <h3> Επιλογές Αναζήτησης </h3>
+      <ul class= "nav nav-tabs">
+        <li class="active"><a href="#search-near-point" aria-controls="search-near-point" role="tab" data-toggle="tab">Αναζήτηση κοντινών διαδρομών</a></li>
+        <li> <a href="#search-with-destination"aria-controls="search-with-destination" role="tab" data-toggle="tab">Αναζήτηση με βάση τον προορισμό</a></li>
+      </ul>
+    </div>
 
-  <div class="row">
-    <div class="tab-content">
-        <%= form_tag({controller: "trail_searches" , action: "search"} , method: "post", remote: true, id: 'trail-search-form') do  %>
-        <%= label_tag(:radius , "radius:") %>
-        <%= number_field_tag 'radius', '500' , min:500 ,step: 2000 %></br>
-        <%= label_tag(:origin , "Origin:") %>
-        <%= text_field_tag(:origin) %>
-        <%= hidden_field_tag(:origin_lnglat) %>
+    <div class="row">
+      <div id="push">
+        <div class="tab-content">
+          <div class="col-sm-4 col-md-4 col-lg-4">
+            <%= form_tag({controller: "trail_searches" , action: "search"} , method: "post", remote: true, id: 'trail-search-form', class:"form-group") do  %>
+              <%= label_tag(:radius , "Εύρος αναζήτησης (σε μέτρα)") %>
+              <%= number_field_tag 'radius', '500' , min:500 ,step: 2000 , class: "form-control"%></br>
+              <%= label_tag(:origin , "Κέντρικό σημείο:") %>
+              <%= text_field_tag :origin , nil , class: "form-control", readonly: true, placeholder: "Το κέντρο της αναζήτησης" %>
+              <%= hidden_field_tag(:origin_lnglat) %>
+              <%= hidden_field_tag(:destination_lnglat) %>
+              <%= hidden_field_tag(:sample_route) %>
+              <%= submit_tag "Αναζήτηση διαδρομών", id: "search-button", class: "btn btn-default" %>
+            <% end %>
+          </div>
 
-      <div role="tabpanel" class="tab-pane active" id="search-near-point">
-      </div>
-      <div role="tabpanel" class="tab-pane" id="search-with-destination">
-        <%= hidden_field_tag(:destination_lnglat) %>
-        <%= hidden_field_tag(:sample_route) %>
-        <%= submit_tag("search", id: "search-button") %>
-        <% end %>
+          <div role="tabpanel" class="tab-pane active" id="search-near-point">
+            <div class="col-md-5 col-sm-7 pull-right" id="user-instructions-search-near-point">
+              <h5> Οδηγίες Αναζήτησης </h5>
+              <ul>
+                <li> Πρέπει να επιλέξετε την αρχική θέση αναζήτησης </li>
+                <li> Έχετε τους εξής τρόπους στην διάθεση σας </li>
+                <li>
+                  <ul>
 
+                    <li> Εντοπισμός με χρήση geolocation(κουμπί πάνω αριστερά και κάτω απο το zoom control) </li>
+                    <li> Αναζήτηση της τοποθεσίας που επιθυμείτε με βάση την ονομασία τους </li>
+                    <li> Για μεγαλύτερες οθόνες  μπορείτε να "ζωγραφίσετε τη θέση σας με την χρήση του  αντίστοιχου εργαλείου </li>
+                  </ul>
+                </li>
+                <li> Αφού έχετε επιλέξει την κεντρική θέση αναζήτησης θα εμφανιστεί ένας marker στην θέση αυτή μαζί με ένα κυκλικό δίσκο </li>
+                <li> Ο κυκλικός δίσκος υποδεικνύει την περιοχή αναζήτησης. </li>
+                <li> Μπορείτε να σύρετε τον marker σε οποιοδήποτε σημείο θέλετε στο χάρτη </li>
+                <li> Επίσης μπορείτε να μεγαλώσετε την διάμετρο του δίσκου αυξάνοντας και το εύρος της αναζήτησης </li>
+                <li> Όταν είστε έτοιμοι πατήστε το κουμπί της αναζήτησης </li>
+                <li> Στον χάρτη θα εμφανιστούν οι 10 δημοφιλέστερες διαδρομές που υπάρχουν μέσα στην περιοχή αναζήτησης </li>
 
+              </ul>
+            </div>
+
+          </div>
+          <div role="tabpanel" class="tab-pane" id="search-with-destination">
+            <div class="col-md-5 col-sm-7 pull-right" id="user-instructions-search-with-destination">
+              <h5> Οδηγίες Αναζήτησης </h5>
+
+              <ul>
+                <li> Επιλέξτε το σημείο αναζήτησης και τον προορισμό κλικάρωντας πάνω στον χάρτη </li>
+                <li> Επιλέξτε και το εύρος αναζήτησης απο το αντίστοιχ πεδίο της φόρμα </li>
+                <li> H υπηρεσία "Mapbox directions" θα εμφανίσει μια προτεινόμενη διαδρομή </li>
+                <li> Με βάση αυτή την διαδρομή αυτή και το εύρος αναζήτησης, το σύστημα μας θα υπολογίσει και θα εμφανίσει τις δικές μας προτεινόμενες διαδρομές </li>
+                <li> Κάθε φορά που αλλάζετε τη διαδρομή οι προτεινόμενες διαδρομές θα επαναυπολογίζονταιαυτόματα</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    <div class="row" id="results">
+      <div id= "search-near-point-results" hidden="true">
+      </div>
+      <div id='page-selection-near-point'>
+      </div>
+
+      <div id="search-with-destination-results" hidden="true">
+      </div>
+      <div id='page-selection-with-destination'>
+      </div>
+
+    </div>
   </div>
-  </div>
-
-
-
-
-
 </div>
 
 

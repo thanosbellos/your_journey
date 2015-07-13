@@ -1,13 +1,14 @@
 class TrailSearchesController < ApplicationController
   def new
+    @trails = Trail.none
   end
 
   def index
   end
 
+
   def search
 
-    puts RGeo::GeoJSON.decode(params[:sample_route])
     origin_lonlat = params[:origin_lnglat].split(",").map do |coordinate|
       coordinate.to_f
     end
@@ -16,13 +17,11 @@ class TrailSearchesController < ApplicationController
     if(params[:destination_lnglat]!="")
         destination_lonlat = params[:destination_lnglat].split(",").map do |coordinate|
           coordinate.to_f
-          puts coordinate.to_f
         end
     end
 
     if(params[:sample_route]!= "")
       sample_route = params[:sample_route]
-      puts sample_route
     end
 
     matcher = TrailSearch.new(start_loc: origin_lonlat,
@@ -30,15 +29,15 @@ class TrailSearchesController < ApplicationController
                               finish_loc: destination_lonlat,
                               sample_route: sample_route)
     @tracks = matcher.search
-    puts @tracks.length
+    @message = nil
     if(@tracks.length>0)
 
-      @json = @tracks.map do |track|
+      json = @tracks.map do |track|
        track.to_geojson
       end
-      @geojson = @json.first
+      @geojson = json.first
 
-      @json.each_with_index do | json , index|
+      json.each_with_index do | json , index|
        unless(index ==0)
          @geojson.merge!(json) do |key, oldval ,newval|
             if(key=="features")
@@ -52,14 +51,14 @@ class TrailSearchesController < ApplicationController
 
       end
     else
-      @geojson = {"message": "Unfortunately there are no trails in that radius"}
+      @message = {"message": "Unfortunately there are no trails in that radius"}
     end
 
 
 
-
     respond_to do |format|
-        format.json { render json:@geojson}
+      html = render_to_string partial: 'trails/index', locals: { :trails => @tracks, :difficulty => false}
+      format.json { render json: {geojson: @geojson ,html: html, message: @message }}
     end
 
 

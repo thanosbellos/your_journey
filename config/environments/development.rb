@@ -38,10 +38,11 @@ Rails.application.configure do
 
 
   config.after_initialize do
-    ActiveRecord::Base.logger.level = 1
+    ActiveRecord::Base.logger.level = 2
   end
   config.action_mailer.default_url_options = { host: 'localhost' , port:'3000'}
-  config.middleware.use Rack::LiveReload
+  #config.middleware.use Rack::LiveReload
+  config.middleware.use JQuery::FileUpload::Rails::Middleware
  # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 end

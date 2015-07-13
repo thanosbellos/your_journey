@@ -1,0 +1,113 @@
+<%= provide(:title ,  @trail.name) %>
+<%= javascript_tag do %>
+  window.track_id = '<%= @trail.id %>';
+  window.method = '<%= @method_name %>';
+<% end %>
+<div class="fullscreen-container">
+  <div id='map'>
+  </div>
+  <div id="directions">
+    <div id="routes" class="mapbox-directions-routes">
+      <ul>
+      <h5> Στοιχεία διαδρομής </h5>
+
+        <li class= "mapbox-directions-route mapbox-directions-route-active">
+        <div class="mapbox-directions-route-heading">
+          Όνομα:
+        </div>
+        <div class="mapbox-directions-route-summary">
+          <%= @trail.name %>
+        </div>
+        <div class="mapbox-directions-route-heading">
+          Αφετηρία:
+        </div>
+        <div class="mapbox-directions-route-details">
+          <%= @trail.start_point %>
+        </div>
+        <div class="mapbox-directions-route-heading">
+          Προορισμός:
+        </div>
+        <div class= "mapbox-directions-route-details">
+          <%= @trail.end_point %>
+        </div>
+        <div class="mapbox-directions-route-heading">
+          Μήκος
+        </div>
+        <div class="mapbox-directions-route-details">
+          <%= @trail.length %>
+        </div>
+        </li>
+      </ul>
+      <ul>
+          <h5> Μέση βαθμολογία </h5>
+        <div class="col-md-offset-5 col-sm-offset-5 col-xs-offset-5">
+          <% if @trail.rate_average_without_dimension.avg.nil? %>
+            :( Noone has rated this trail yet
+          <%else %>
+            <%= rating_for @trail , nil,disable_after_rate:false ,  imdb_avg: true,readonly: true%>
+          <% end %>
+        </div>
+        <div>
+          <h5 > Από <%= @trail.raters_without_dimension_ids.length %> Χρήστες %></h5>
+        </div>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="container">
+
+  <div class="row">
+    <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12">
+      <h2>Επεξεργασία διαδρομής </h2>
+      <%= render 'form' %>
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td>
+            <span class="preview">
+                {% if (file.thumbnail_url) { %}
+                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnail_url%}"></a>
+                {% } %}
+            </span>
+        </td>
+        <td>
+            <p class="name">
+                {% if (file.url) { %}
+                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnail_url?'data-gallery':''%}>{%=file.name%}</a>
+                {% } else { %}
+                    <span>{%=file.name%}</span>
+                {% } %}
+            </p>
+            {% if (file.error) { %}
+                <div><span class="label label-danger">Πρόβλημα</span> {%=file.error%}</div>
+            {% } %}
+        </td>
+        <td>
+            <span class="size">{%=o.formatFileSize(file.size)%}</span>
+        </td>
+        <td>
+            {% if (file.delete_url) { %}
+            <button class="btn btn-danger delete" onclick="return confirm('Are your sure you want to delete your account')" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+                    <i class="glyphicon glyphicon-trash"></i>
+                    <span>Delete</span>
+                </button>
+            {% } else { %}
+                <button class="btn btn-warning cancel">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
+                    <span>Cancel</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+{% } %}
+</script>
+    </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
